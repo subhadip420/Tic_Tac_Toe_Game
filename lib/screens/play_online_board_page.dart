@@ -193,7 +193,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           // 🔥 Safe Pop: গেম পেজ না কেটে শুধু ইন্টারনেট ডায়ালগটাই কাটবে
           if (mounted && internetDialogCtx != null) {
-            Navigator.pop(internetDialogCtx!);
+            //Navigator.pop(internetDialogCtx!);
+            if (internetDialogCtx != null &&
+                Navigator.of(
+                  internetDialogCtx!,
+                  rootNavigator: true,
+                ).canPop()) {
+
+              Navigator.of(
+                internetDialogCtx!,
+                rootNavigator: true,
+              ).pop();
+            }
             internetDialogCtx = null;
           }
 
@@ -246,7 +257,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
             // 🔥 Safe Pop Web
             if (mounted && internetDialogCtx != null) {
-              Navigator.pop(internetDialogCtx!);
+              //Navigator.pop(internetDialogCtx!);
+              if (internetDialogCtx != null &&
+                  Navigator.of(
+                    internetDialogCtx!,
+                    rootNavigator: true,
+                  ).canPop()) {
+
+                Navigator.of(
+                  internetDialogCtx!,
+                  rootNavigator: true,
+                ).pop();
+              }
               internetDialogCtx = null;
             }
 
@@ -587,11 +609,33 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           // যদি অন্য কোনো ডিসকানেক্ট ডায়ালগ খোলা থাকে, সেটা বন্ধ করো
           if (isDisconnectDialogOpen && disconnectDialogCtx != null) {
-            Navigator.pop(disconnectDialogCtx!);
+            //Navigator.pop(disconnectDialogCtx!);
+            if (disconnectDialogCtx != null &&
+                Navigator.of(
+                  disconnectDialogCtx!,
+                  rootNavigator: true,
+                ).canPop()) {
+
+              Navigator.of(
+                disconnectDialogCtx!,
+                rootNavigator: true,
+              ).pop();
+            }
             isDisconnectDialogOpen = false;
           }
           if (isDialogOpen && internetDialogCtx != null) {
-            Navigator.pop(internetDialogCtx!);
+            //Navigator.pop(internetDialogCtx!);
+            if (internetDialogCtx != null &&
+                Navigator.of(
+                  internetDialogCtx!,
+                  rootNavigator: true,
+                ).canPop()) {
+
+              Navigator.of(
+                internetDialogCtx!,
+                rootNavigator: true,
+              ).pop();
+            }
             isDialogOpen = false;
           }
 
@@ -867,7 +911,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           if (isDisconnectDialogOpen) {
             isDisconnectDialogOpen = false;
             if (disconnectDialogCtx != null && mounted) {
-              Navigator.pop(disconnectDialogCtx!);
+              //Navigator.pop(disconnectDialogCtx!);
+              if (disconnectDialogCtx != null &&
+                  Navigator.of(
+                    disconnectDialogCtx!,
+                    rootNavigator: true,
+                  ).canPop()) {
+
+                Navigator.of(
+                  disconnectDialogCtx!,
+                  rootNavigator: true,
+                ).pop();
+              }
               disconnectDialogCtx = null;
               showToast("Opponent reconnected! 🎮");
             }
@@ -894,7 +949,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               disconnectDialogCtx != null &&
               mounted) {
             isDisconnectDialogOpen = false;
-            Navigator.pop(disconnectDialogCtx!);
+            //Navigator.pop(disconnectDialogCtx!);
+            if (disconnectDialogCtx != null &&
+                Navigator.of(
+                  disconnectDialogCtx!,
+                  rootNavigator: true,
+                ).canPop()) {
+
+              Navigator.of(
+                disconnectDialogCtx!,
+                rootNavigator: true,
+              ).pop();
+            }
             disconnectDialogCtx = null;
           }
 
@@ -2225,9 +2291,26 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   });
   // }
 
+  // void closeDialogSafe() {
+  //   if (dialogOpen && mounted) {
+  //     Navigator.of(context, rootNavigator: true).pop();
+  //     dialogOpen = false;
+  //   }
+  // }
+
   void closeDialogSafe() {
-    if (dialogOpen && mounted) {
-      Navigator.of(context, rootNavigator: true).pop();
+
+    if (!mounted) return;
+
+    final navigator = Navigator.of(
+      context,
+      rootNavigator: true,
+    );
+
+    if (dialogOpen && navigator.canPop()) {
+
+      navigator.pop();
+
       dialogOpen = false;
     }
   }
@@ -2285,109 +2368,109 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
 
   ///old showInternetDialog()
-  void showInternetDialog() {
-    isDialogOpen = true;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        internetDialogCtx = dialogContext; // 💥 ডায়ালগের কনটেক্সট সেভ করা হলো
-
-        return AlertDialog(
-          title: const Text("Internet Disconnected"),
-          content: const Text("Please check your connection"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (kIsWeb) {
-                  showToast("Waiting for internet... 🌐");
-                  return;
-                }
-                checkInternet().then((hasInternet) {
-                  if (hasInternet) {
-                    isOfflineDialogShown = false;
-                    isDialogOpen = false;
-                    Navigator.pop(dialogContext);
-                  } else {
-                    showToast("Still offline ❌");
-                  }
-                });
-              },
-              child: const Text("Try Again"),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      isDialogOpen = false;
-      internetDialogCtx = null;
-    });
-  }
-
-
-  ///new showInternetDialog()
-  // Future<void> showInternetDialog() async {
-  //
+  // void showInternetDialog() {
   //   isDialogOpen = true;
   //
-  //   await showAppDialog(
+  //   showDialog(
   //     context: context,
-  //
-  //     /// 🔥 SAVE DIALOG CONTEXT
-  //     onDialogCreated: (dialogContext) {
-  //       internetDialogCtx = dialogContext;
-  //     },
-  //
-  //     title: "NO INTERNET",
-  //
-  //     message:
-  //     "Connection lost.\nPlease check your internet connection.",
-  //
-  //     positiveText: "TRY AGAIN",
-  //     negativeText: "",
-  //
   //     barrierDismissible: false,
+  //     builder: (dialogContext) {
+  //       internetDialogCtx = dialogContext; // 💥 ডায়ালগের কনটেক্সট সেভ করা হলো
   //
-  //     onPositive: () async {
-  //
-  //       if (kIsWeb) {
-  //
-  //         showToast("Waiting for internet... 🌐");
-  //         return;
-  //       }
-  //
-  //       bool hasInternet = await checkInternet();
-  //
-  //       if (hasInternet) {
-  //
-  //         isOfflineDialogShown = false;
-  //         isDialogOpen = false;
-  //
-  //         /// 🔥 CLOSE DIALOG
-  //         if (internetDialogCtx != null &&
-  //             Navigator.of(
-  //               internetDialogCtx!,
-  //               rootNavigator: true,
-  //             ).canPop()) {
-  //
-  //           Navigator.of(
-  //             internetDialogCtx!,
-  //             rootNavigator: true,
-  //           ).pop();
-  //         }
-  //
-  //       } else {
-  //
-  //         showToast("Still offline ❌");
-  //       }
+  //       return AlertDialog(
+  //         title: const Text("Internet Disconnected"),
+  //         content: const Text("Please check your connection"),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               if (kIsWeb) {
+  //                 showToast("Waiting for internet... 🌐");
+  //                 return;
+  //               }
+  //               checkInternet().then((hasInternet) {
+  //                 if (hasInternet) {
+  //                   isOfflineDialogShown = false;
+  //                   isDialogOpen = false;
+  //                   Navigator.pop(dialogContext);
+  //                 } else {
+  //                   showToast("Still offline ❌");
+  //                 }
+  //               });
+  //             },
+  //             child: const Text("Try Again"),
+  //           ),
+  //         ],
+  //       );
   //     },
   //   ).then((_) {
-  //
   //     isDialogOpen = false;
   //     internetDialogCtx = null;
   //   });
   // }
+
+
+  ///new showInternetDialog()
+  Future<void> showInternetDialog() async {
+
+    isDialogOpen = true;
+
+    await showAppDialog(
+      context: context,
+
+      /// 🔥 SAVE DIALOG CONTEXT
+      onDialogCreated: (dialogContext) {
+        internetDialogCtx = dialogContext;
+      },
+
+      title: "NO INTERNET",
+
+      message:
+      "Connection lost.\nPlease check your internet connection.",
+
+      positiveText: "TRY AGAIN",
+      negativeText: "",
+
+      barrierDismissible: false,
+
+      onPositive: () async {
+
+        if (kIsWeb) {
+
+          showToast("Waiting for internet... 🌐");
+          return;
+        }
+
+        bool hasInternet = await checkInternet();
+
+        if (hasInternet) {
+
+          isOfflineDialogShown = false;
+          isDialogOpen = false;
+
+          /// 🔥 CLOSE DIALOG
+          if (internetDialogCtx != null &&
+              Navigator.of(
+                internetDialogCtx!,
+                rootNavigator: true,
+              ).canPop()) {
+
+            Navigator.of(
+              internetDialogCtx!,
+              rootNavigator: true,
+            ).pop();
+          }
+
+        } else {
+
+          showToast("Still offline ❌");
+        }
+      },
+    ).then((_) {
+
+      isDialogOpen = false;
+      internetDialogCtx = null;
+    });
+  }
 
   Widget neonButton({
     required String text,

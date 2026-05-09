@@ -77,6 +77,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   bool isError = false;
 
+  bool hasHandledMatchAction = false;
+
   late AnimationController shakeController;
   late Animation<double> shakeAnimation;
   AnimationController? borderController;
@@ -172,6 +174,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     internetSubscription?.cancel();
     shakeController.dispose();
     borderController?.dispose();
+    hasHandledMatchAction = true;
   }
 
   Future<void> loadBoardSize() async {
@@ -269,7 +272,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     try {
       if (!isCodeGenerated) {
-        Navigator.pop(context);
+        //Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
         return;
       }
 
@@ -1996,7 +2000,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     } else {
       // 🟢 close dialog
       if (isOfflineDialogShowing && noInternetDialogCtx != null) {
-        Navigator.of(noInternetDialogCtx!).pop();
+        //Navigator.of(noInternetDialogCtx!).pop();
+
+        Navigator.of(
+          noInternetDialogCtx!,
+          rootNavigator: true,
+        ).pop();
 
         noInternetDialogCtx = null;
         isOfflineDialogShowing = false;
@@ -2006,58 +2015,34 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
   }
 
-  void showNoInternetDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        noInternetDialogCtx = dialogContext;
 
-        return PopScope(
-          canPop: false, // 🔥 block normal back
-          onPopInvoked: (didPop) {
-            if (!didPop) {
-              _exitFromNoInternet(); // 🔥 back press handle
-            }
-          },
+///old
+  // void _exitFromNoInternet() {
+  //   // 🔥 close dialog
+  //   if (noInternetDialogCtx != null) {
+  //     //Navigator.of(noInternetDialogCtx!).pop();
+  //     Navigator.of(
+  //       noInternetDialogCtx!,
+  //       rootNavigator: true,
+  //     ).pop();
+  //   }
+  //
+  //   // 🔥 go back page
+  //   Navigator.pop(context);
+  // }
 
-          child: AlertDialog(
-            title: const Text("Internet Disconnected"),
 
-            content: Row(
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(width: 20),
-                Expanded(child: Text("Waiting for connection...")),
-              ],
-            ),
+  ///new
+  Future<void> _exitFromNoInternet() async {
 
-            actions: [
-              // 🔴 EXIT BUTTON
-              TextButton(
-                onPressed: () {
-                  _exitFromNoInternet();
-                },
-                child: const Text("EXIT"),
-              ),
-            ],
-          ),
-        );
-      },
-    ).then((_) {
-      noInternetDialogCtx = null;
-      isOfflineDialogShowing = false;
-    });
-  }
+    /// 🔥 RESET FLAGS
+    noInternetDialogCtx = null;
+    isOfflineDialogShowing = false;
 
-  void _exitFromNoInternet() {
-    // 🔥 close dialog
-    if (noInternetDialogCtx != null) {
-      Navigator.of(noInternetDialogCtx!).pop();
+    /// 🔥 EXIT PAGE ONLY
+    if (mounted && Navigator.canPop(context)) {
+      Navigator.pop(context);
     }
-
-    // 🔥 go back page
-    Navigator.pop(context);
   }
 
   Future<void> generateCode() async {
@@ -3184,15 +3169,32 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
   }
 
+
+  /// old
   // void listenForOpponent(String code) {
-  //   dbRef.child("rooms/$code").onValue.listen((event) {
+  //   roomListener?.cancel(); // 🔥 prevent duplicate listeners
+  //
+  //   roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
+  //     // 🔥 SAFETY
+  //     if (!mounted) return;
+  //
+  //     // 🔥 USER CANCELLED → IGNORE EVERYTHING
+  //     if (hasCancelled) return;
+  //
+  //     // 🔥 ROOM DELETED
+  //     if (!event.snapshot.exists) {
+  //       // ❌ DO NOTHING (user didn’t join)
+  //       return;
+  //     }
+  //
   //     final data = event.snapshot.value as Map?;
   //
   //     if (data == null) return;
   //
-  //     // 🔥 opponent joined
+  //     // 🔥 OPPONENT JOINED
   //     if (data["status"] == "joined") {
-  //       if (!opponentJoined) {
+  //       // 🔥 prevent duplicate dialog
+  //       if (!opponentJoined && startDialogContext == null) {
   //         setState(() {
   //           opponentJoined = true;
   //         });
@@ -3201,9 +3203,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //       }
   //     }
   //
-  //     // 🔥 opponent cancelled
+  //     // 🔥 OPPONENT CANCELLED
   //     if (data["cancelledBy"] == "player2") {
-  //       // 🔥 CLOSE ONLY DIALOG (NOT PAGE)
+  //       // 🔥 close dialog if open
   //       if (startDialogContext != null) {
   //         Navigator.of(startDialogContext!).pop();
   //         startDialogContext = null;
@@ -3215,25 +3217,34 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //
   //       showToast("Opponent cancelled!");
   //
-  //       // 🔥 reset flag
+  //       // 🔥 remove flag
   //       dbRef.child("rooms/$code/cancelledBy").remove();
+  //
+  //       return;
   //     }
   //   });
   // }
 
+///new
   void listenForOpponent(String code) {
-    roomListener?.cancel(); // 🔥 prevent duplicate listeners
+
+    roomListener?.cancel();
+
+    hasHandledMatchAction = false;
 
     roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
-      // 🔥 SAFETY
+
+      /// 🔥 SAFETY
       if (!mounted) return;
 
-      // 🔥 USER CANCELLED → IGNORE EVERYTHING
+      /// 🔥 PREVENT MULTIPLE FIRE
+      if (hasHandledMatchAction) return;
+
+      /// 🔥 USER CANCELLED
       if (hasCancelled) return;
 
-      // 🔥 ROOM DELETED
+      /// 🔥 ROOM DELETED
       if (!event.snapshot.exists) {
-        // ❌ DO NOTHING (user didn’t join)
         return;
       }
 
@@ -3241,10 +3252,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       if (data == null) return;
 
-      // 🔥 OPPONENT JOINED
+      /// ✅ OPPONENT JOINED
       if (data["status"] == "joined") {
-        // 🔥 prevent duplicate dialog
+
         if (!opponentJoined && startDialogContext == null) {
+
           setState(() {
             opponentJoined = true;
           });
@@ -3253,11 +3265,23 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         }
       }
 
-      // 🔥 OPPONENT CANCELLED
+      /// ❌ OPPONENT CANCELLED
       if (data["cancelledBy"] == "player2") {
-        // 🔥 close dialog if open
+
+        hasHandledMatchAction = true;
+
+        /// 🔥 CLOSE ONLY DIALOG
         if (startDialogContext != null) {
-          Navigator.of(startDialogContext!).pop();
+
+          final navigator = Navigator.of(
+            startDialogContext!,
+            rootNavigator: true,
+          );
+
+          if (navigator.canPop()) {
+            navigator.pop();
+          }
+
           startDialogContext = null;
         }
 
@@ -3267,7 +3291,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
         showToast("Opponent cancelled!");
 
-        // 🔥 remove flag
+        /// 🔥 REMOVE FIREBASE FLAG
         dbRef.child("rooms/$code/cancelledBy").remove();
 
         return;
@@ -3275,10 +3299,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     });
   }
 
-  void startMatch(String code) {
+  Future<void> startMatch(String code) async {
     // 🔥 Loading
     // LoadingDialog.show(context, message: "Starting Match");
     // LoadingDialog.hide(context);
+
+    /// 🔥 STOP OLD INTERNET LISTENER
+    await internetSubscription?.cancel();
+
     showToast("Match Started!");
 
     // 🔥 Navigate to game screen
@@ -3572,8 +3600,18 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
       if (!event.snapshot.exists) {
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.pop(context);
+        // if (mounted && Navigator.canPop(context)) {
+        //   //Navigator.pop(context);
+        //   Navigator.of(context, rootNavigator: true).pop();
+        // }
+
+        final navigator = Navigator.of(
+          context,
+          rootNavigator: true,
+        );
+
+        if (mounted && navigator.canPop()) {
+          navigator.pop();
         }
 
         showToast("Room deleted!");
@@ -3594,8 +3632,17 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         hideKeyboard();
         //FocusManager.instance.primaryFocus?.unfocus();
 
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.pop(context); // close waiting dialog
+        // if (mounted && Navigator.canPop(context)) {
+        //   Navigator.pop(context); // close waiting dialog
+        // }
+
+        final navigator = Navigator.of(
+          context,
+          rootNavigator: true,
+        );
+
+        if (mounted && navigator.canPop()) {
+          navigator.pop();
         }
 
         Future.delayed(const Duration(milliseconds: 100), () {
@@ -4088,6 +4135,87 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //   );
   // }
 
+
+///old
+  // void showNoInternetDialog() {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (dialogContext) {
+  //       noInternetDialogCtx = dialogContext;
+  //
+  //       return PopScope(
+  //         canPop: false, // 🔥 block normal back
+  //         onPopInvoked: (didPop) {
+  //           if (!didPop) {
+  //             _exitFromNoInternet(); // 🔥 back press handle
+  //           }
+  //         },
+  //
+  //         child: AlertDialog(
+  //           title: const Text("Internet Disconnected"),
+  //
+  //           content: Row(
+  //             children: const [
+  //               CircularProgressIndicator(),
+  //               SizedBox(width: 20),
+  //               Expanded(child: Text("Waiting for connection...")),
+  //             ],
+  //           ),
+  //
+  //           actions: [
+  //             // 🔴 EXIT BUTTON
+  //             TextButton(
+  //               onPressed: () {
+  //                 _exitFromNoInternet();
+  //               },
+  //               child: const Text("EXIT"),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   ).then((_) {
+  //     noInternetDialogCtx = null;
+  //     isOfflineDialogShowing = false;
+  //   });
+  // }
+
+///new
+  Future<void> showNoInternetDialog() async {
+
+    await showAppDialog(
+
+      context: context,
+
+      /// 🔥 SAVE DIALOG CONTEXT
+      onDialogCreated: (dialogContext) {
+        noInternetDialogCtx = dialogContext;
+      },
+
+      title: "NO INTERNET",
+
+      message:
+      "Connection lost.\nWaiting for internet...",
+
+      positiveText: "",
+      negativeText: "EXIT",
+
+      barrierDismissible: false,
+
+      showContentLoading: true,
+
+      /// 🔴 EXIT
+      onNegative: () async {
+
+        await _exitFromNoInternet();
+      },
+    );
+
+    /// 🔥 RESET
+    noInternetDialogCtx = null;
+    isOfflineDialogShowing = false;
+  }
 
 } // end main class //////////////////////////////////////////
 
