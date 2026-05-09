@@ -7,6 +7,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
+import '../widgets/loading_dialog_with_button.dart';
 
 class GameBoardPage extends StatefulWidget {
   const GameBoardPage({super.key});
@@ -109,6 +110,7 @@ class _GameBoardPageState extends State<GameBoardPage>
     });
   }
 
+  ///new
   void chooseSymbolDialog() {
     showGeneralDialog(
       context: context,
@@ -122,142 +124,190 @@ class _GameBoardPageState extends State<GameBoardPage>
           child: Material(
             color: Colors.transparent,
 
-            child: Container(
-              padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+            // child: Container(
+            //   padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+            //
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(20),
+            //
+            //     /// 🔥 Gradient Border
+            //     gradient: isDark
+            //         ? const LinearGradient(colors: [Colors.blue, Colors.orange])
+            //         : const LinearGradient(
+            //             colors: [Colors.blue, Colors.orange],
+            //           ),
+            //   ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28),
 
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
 
-                /// 🔥 Gradient Border
-                gradient: isDark
-                    ? const LinearGradient(colors: [Colors.blue, Colors.orange])
-                    : const LinearGradient(
-                        colors: [Colors.blue, Colors.indigo],
+                  child: Container(
+                    width: 300,
+                    height: 200,
+                    padding: const EdgeInsets.all(20),
+
+
+                    decoration: BoxDecoration(
+
+                      /// 🔥 GLASS EFFECT
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+
+                        colors: isDark
+                            ? [
+                          Colors.white.withOpacity(0.14),
+                          Colors.white.withOpacity(0.05),
+                        ]
+                            : [
+                          Colors.white.withOpacity(0.35),
+                          Colors.white.withOpacity(0.12),
+                        ],
                       ),
-              ),
-              child: Container(
-                width: 300,
-                height: 200,
-                padding: const EdgeInsets.all(20),
 
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Choose Your Symbol",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(
+                          isDark ? 0.18 : 0.35,
+                        ),
+                        width: 1.5,
                       ),
-                    ),
 
-                    const SizedBox(height: 30),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // X BUTTON
-                        GestureDetector(
-                          onTap: () {
-                            playVibration(120);
-
-                            setState(() {
-                              playerSymbol = "X";
-                              botSymbol = "O";
-                            });
-
-                            Navigator.pop(context);
-                          },
-
-                          child: Container(
-                            width: 90,
-                            height: 90,
-
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFF1F2A44)
-                                  : const Color(0xFFF0F0F0),
-
-                              borderRadius: BorderRadius.circular(18),
-
-                              border: Border.all(
-                                color: Colors.blueAccent,
-                                width: 1.5,
-                              ),
-
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(2, 4),
-                                ),
-                              ],
-                            ),
-
-                            child: const Center(child: GameX()),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.transparent.withOpacity(
+                            isDark ? 0.10 : 0.06,
                           ),
+                          blurRadius: 24,
+                          spreadRadius: 2,
                         ),
 
-                        // O BUTTON
-                        GestureDetector(
-                          onTap: () {
-                            playVibration(120);
-
-                            setState(() {
-                              playerSymbol = "O";
-                              botSymbol = "X";
-                            });
-
-                            Navigator.pop(context);
-                          },
-
-                          child: Container(
-                            width: 90,
-                            height: 90,
-
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFF1F2A44)
-                                  : const Color(0xFFF0F0F0),
-
-                              borderRadius: BorderRadius.circular(18),
-
-                              border: Border.all(
-                                color: Colors.orangeAccent,
-                                width: 1.5,
-                              ),
-
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(2, 4),
-                                ),
-                              ],
-                            ),
-
-                            child: const Center(child: GameO()),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                            isDark ? 0.25 : 0.08,
                           ),
+                          offset: const Offset(0, 8),
+                          blurRadius: 18,
                         ),
                       ],
                     ),
-                  ],
+
+
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Choose Your Symbol",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // X BUTTON
+                            GestureDetector(
+                              onTap: () {
+                                playVibration(120);
+
+                                setState(() {
+                                  playerSymbol = "X";
+                                  botSymbol = "O";
+                                });
+
+                                Navigator.pop(context);
+                              },
+
+                              child: Container(
+                                width: 90,
+                                height: 90,
+
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? const Color(0xFF1F2A44)
+                                      : const Color(0xFFF0F0F0),
+
+                                  borderRadius: BorderRadius.circular(18),
+
+                                  border: Border.all(
+                                    color: Colors.blueAccent,
+                                    width: 1.5,
+                                  ),
+
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.25,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: const Offset(2, 4),
+                                    ),
+                                  ],
+                                ),
+
+                                child: const Center(child: GameX()),
+                              ),
+                            ),
+
+                            // O BUTTON
+                            GestureDetector(
+                              onTap: () {
+                                playVibration(120);
+
+                                setState(() {
+                                  playerSymbol = "O";
+                                  botSymbol = "X";
+                                });
+
+                                Navigator.pop(context);
+                              },
+
+                              child: Container(
+                                width: 90,
+                                height: 90,
+
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? const Color(0xFF1F2A44)
+                                      : const Color(0xFFF0F0F0),
+
+                                  borderRadius: BorderRadius.circular(18),
+
+                                  border: Border.all(
+                                    color: Colors.orangeAccent,
+                                    width: 1.5,
+                                  ),
+
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.25,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: const Offset(2, 4),
+                                    ),
+                                  ],
+                                ),
+
+                                child: const Center(child: GameO()),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+
           ),
         );
       },
@@ -272,6 +322,341 @@ class _GameBoardPageState extends State<GameBoardPage>
       },
     );
   }
+
+  ///old
+  // void chooseSymbolDialog() {
+  //
+  //   showGeneralDialog(
+  //
+  //     context: context,
+  //
+  //     barrierDismissible: false,
+  //
+  //     barrierLabel: "Symbol",
+  //
+  //     barrierColor: Colors.black.withOpacity(0.5),
+  //
+  //     transitionDuration: const Duration(milliseconds: 250),
+  //
+  //     pageBuilder: (
+  //         context,
+  //         animation,
+  //         secondaryAnimation,
+  //         ) {
+  //
+  //       return Center(
+  //
+  //         child: Material(
+  //
+  //           color: Colors.transparent,
+  //
+  //           child: Container(
+  //
+  //             padding: const EdgeInsets.all(1.5),
+  //
+  //             decoration: BoxDecoration(
+  //
+  //               borderRadius: BorderRadius.circular(28),
+  //
+  //               /// 🔥 OUTER GRADIENT BORDER
+  //               gradient: const LinearGradient(
+  //                 colors: [
+  //                   Colors.transparent,
+  //                   Colors.transparent,
+  //                 ],
+  //               ),
+  //
+  //               /// 🔥 OUTER GLOW
+  //               boxShadow: [
+  //
+  //                 BoxShadow(
+  //                   color: Colors.cyanAccent.withOpacity(0.25),
+  //                   blurRadius: 20,
+  //                   spreadRadius: 1,
+  //                 ),
+  //
+  //                 BoxShadow(
+  //                   color: Colors.orangeAccent.withOpacity(0.15),
+  //                   blurRadius: 20,
+  //                   spreadRadius: 1,
+  //                 ),
+  //               ],
+  //             ),
+  //
+  //             child: ClipRRect(
+  //
+  //               borderRadius: BorderRadius.circular(28),
+  //
+  //               child: BackdropFilter(
+  //
+  //                 filter: ImageFilter.blur(
+  //                   sigmaX: 5,
+  //                   sigmaY: 5,
+  //                 ),
+  //
+  //                 child: Container(
+  //
+  //                   width: 300,
+  //                   height: 220,
+  //
+  //                   padding: const EdgeInsets.all(20),
+  //
+  //                   decoration: BoxDecoration(
+  //
+  //                     /// 🔥 GLASS EFFECT
+  //                     gradient: LinearGradient(
+  //                       begin: Alignment.topLeft,
+  //                       end: Alignment.bottomRight,
+  //
+  //                       colors: isDark
+  //                           ? [
+  //                         Colors.white.withOpacity(0.14),
+  //                         Colors.white.withOpacity(0.05),
+  //                       ]
+  //                           : [
+  //                         Colors.white.withOpacity(0.35),
+  //                         Colors.white.withOpacity(0.12),
+  //                       ],
+  //                     ),
+  //
+  //                     borderRadius: BorderRadius.circular(28),
+  //
+  //                     /// 🔥 GLASS BORDER
+  //                     border: Border.all(
+  //                       color: Colors.white.withOpacity(
+  //                         isDark ? 0.18 : 0.35,
+  //                       ),
+  //                       width: 1.5,
+  //                     ),
+  //
+  //                     /// 🔥 SHADOW
+  //                     boxShadow: [
+  //
+  //                       BoxShadow(
+  //                         color: Colors.cyanAccent.withOpacity(
+  //                           isDark ? 0.10 : 0.06,
+  //                         ),
+  //                         blurRadius: 24,
+  //                         spreadRadius: 2,
+  //                       ),
+  //
+  //                       BoxShadow(
+  //                         color: Colors.black.withOpacity(
+  //                           isDark ? 0.25 : 0.08,
+  //                         ),
+  //                         offset: const Offset(0, 8),
+  //                         blurRadius: 18,
+  //                       ),
+  //                     ],
+  //                   ),
+  //
+  //                   child: Column(
+  //
+  //                     mainAxisSize: MainAxisSize.min,
+  //
+  //                     children: [
+  //
+  //                       /// 🔥 TITLE
+  //                       Text(
+  //                         "Choose Your Symbol",
+  //
+  //                         style: TextStyle(
+  //                           fontSize: 18,
+  //                           fontWeight: FontWeight.bold,
+  //
+  //                           color: isDark
+  //                               ? Colors.white
+  //                               : Colors.black,
+  //                         ),
+  //                       ),
+  //
+  //                       const SizedBox(height: 35),
+  //
+  //                       /// 🔥 BUTTONS
+  //                       Row(
+  //
+  //                         mainAxisAlignment:
+  //                         MainAxisAlignment.spaceEvenly,
+  //
+  //                         children: [
+  //
+  //                           /// 🔥 X BUTTON
+  //                           GestureDetector(
+  //
+  //                             onTap: () {
+  //
+  //                               playVibration(120);
+  //
+  //                               setState(() {
+  //
+  //                                 playerSymbol = "X";
+  //                                 botSymbol = "O";
+  //                               });
+  //
+  //                               Navigator.pop(context);
+  //                             },
+  //
+  //                             child: Container(
+  //
+  //                               width: 90,
+  //                               height: 90,
+  //
+  //                               decoration: BoxDecoration(
+  //
+  //                                 /// 🔥 MINI GLASS EFFECT
+  //                                 gradient: LinearGradient(
+  //                                   begin: Alignment.topLeft,
+  //                                   end: Alignment.bottomRight,
+  //
+  //                                   colors: isDark
+  //                                       ? [
+  //                                     Colors.white.withOpacity(0.10),
+  //                                     Colors.white.withOpacity(0.04),
+  //                                   ]
+  //                                       : [
+  //                                     Colors.white.withOpacity(0.45),
+  //                                     Colors.white.withOpacity(0.18),
+  //                                   ],
+  //                                 ),
+  //
+  //                                 borderRadius:
+  //                                 BorderRadius.circular(18),
+  //
+  //                                 border: Border.all(
+  //                                   color: Colors.blueAccent
+  //                                       .withOpacity(0.7),
+  //                                   width: 1.5,
+  //                                 ),
+  //
+  //                                 boxShadow: [
+  //
+  //                                   BoxShadow(
+  //                                     color: Colors.blueAccent
+  //                                         .withOpacity(0.18),
+  //                                     blurRadius: 12,
+  //                                     spreadRadius: 1,
+  //                                   ),
+  //
+  //                                   BoxShadow(
+  //                                     color: Colors.black
+  //                                         .withOpacity(0.18),
+  //                                     offset: const Offset(0, 5),
+  //                                     blurRadius: 10,
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //
+  //                               child: const Center(
+  //                                 child: GameX(),
+  //                               ),
+  //                             ),
+  //                           ),
+  //
+  //                           /// 🔥 O BUTTON
+  //                           GestureDetector(
+  //
+  //                             onTap: () {
+  //
+  //                               playVibration(120);
+  //
+  //                               setState(() {
+  //
+  //                                 playerSymbol = "O";
+  //                                 botSymbol = "X";
+  //                               });
+  //
+  //                               Navigator.pop(context);
+  //                             },
+  //
+  //                             child: Container(
+  //
+  //                               width: 90,
+  //                               height: 90,
+  //
+  //                               decoration: BoxDecoration(
+  //
+  //                                 /// 🔥 MINI GLASS EFFECT
+  //                                 gradient: LinearGradient(
+  //                                   begin: Alignment.topLeft,
+  //                                   end: Alignment.bottomRight,
+  //
+  //                                   colors: isDark
+  //                                       ? [
+  //                                     Colors.white.withOpacity(0.10),
+  //                                     Colors.white.withOpacity(0.04),
+  //                                   ]
+  //                                       : [
+  //                                     Colors.white.withOpacity(0.45),
+  //                                     Colors.white.withOpacity(0.18),
+  //                                   ],
+  //                                 ),
+  //
+  //                                 borderRadius:
+  //                                 BorderRadius.circular(18),
+  //
+  //                                 border: Border.all(
+  //                                   color: Colors.orangeAccent
+  //                                       .withOpacity(0.7),
+  //                                   width: 1.5,
+  //                                 ),
+  //
+  //                                 boxShadow: [
+  //
+  //                                   BoxShadow(
+  //                                     color: Colors.orangeAccent
+  //                                         .withOpacity(0.18),
+  //                                     blurRadius: 12,
+  //                                     spreadRadius: 1,
+  //                                   ),
+  //
+  //                                   BoxShadow(
+  //                                     color: Colors.black
+  //                                         .withOpacity(0.18),
+  //                                     offset: const Offset(0, 5),
+  //                                     blurRadius: 10,
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //
+  //                               child: const Center(
+  //                                 child: GameO(),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //
+  //     transitionBuilder: (
+  //         context,
+  //         animation,
+  //         secondaryAnimation,
+  //         child,
+  //         ) {
+  //
+  //       final curvedValue =
+  //       Curves.easeOutBack.transform(animation.value);
+  //
+  //       return Transform.scale(
+  //
+  //         scale: curvedValue,
+  //
+  //         child: Opacity(
+  //           opacity: animation.value,
+  //           child: child,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   void handleTap(int index) {
     if (board[index] != "" || !playerTurn || gameOver) return;
@@ -628,9 +1013,9 @@ class _GameBoardPageState extends State<GameBoardPage>
             message: "Back",
             child: GestureDetector(
               onTap: () async {
-                //await handleBackPress();
-                playVibration(120);
-                Navigator.pop(context);
+                await showExitDialog();
+                // playVibration(120);
+                // Navigator.pop(context);
               },
               child: build3DIconButton(Icons.arrow_back, isDark),
             ),
@@ -1129,7 +1514,7 @@ class _GameBoardPageState extends State<GameBoardPage>
                       child: Container(
                         width: double.infinity,
                         height: 50,
-                        padding: const EdgeInsets.all(1),
+                        padding: const EdgeInsets.all(1.5),
 
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
@@ -1137,14 +1522,15 @@ class _GameBoardPageState extends State<GameBoardPage>
                           gradient: LinearGradient(
                             colors: isDark
                                 ? [
-                                    Colors.purpleAccent,
-                                    Colors.blueAccent,
-                                    Colors.purpleAccent,
+                              Colors.pinkAccent,
+                              Colors.orangeAccent,
+                              Colors.pinkAccent,
+
                                   ]
                                 : [
-                                    Colors.pinkAccent,
-                                    Colors.orangeAccent,
-                                    Colors.pinkAccent,
+                              Colors.blueAccent,
+                              Colors.cyanAccent,
+                              Colors.blueAccent,
                                   ],
                           ),
                         ),
@@ -1322,14 +1708,41 @@ class _GameBoardPageState extends State<GameBoardPage>
     );
   }
 
+  Future<void> showExitDialog() async {
+
+    await showAppDialog(
+      context: context,
+
+      title: "EXIT MATCH",
+
+      message:
+      "Exit and end the match?",
+
+      positiveText: "EXIT",
+      negativeText: "CANCEL",
+
+      barrierDismissible: false,
+
+      onNegative: () {
+        // 🔥 nothing needed
+      },
+
+      onPositive: () async {
+
+        playVibration(120);
+        Navigator.pop(context);
+      },
+    );
+  }
+
   Widget neonButton({
     required String text,
     required IconData icon,
     required VoidCallback onTap,
   }) {
     List<Color> colors = isDark
-        ? [Colors.blueAccent, Colors.purpleAccent]
-        : [Colors.orangeAccent, Colors.pinkAccent];
+        ? [Colors.blueAccent, Colors.cyanAccent]
+        : [Colors.blueAccent, Colors.blueAccent];
 
     return Material(
       color: Colors.transparent,
@@ -1687,79 +2100,4 @@ Widget build3DIconButton(IconData icon, bool isDark) {
   );
 }
 
-// class XPainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-//
-//     final paint = Paint()
-//       ..shader = const LinearGradient(
-//         colors: [Color(0xFF00B4FF), Color(0xFF0066FF)],
-//       ).createShader(rect)
-//       ..strokeWidth = 7
-//       ..strokeCap = StrokeCap.round;
-//
-//     final glow = Paint()
-//       ..color = const Color(0x5500B4FF)
-//       ..strokeWidth = 10
-//       ..strokeCap = StrokeCap.round;
-//
-//     canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), glow);
-//
-//     canvas.drawLine(Offset(size.width, 0), Offset(0, size.height), glow);
-//
-//     canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), paint);
-//
-//     canvas.drawLine(Offset(size.width, 0), Offset(0, size.height), paint);
-//   }
-//
-//   @override
-//   bool shouldRepaint(CustomPainter oldDelegate) => false;
-// }
-//
-// class GameO extends StatelessWidget {
-//   const GameO({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       width: 40,
-//       height: 40,
-//       child: CustomPaint(painter: OPainter()),
-//     );
-//   }
-// }
 
-// class OPainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-//
-//     final paint = Paint()
-//       ..shader = const LinearGradient(
-//         colors: [Color(0xFFFFB347), Color(0xFFFF5E00)],
-//       ).createShader(rect)
-//       ..strokeWidth = 7
-//       ..style = PaintingStyle.stroke;
-//
-//     final glow = Paint()
-//       ..color = const Color(0x55FF7A00)
-//       ..strokeWidth = 10
-//       ..style = PaintingStyle.stroke;
-//
-//     canvas.drawCircle(
-//       Offset(size.width / 2, size.height / 2),
-//       size.width / 2,
-//       glow,
-//     );
-//
-//     canvas.drawCircle(
-//       Offset(size.width / 2, size.height / 2),
-//       size.width / 2,
-//       paint,
-//     );
-//   }
-//
-//   @override
-//   bool shouldRepaint(CustomPainter oldDelegate) => false;
-// }

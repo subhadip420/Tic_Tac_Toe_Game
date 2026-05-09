@@ -11,6 +11,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
+import '../widgets/loading_dialog_with_button.dart';
 import 'two_player_draw_board_page.dart';
 
 class TwoPlayerBoardPage extends StatefulWidget {
@@ -287,35 +288,93 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           child: Material(
             color: Colors.transparent,
 
-            child: Container(
-              padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+            // child: Container(
+            //   padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+            //
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(20),
+            //
+            //     /// 🔥 Gradient Border
+            //     gradient: isDark
+            //         ? const LinearGradient(colors: [Colors.blue, Colors.orange])
+            //         : const LinearGradient(
+            //             colors: [Colors.blue, Colors.indigo],
+            //           ),
+            //   ),
+            //   child: Container(
+            //     width: 300,
+            //     height: 200,
+            //     padding: const EdgeInsets.all(20),
+            //
+            //     decoration: BoxDecoration(
+            //       color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
+            //       borderRadius: BorderRadius.circular(20),
+            //
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.black.withValues(alpha: 0.3),
+            //           blurRadius: 20,
+            //         ),
+            //       ],
+            //     ),
 
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+            child: ClipRRect(
+            borderRadius: BorderRadius.circular(28),
 
-                /// 🔥 Gradient Border
-                gradient: isDark
-                    ? const LinearGradient(colors: [Colors.blue, Colors.orange])
-                    : const LinearGradient(
-                        colors: [Colors.blue, Colors.indigo],
-                      ),
-              ),
-              child: Container(
-                width: 300,
-                height: 200,
-                padding: const EdgeInsets.all(20),
+        child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
 
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+        child: Container(
+        width: 300,
+        height: 200,
+        padding: const EdgeInsets.all(20),
 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
+
+        decoration: BoxDecoration(
+
+        /// 🔥 GLASS EFFECT
+        gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+
+        colors: isDark
+        ? [
+        Colors.white.withOpacity(0.14),
+        Colors.white.withOpacity(0.05),
+        ]
+            : [
+        Colors.white.withOpacity(0.35),
+        Colors.white.withOpacity(0.12),
+        ],
+        ),
+
+        borderRadius: BorderRadius.circular(28),
+
+        border: Border.all(
+        color: Colors.white.withOpacity(
+        isDark ? 0.18 : 0.35,
+        ),
+        width: 1.5,
+        ),
+
+        boxShadow: [
+        BoxShadow(
+        color: Colors.transparent.withOpacity(
+        isDark ? 0.10 : 0.06,
+        ),
+        blurRadius: 24,
+        spreadRadius: 2,
+        ),
+
+        BoxShadow(
+        color: Colors.black.withOpacity(
+        isDark ? 0.25 : 0.08,
+        ),
+        offset: const Offset(0, 8),
+        blurRadius: 18,
+        ),
+        ],
+        ),
 
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -422,6 +481,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   ],
                 ),
               ),
+            ),
             ),
           ),
         );
@@ -820,9 +880,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             message: "Back",
             child: GestureDetector(
               onTap: () async {
-                //await handleBackPress();
-                playVibration(120);
-                Navigator.pop(context);
+                await showExitDialog();
+                // playVibration(120);
+                // Navigator.pop(context);
               },
               child: build3DIconButton(Icons.arrow_back, isDark),
             ),
@@ -1316,14 +1376,15 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           gradient: LinearGradient(
                             colors: isDark
                                 ? [
-                                    Colors.purpleAccent,
-                                    Colors.blueAccent,
-                                    Colors.purpleAccent,
+                              Colors.pinkAccent,
+                              Colors.orangeAccent,
+                              Colors.pinkAccent,
+
                                   ]
                                 : [
-                                    Colors.pinkAccent,
-                                    Colors.orangeAccent,
-                                    Colors.pinkAccent,
+                              Colors.blueAccent,
+                              Colors.cyanAccent,
+                              Colors.blueAccent,
                                   ],
                           ),
                         ),
@@ -1373,6 +1434,33 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       ),
     );
   } // end widget build
+
+  Future<void> showExitDialog() async {
+
+    await showAppDialog(
+      context: context,
+
+      title: "EXIT MATCH",
+
+      message:
+      "Exit and end the match?",
+
+      positiveText: "EXIT",
+      negativeText: "CANCEL",
+
+      barrierDismissible: false,
+
+      onNegative: () {
+        // 🔥 nothing needed
+      },
+
+      onPositive: () async {
+
+        playVibration(120);
+        Navigator.pop(context);
+      },
+    );
+  }
 
   Widget neonButton({
     required String text,

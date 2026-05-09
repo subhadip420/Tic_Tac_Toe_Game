@@ -69,9 +69,6 @@ Future<void> showAppDialog({
 
                               decoration: BoxDecoration(
                                 /// 🔥 GLASS EFFECT
-                                // color: isDark
-                                //     ? Colors.black.withOpacity(0.2)
-                                //     : Colors.white.withOpacity(0.2),
 
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
