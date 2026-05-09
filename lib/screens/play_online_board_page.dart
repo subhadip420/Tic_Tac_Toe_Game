@@ -2321,7 +2321,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       },
     ).then((_) {
       isDialogOpen = false;
-      internetDialogCtx = null; // 💥 ডায়ালগ কাটলে এটা আবার null হয়ে যাবে
+      internetDialogCtx = null;
     });
   }
 
