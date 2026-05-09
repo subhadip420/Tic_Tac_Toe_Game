@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Join TicTacToe</title>
+
+    <script>
+        function openApp() {
+          const params = new URLSearchParams(window.location.search);
+          const code = params.get("code");
+
+          if (!code) return;
+
+          // 🔥 Try to open app
+          window.location.href = "tictactoe://join?code=" + code;
+
+          // 🔥 Fallback → Play Store
+          setTimeout(() => {
+            window.location.href =
+              "https://play.google.com/store/apps/details?id=com.example.tic_tac_toe";
+          }, 2000);
+        }
+
+        window.onload = openApp;
+    </script>
+
+    <style>
+        body {
+          font-family: Arial;
+          text-align: center;
+          margin-top: 100px;
+        }
+    </style>
+
+</head>
+<body>
+<h2>🎮 Opening TicTacToe...</h2>
+<p>If app doesn't open, redirecting to Play Store...</p>
+</body>
+</html>
