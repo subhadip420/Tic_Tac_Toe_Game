@@ -840,7 +840,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = isDark ? const Color(0xFF1F2A44) : const Color(0xFFF5F5F5);
+    //Color bgColor = isDark ? const Color(0xFF1F2A44) : const Color(0xFFF5F5F5);
     Color boardColor = isDark ? const Color(0xFF2B3A5A) : Colors.white;
     Color cellColor = isDark
         ? const Color(0xFF1F2A44)

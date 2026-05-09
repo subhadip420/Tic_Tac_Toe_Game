@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -48,7 +47,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   int countdown = 300; // 5 min
   Timer? timer;
   late double progress = countdown / 300;
-
+  bool isDark = true; // default dark
   String? profileImagePath;
   BuildContext? startDialogContext;
   StreamSubscription? roomListener;
@@ -97,7 +96,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     loadBoardSize();
     loadProfileImage();
     loadUser();
-
+    loadSettings();
     cleanUpDeadRooms();
 
     Future.delayed(Duration.zero, () {
@@ -177,115 +176,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     hasHandledMatchAction = true;
   }
 
-  Future<void> loadBoardSize() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      selectedBoardSize = prefs.getInt("board_size") ?? 3;
-    });
-  }
 
-  Future<void> saveBoardSize(int size) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("board_size", size);
-  }
-
-  Future<void> initSetup() async {
-    await loadActiveRoom(); // 🔥 now allowed
-
-    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-
-    // 🔥 deep link logic AFTER state load
-    if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        String code = widget.initialCode!;
-
-        print("🔥 Deep link join request: $code");
-
-        if (isCodeGenerated && roomCode.isNotEmpty) {
-          print("🔥 SHOWING DIALOG");
-
-          await showCloseRoomBeforeJoinDialog();
-        } else {
-          print("🔥 DIRECT JOIN");
-
-          await handleDeepLinkJoin(code);
-        }
-      });
-    }
-  }
-
-  Future<void> loadActiveRoom() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    bool hasRoom = prefs.getBool("hasActiveRoom") ?? false;
-    String savedCode = prefs.getString("activeRoomCode") ?? "";
-
-    if (hasRoom && savedCode.isNotEmpty) {
-      isCodeGenerated = true;
-      roomCode = savedCode;
-    }
-
-    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-  }
-
-  Future<void> loadUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      currentUserId = prefs.getString("nickname") ?? "Player";
-    });
-    listenPublicRooms();
-  }
-
-  void hideKeyboard() {
-    FocusManager.instance.primaryFocus?.unfocus();
-  }
-
-  void triggerError() async {
-    // 🔥 vibration
-    HapticFeedback.mediumImpact();
-
-    setState(() {
-      isError = true;
-    });
-
-    await shakeController.forward(from: 0);
-
-    // 🔥 reset perfectly
-    shakeController.reset();
-
-    setState(() {
-      isError = false;
-    });
-  }
-
-  void loadProfileImage() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      profileImagePath = prefs.getString("profile_image");
-    });
-  }
-
-  Future<void> handleBackPress() async {
-    if (isExiting) return;
-    isExiting = true;
-
-    try {
-      if (!isCodeGenerated) {
-        //Navigator.pop(context);
-        Navigator.of(context, rootNavigator: true).pop();
-        return;
-      }
-
-      await showCloseRoomBeforeExitDialog();
-    } finally {
-      isExiting = false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    //final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
       canPop: !isCodeGenerated, // 🔥 block back when code active
@@ -298,51 +193,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         extendBodyBehindAppBar: true, // 🔥 IMPORTANT
         resizeToAvoidBottomInset: false,
 
-        // appBar: AppBar(
-        //   centerTitle: true,
-        //   title: const Text(
-        //     "Play Online",
-        //     style: TextStyle(
-        //         color: Colors.blue,
-        //         fontWeight: FontWeight.bold,
-        //         fontSize: 20),
-        //   ),
-        //
-        //   // 🔥 LEFT: 3D BACK BUTTON
-        //   leading: Padding(
-        //     padding: const EdgeInsets.all(8),
-        //     child: GestureDetector(
-        //       onTap: () async {
-        //         await handleBackPress();
-        //       },
-        //       child: build3DIconButton(Icons.arrow_back, isDark),
-        //     ),
-        //   ),
-        //
-        //   // 🔥 RIGHT: PROFILE 3D BUTTON
-        //   actions: [
-        //     Padding(
-        //       padding: const EdgeInsets.only(right: 10),
-        //       child: GestureDetector(
-        //         onTap: () {
-        //           openProfileDialog();
-        //         },
-        //         child: CircleAvatar(
-        //           radius: 18,
-        //           backgroundColor: Colors.blue,
-        //
-        //           child: Text(
-        //             nickname.isNotEmpty ? nickname[0].toUpperCase() : "P",
-        //             style: const TextStyle(
-        //               color: Colors.white,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        backgroundColor: isDark
+            ? const Color(0xFF0F172A) // dark background
+            : const Color(0xFFF3F7FF), // light background
+
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
@@ -454,14 +308,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               20,
               20,
             ),
-            child: build3DCard(isDark),
+            child: build3DCard(),
           ),
         ),
       ),
     );
   }
 
-  Widget build3DCard(bool isDark) {
+  Widget build3DCard() {
     return Column(
       children: [
         // 🔥 EXISTING MAIN CARD
@@ -785,7 +639,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       if (isCreateSelected &&
                           isCodeGenerated &&
                           isPublicRoom) ...[
-                        const SizedBox(height: 10),
+                        //const SizedBox(height: 10),
 
                         /// 🔥 LOTTIE LOADING
                         SizedBox(
@@ -821,8 +675,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                         Text(
                           roomCode,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 34,
+                            color: isDark ? Colors.white : Colors.black54,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 3,
                           ),
@@ -897,7 +752,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                   child: build3DButton(
                     Icons.auto_awesome,
                     "GENERATE CODE",
-                    isDark,
+                    //isDark,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(0),
                       topRight: Radius.circular(0),
@@ -930,7 +785,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         child: build3DButton(
                           Icons.copy,
                           "COPY",
-                          isDark,
+                          //isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -962,7 +817,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         child: build3DButton(
                           Icons.share,
                           "SHARE",
-                          isDark,
+                          //isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -999,7 +854,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         child: build3DButton(
                           Icons.paste,
                           "PASTE",
-                          isDark,
+                          //isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -1044,7 +899,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         child: build3DButton(
                           Icons.play_arrow,
                           "PLAY",
-                          isDark,
+                          //isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -1188,7 +1043,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                   child: build3DButton(
                     Icons.public,
                     "QUICK MATCH",
-                    isDark,
+                    //isDark,
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
@@ -1219,7 +1074,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Widget buildAvailableRoomsCard() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    //final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -1341,7 +1196,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Widget buildRoomItem(Map room) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    //final isDark = Theme.of(context).brightness == Brightness.dark;
     //bool isMyRoom = room["creatorId"] == currentUserId;
 
     int createdAt = room["createdAt"] ?? 0;
@@ -1623,7 +1478,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Widget buildCodeInput() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    //final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Stack(
       alignment: Alignment.center,
@@ -1809,7 +1664,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Widget build3DButton(
     IconData icon,
     String text,
-    bool isDark, {
+    //bool isDark,
+      {
     BorderRadius? borderRadius,
     List<BoxShadow>? boxShadow, // 🔥 new parameter
   }) {
@@ -1881,6 +1737,121 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         ),
       ),
     );
+  }
+
+
+  Future<void> loadBoardSize() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedBoardSize = prefs.getInt("board_size") ?? 3;
+    });
+  }
+
+  Future<void> saveBoardSize(int size) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt("board_size", size);
+  }
+
+  Future<void> initSetup() async {
+    await loadActiveRoom(); // 🔥 now allowed
+
+    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
+
+    // 🔥 deep link logic AFTER state load
+    if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        String code = widget.initialCode!;
+
+        print("🔥 Deep link join request: $code");
+
+        if (isCodeGenerated && roomCode.isNotEmpty) {
+          print("🔥 SHOWING DIALOG");
+
+          await showCloseRoomBeforeJoinDialog();
+        } else {
+          print("🔥 DIRECT JOIN");
+
+          await handleDeepLinkJoin(code);
+        }
+      });
+    }
+  }
+
+  Future<void> loadActiveRoom() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    bool hasRoom = prefs.getBool("hasActiveRoom") ?? false;
+    String savedCode = prefs.getString("activeRoomCode") ?? "";
+
+    if (hasRoom && savedCode.isNotEmpty) {
+      isCodeGenerated = true;
+      roomCode = savedCode;
+    }
+
+    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
+  }
+
+  Future<void> loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      currentUserId = prefs.getString("nickname") ?? "Player";
+    });
+    listenPublicRooms();
+  }
+
+  Future loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      isDark = prefs.getBool("theme_dark") ?? true;
+    });
+  }
+
+  void hideKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void triggerError() async {
+    // 🔥 vibration
+    HapticFeedback.mediumImpact();
+
+    setState(() {
+      isError = true;
+    });
+
+    await shakeController.forward(from: 0);
+
+    // 🔥 reset perfectly
+    shakeController.reset();
+
+    setState(() {
+      isError = false;
+    });
+  }
+
+  void loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      profileImagePath = prefs.getString("profile_image");
+    });
+  }
+
+  Future<void> handleBackPress() async {
+    if (isExiting) return;
+    isExiting = true;
+
+    try {
+      if (!isCodeGenerated) {
+        //Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
+        return;
+      }
+
+      await showCloseRoomBeforeExitDialog();
+    } finally {
+      isExiting = false;
+    }
   }
 
   void listenPublicRooms() {

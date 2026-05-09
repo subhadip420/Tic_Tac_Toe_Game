@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+
+
+
 Future<void> showAppDialog({
   required BuildContext context,
   Function(BuildContext dialogContext)? onDialogCreated,
@@ -18,6 +24,9 @@ Future<void> showAppDialog({
   bool showLoadingOnPositive = false, // 🔥 ADD
 }) async {
   bool isLoading = false;
+  final prefs = await SharedPreferences.getInstance();
+
+  bool isDark = prefs.getBool("theme_dark") ?? true;
 
   await showDialog(
     context: context,
@@ -26,7 +35,7 @@ Future<void> showAppDialog({
 
       onDialogCreated?.call(dialogContext);
 
-      final isDark = Theme.of(context).brightness == Brightness.dark;
+      //final isDark = Theme.of(context).brightness == Brightness.dark;
 
       return StatefulBuilder(
         builder: (context, setState) {

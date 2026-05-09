@@ -25,6 +25,8 @@ void main() async {
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+bool isDark = true;
+
 class TicTacToeApp extends StatelessWidget {
   const TicTacToeApp({super.key});
 
@@ -34,7 +36,13 @@ class TicTacToeApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: "Tic Tac Toe",
-      themeMode: ThemeMode.system,
+
+      //themeMode: ThemeMode.system,
+
+      themeMode: isDark
+          ? ThemeMode.dark
+          : ThemeMode.light,
+
 
       // LIGHT THEME
       theme: ThemeData(
@@ -71,7 +79,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-
+    loadTheme();
     controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -99,12 +107,20 @@ class _HomePageState extends State<HomePage>
     controller.dispose();
     super.dispose();
   }
+  Future<void> loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    if (!mounted) return;
+
+    setState(() {
+      isDark = prefs.getBool("theme_dark") ?? true;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    // final isDark = Theme
+    //     .of(context)
+    //     .brightness == Brightness.dark;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
