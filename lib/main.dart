@@ -14,18 +14,30 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:app_links/app_links.dart';
 
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+//   runApp(const TicTacToeApp());
+// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final prefs = await SharedPreferences.getInstance();
+
+  isDark = prefs.getBool("theme_dark") ?? true;
+
   runApp(const TicTacToeApp());
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-bool isDark = true;
+  bool isDark = true;
 
 class TicTacToeApp extends StatelessWidget {
   const TicTacToeApp({super.key});
@@ -38,11 +50,7 @@ class TicTacToeApp extends StatelessWidget {
       title: "Tic Tac Toe",
 
       //themeMode: ThemeMode.system,
-
-      themeMode: isDark
-          ? ThemeMode.dark
-          : ThemeMode.light,
-
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
       // LIGHT THEME
       theme: ThemeData(
@@ -70,7 +78,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
   late AnimationController controller;
   late Animation<double> animation;
 
@@ -79,24 +86,22 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    loadTheme();
+    //loadTheme();
     controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
 
-    animation = Tween<double>(begin: 0.85, end: 1.1).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    );
+    animation = Tween<double>(
+      begin: 0.85,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
 
     controller.repeat(reverse: true);
-
-
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   checkUser();
     // });
-
 
     _appLinks = AppLinks();
     initDeepLinks();
@@ -107,15 +112,16 @@ class _HomePageState extends State<HomePage>
     controller.dispose();
     super.dispose();
   }
-  Future<void> loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
 
-    if (!mounted) return;
-
-    setState(() {
-      isDark = prefs.getBool("theme_dark") ?? true;
-    });
-  }
+  // Future<void> loadTheme() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //
+  //   if (!mounted) return;
+  //
+  //   setState(() {
+  //     isDark = prefs.getBool("theme_dark") ?? true;
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     // final isDark = Theme
@@ -123,6 +129,10 @@ class _HomePageState extends State<HomePage>
     //     .brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF5F7FB),
+
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -130,16 +140,12 @@ class _HomePageState extends State<HomePage>
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: MediaQuery
-                    .of(context)
-                    .size
-                    .height,
+                minHeight: MediaQuery.of(context).size.height,
               ),
               child: IntrinsicHeight(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     // Animated XO Logo
                     AnimatedBuilder(
                       animation: controller,
@@ -153,7 +159,6 @@ class _HomePageState extends State<HomePage>
                             borderRadius: BorderRadius.circular(24),
                             color: Colors.white.withValues(alpha: 0.08),
                             boxShadow: [
-
                               // BLUE GLOW
                               BoxShadow(
                                 color: Colors.blue.withValues(alpha: 0.7),
@@ -167,7 +172,6 @@ class _HomePageState extends State<HomePage>
                                 blurRadius: glow,
                                 spreadRadius: 1,
                               ),
-
                             ],
                           ),
                           child: const Center(
@@ -211,7 +215,6 @@ class _HomePageState extends State<HomePage>
 
                     // PLAY WITH FRIEND
                     buildButton(
-
                       context,
                       Icons.group,
                       "Play with Friend",
@@ -234,7 +237,6 @@ class _HomePageState extends State<HomePage>
                     //   },
                     //   child: const Text("Test Vibration"),
                     // ),/// vibration test
-
                     const SizedBox(height: 30),
 
                     // HOW TO PLAY
@@ -246,7 +248,6 @@ class _HomePageState extends State<HomePage>
                           MaterialPageRoute(
                             builder: (context) => const HowToPlayPage(),
                           ),
-
                         );
                       },
                       child: Text(
@@ -257,11 +258,8 @@ class _HomePageState extends State<HomePage>
                         ),
                       ),
                     ),
-
                   ],
                 ),
-
-
               ),
             ),
           ),
@@ -270,29 +268,27 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget buildButton(BuildContext context,
-      IconData icon,
-      String title,
-      String subtitle,) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+  Widget buildButton(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
+    // final isDark = Theme
+    //     .of(context)
+    //     .brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
         if (title == "Play Solo") {
           navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (context) => const GameBoardPage(),
-            ),
+            MaterialPageRoute(builder: (context) => const GameBoardPage()),
           );
         }
 
         if (title == "Play with Friend") {
           navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (context) => const TwoPlayerBoardPage(),
-            ),
+            MaterialPageRoute(builder: (context) => const TwoPlayerBoardPage()),
           );
         }
 
@@ -303,96 +299,86 @@ class _HomePageState extends State<HomePage>
             ),
           );
         }
-
       },
 
+      child: Container(
+        padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+
+          /// 🔥 Gradient Border
+          gradient: const LinearGradient(
+            colors: [Colors.blueAccent, Colors.cyanAccent],
+          ),
+
+          /// 🔥 Glow
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blueAccent.withOpacity(0.4),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+
         child: Container(
-          padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+          padding: const EdgeInsets.all(18),
 
           decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
             borderRadius: BorderRadius.circular(18),
 
-            /// 🔥 Gradient Border
-            gradient: const LinearGradient(
-              colors: [
-                Colors.blueAccent,
-                Colors.cyanAccent,
-              ],
-            ),
-
-            /// 🔥 Glow
             boxShadow: [
               BoxShadow(
-                color: Colors.blueAccent.withOpacity(0.4),
-                blurRadius: 10,
-                spreadRadius: 1,
+                color: isDark ? Colors.black45 : Colors.black12,
+                blurRadius: 8,
               ),
             ],
           ),
 
-          child: Container(
-            padding: const EdgeInsets.all(18),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 30,
+                color: isDark ? Colors.cyanAccent : Colors.blue,
+              ),
 
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
-              borderRadius: BorderRadius.circular(18),
+              const SizedBox(width: 15),
 
-              boxShadow: [
-                BoxShadow(
-                  color: isDark ? Colors.black45 : Colors.black12,
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-
-            child: Row(
-              children: [
-
-                Icon(
-                  icon,
-                  size: 30,
-                  color: isDark ? Colors.cyanAccent : Colors.blue,
-                ),
-
-                const SizedBox(width: 15),
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.cyanAccent : Colors.blue,
-                      ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.cyanAccent : Colors.blue,
                     ),
+                  ),
 
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: isDark ? Colors.cyanAccent : Colors.blue,
-                      ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: isDark ? Colors.cyanAccent : Colors.blue,
                     ),
+                  ),
+                ],
+              ),
 
-                  ],
-                ),
-
-                SizedBox(
-                  height: MediaQuery.of(context).viewInsets.bottom,
-                ),
-              ],
-            ),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+            ],
           ),
         ),
+      ),
     );
   }
 
   bool _handledInitialLink = false; // 🔥 global variable
 
   void initDeepLinks() async {
-
     // 🔹 COLD START (App closed)
     try {
       final uri = await _appLinks.getInitialLink();
@@ -403,52 +389,46 @@ class _HomePageState extends State<HomePage>
         _handledInitialLink = true;
         handleIncomingLink(uri);
       }
-
     } catch (e) {
       print("🔥 INITIAL ERROR: $e");
     }
 
     // 🔹 WARM START (App running / background)
-    _appLinks.uriLinkStream.listen((uri) {
+    _appLinks.uriLinkStream.listen(
+      (uri) {
+        print("🔥 STREAM LINK: $uri");
 
-      print("🔥 STREAM LINK: $uri");
-
-      if (uri != null) {
-        handleIncomingLink(uri);
-      }
-
-    }, onError: (err) {
-      print("🔥 LINK ERROR: $err");
-    });
+        if (uri != null) {
+          handleIncomingLink(uri);
+        }
+      },
+      onError: (err) {
+        print("🔥 LINK ERROR: $err");
+      },
+    );
   }
 
   void handleIncomingLink(Uri uri) {
-
     print("🔥 FULL URI: $uri");
     print("🔥 HOST: ${uri.host}");
     print("🔥 PATH: ${uri.path}");
 
     if (uri.host == "join" || uri.path.contains("join")) {
-
       String? code = uri.queryParameters['code'];
 
       if (code != null && code.isNotEmpty) {
-
         print("🔥 Deep link received: $code");
 
         Future.delayed(const Duration(milliseconds: 200), () {
-
           navigatorKey.currentState?.pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (_) => PlayOnlineStartPage(initialCode: code),
               settings: const RouteSettings(name: "/playOnline"),
             ),
-                (route) => false,
+            (route) => false,
           );
-
         });
       }
     }
   }
-
 }
