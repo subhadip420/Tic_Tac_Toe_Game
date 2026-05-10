@@ -109,3 +109,5 @@ flutter:
     - assets/audio/tedau.mp3
     - assets/audio/tick.mp3
     - assets/lottie/sandy_loading.json
+    - assets/lottie/material_wave_loading.json
+    - assets/lottie/loading_animation_blue.json
