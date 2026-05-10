@@ -99,7 +99,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                       icon: Icons.emoji_events,
                       title: "WIN",
                       description:
-                          "Get 3 marks in a row.\nPlayer wins, game ends.",
+                      "Match 3 symbols.\nPlayer wins the game.",
                       graphic: buildWinGraphic(),
                     ),
 
@@ -112,7 +112,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                       icon: Icons.sentiment_dissatisfied,
                       title: "DEFEAT",
                       description:
-                          "Opponent gets 3 in a row.\nPlayer loses, game ends.",
+                      "Opponent matches 3 symbols.\nPlayer loses the game.",
                       graphic: buildDefeatGraphic(),
                     ),
 
@@ -125,7 +125,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                       icon: Icons.handshake,
                       title: "DRAW",
                       description:
-                          "Board fills, no 3 in a row.\nNo winner, game ends.",
+                      "Board fills with no match.\nGame ends in a draw.",
                       graphic: buildDrawGraphic(),
                     ),
 
