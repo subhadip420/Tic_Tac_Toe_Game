@@ -143,40 +143,44 @@ Future<void> showAppDialog({
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   /// 🔥 MESSAGE
+                                  /// 🔥 LOADING + MESSAGE
                                   showContentLoading
-                                      ? Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2.5,
-                                                color: isDark ? Colors.white: Colors.white,
-                                              ),
-                                            ),
+                                      ? Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
 
-                                            const SizedBox(width: 16),
-
-                                            Expanded(
-                                              child: Text(
-                                                message,
-                                                style: TextStyle(
-                                                  color: isDark? Colors.white: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Text(
-                                          message,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: isDark? Colors.white: Colors.white,
-                                            fontSize: 15,
-                                            height: 1.4,
-                                          ),
+                                      SizedBox(
+                                        width: 26,
+                                        height: 26,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: Colors.white,
                                         ),
+                                      ),
+
+                                      const SizedBox(height: 10),
+
+                                      Text(
+                                        message,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+
+                                      : Text(
+                                    message,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      height: 1.4,
+                                    ),
+                                  ),
 
                                   const SizedBox(height: 24),
 
