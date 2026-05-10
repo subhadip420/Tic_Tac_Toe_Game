@@ -116,6 +116,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
   int turnDuration = 30;
   int serverStartTime = 0;
+  bool isReplayResetting = false;
 
   bool isTimeUp = false;
   int lastAlertSecond = -1;
@@ -657,19 +658,40 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       //   }
       // }
 
+
+      ///old
+      // if (data["timerStart"] != null) {
+      //
+      //   int newStart = data["timerStart"];
+      //
+      //   /// 🔥 ONLY UPDATE IF REALLY CHANGED
+      //   if (serverStartTime != newStart) {
+      //
+      //     serverStartTime = newStart;
+      //     turnDuration = data["turnDuration"] ?? 30;
+      //
+      //     lastAlertSecond = -1;
+      //
+      //     syncTimer(); // 🔥 only once per turn
+      //   }
+      // }
+
+
+      ///new
       if (data["timerStart"] != null) {
 
         int newStart = data["timerStart"];
 
-        /// 🔥 ONLY UPDATE IF REALLY CHANGED
-        if (serverStartTime != newStart) {
+        turnDuration = data["turnDuration"] ?? 30;
+
+        /// 🔥 ALWAYS UPDATE ON REPLAY
+        if (serverStartTime != newStart || timerController.value >= 1.0) {
 
           serverStartTime = newStart;
-          turnDuration = data["turnDuration"] ?? 30;
 
           lastAlertSecond = -1;
 
-          syncTimer(); // 🔥 only once per turn
+          syncTimer();
         }
       }
 
@@ -2328,57 +2350,138 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
+
+  ///old restart game
+  // Future<void> restartGame() async {
+  //
+  //   if (isReplayResetting) return;
+  //
+  //   isReplayResetting = true;
+  //
+  //   String nextStart = Random().nextBool() ? "X" : "O";
+  //
+  //   /// 🔥 STOP OLD TIMER + SOUND (ADD)
+  //   timerController.stop();
+  //   timerController.reset();
+  //   clockSoundPlayer.stop();
+  //   lastAlertSecond = -1;
+  //
+  //   // 🔥 FIREBASE RESET
+  //   await roomRef.update({
+  //     "board": List.filled(boardSize * boardSize, ""),
+  //     "winner": "",
+  //     "winningLine": [],
+  //     "currentTurn": nextStart,
+  //     "lastMove": -1,
+  //
+  //     /// 🔥 ADD TIMER RESET (IMPORTANT)
+  //     "timerStart": ServerValue.timestamp,
+  //     "turnDuration": 30,
+  //   });
+  //
+  //   await Future.delayed(const Duration(milliseconds: 200));
+  //
+  //   await roomRef.child("rematch").set({
+  //     "requestedBy": "",
+  //     "status": ""
+  //   });
+  //
+  //   // 🔥 LOCAL UI RESET (VERY IMPORTANT)
+  //   if (mounted) {
+  //     setState(() {
+  //       winningLine = null;
+  //       gameMessage = "";
+  //       lastMove = -1;
+  //       hasShownResult = false;
+  //
+  //       /// 🔥 ADD THIS
+  //       gameOver = false;
+  //       isTimeUp = false;
+  //     });
+  //   }
+  //
+  //   // 🔥 STOP EFFECTS
+  //   confettiController.stop();
+  //   lineController.reset();
+  //
+  //   isRestarting = false;
+  // }
+
+  ///new restart game
   Future<void> restartGame() async {
+
+    if (isReplayResetting) return;
+
+    isReplayResetting = true;
 
     String nextStart = Random().nextBool() ? "X" : "O";
 
-    /// 🔥 STOP OLD TIMER + SOUND (ADD)
+    /// 🔥 HARD RESET TIMER
     timerController.stop();
     timerController.reset();
+
     clockSoundPlayer.stop();
+
     lastAlertSecond = -1;
 
-    // 🔥 FIREBASE RESET
-    await roomRef.update({
-      "board": List.filled(boardSize * boardSize, ""),
-      "winner": "",
-      "winningLine": [],
-      "currentTurn": nextStart,
-      "lastMove": -1,
+    serverStartTime = 0;
 
-      /// 🔥 ADD TIMER RESET (IMPORTANT)
-      "timerStart": ServerValue.timestamp,
-      "turnDuration": 30,
-    });
-
-    await Future.delayed(const Duration(milliseconds: 200));
-
-    await roomRef.child("rematch").set({
-      "requestedBy": "",
-      "status": ""
-    });
-
-    // 🔥 LOCAL UI RESET (VERY IMPORTANT)
+    /// 🔥 LOCAL RESET
     if (mounted) {
       setState(() {
+
         winningLine = null;
+
         gameMessage = "";
+
         lastMove = -1;
+
         hasShownResult = false;
 
-        /// 🔥 ADD THIS
         gameOver = false;
+
         isTimeUp = false;
       });
     }
 
-    // 🔥 STOP EFFECTS
+    /// 🔥 FIREBASE RESET
+    await roomRef.update({
+
+      "board": List.filled(boardSize * boardSize, ""),
+
+      "winner": "",
+
+      "winningLine": [],
+
+      "currentTurn": nextStart,
+
+      "lastMove": -1,
+
+      /// 🔥 IMPORTANT
+      "timerStart": ServerValue.timestamp,
+
+      "turnDuration": 30,
+    });
+
+    await Future.delayed(
+      const Duration(milliseconds: 300),
+    );
+
+    await roomRef.child("rematch").set({
+
+      "requestedBy": "",
+
+      "status": ""
+    });
+
     confettiController.stop();
+
     lineController.reset();
 
     isRestarting = false;
-  }
 
+    isReplayResetting = false;
+  }
 
   ///old showInternetDialog()
   // void showInternetDialog() {
