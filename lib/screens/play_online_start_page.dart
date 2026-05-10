@@ -677,7 +677,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           roomCode,
                           style: TextStyle(
                             fontSize: 34,
-                            color: isDark ? Colors.white : Colors.black54,
+                            color: isDark ? Colors.white : Colors.black,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 3,
                           ),
