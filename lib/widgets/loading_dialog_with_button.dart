@@ -85,12 +85,12 @@ Future<void> showAppDialog({
 
                                   colors: isDark
                                       ? [
-                                    Colors.white.withOpacity(0.14),
-                                    Colors.white.withOpacity(0.05),
+                                    Colors.white.withValues(alpha:0.14),
+                                    Colors.white.withValues(alpha:0.05),
                                   ]
                                       : [
-                                    Colors.white.withOpacity(0.35),
-                                    Colors.white.withOpacity(0.12),
+                                    Colors.white.withValues(alpha:0.35),
+                                    Colors.white.withValues(alpha:0.12),
                                   ],
                                 ),
 
@@ -103,7 +103,7 @@ Future<void> showAppDialog({
                                 // ),
 
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(
+                                  color: Colors.white.withValues(alpha:
                                     isDark ? 0.18 : 0.35,
                                   ),
                                   width: 1.5,
@@ -120,7 +120,7 @@ Future<void> showAppDialog({
                                 boxShadow: [
 
                                   BoxShadow(
-                                    color: Colors.cyanAccent.withOpacity(
+                                    color: Colors.cyanAccent.withValues(alpha:
                                       isDark ? 0.10 : 0.06,
                                     ),
                                     blurRadius: 24,
@@ -128,7 +128,7 @@ Future<void> showAppDialog({
                                   ),
 
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(
+                                    color: Colors.black.withValues(alpha:
                                       isDark ? 0.25 : 0.08,
                                     ),
                                     offset: const Offset(0, 8),
@@ -356,8 +356,8 @@ Future<void> showAppDialog({
                             borderRadius: BorderRadius.circular(20),
 
                             border: Border.all(
-                              color: isDark ? Colors.white.withOpacity(0.5)
-                                            : Colors.blue.withOpacity(0.5),
+                              color: isDark ? Colors.white.withValues(alpha:0.5)
+                                            : Colors.blue.withValues(alpha:0.5),
                               width: 2,
                             ),
 
@@ -376,8 +376,8 @@ Future<void> showAppDialog({
 
                             boxShadow: [
                               BoxShadow(
-                                color: isDark ? Colors.white.withOpacity(0.5)
-                                              : Colors.blue.withOpacity(0.4),
+                                color: isDark ? Colors.white.withValues(alpha:0.5)
+                                              : Colors.blue.withValues(alpha:0.4),
                                 blurRadius: 6,
                               ),
                             ],
@@ -476,7 +476,7 @@ Widget buildGamingButton({
       /// 🔥 SHADOW
       boxShadow: [
         BoxShadow(
-          color: backgroundColor.withOpacity(0.35),
+          color: backgroundColor.withValues(alpha:0.35),
           blurRadius: 10,
         ),
       ],

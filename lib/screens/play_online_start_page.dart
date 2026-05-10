@@ -223,8 +223,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               child: Container(
                 decoration: BoxDecoration(
                   color: isDark
-                      ? Colors.black.withOpacity(0.2)
-                      : Colors.white.withOpacity(0.2),
+                      ? Colors.black.withValues(alpha:0.2)
+                      : Colors.white.withValues(alpha:0.2),
 
                   /// 🔥 optional bottom border glow
                   // border: Border(
@@ -331,14 +331,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             boxShadow: [
               // 🔥 Light shadow (top-left)
               BoxShadow(
-                color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
+                color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.9),
                 offset: const Offset(-6, -6),
                 blurRadius: 12,
               ),
 
               // 🔥 Dark shadow (bottom-right)
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+                color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
                 offset: const Offset(6, 6),
                 blurRadius: 12,
               ),
@@ -375,7 +375,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                             boxShadow: isCreateSelected
                                 ? [
                                     BoxShadow(
-                                      color: Colors.blue.withOpacity(0.2),
+                                      color: Colors.blue.withValues(alpha:0.2),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),
@@ -418,7 +418,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                             boxShadow: !isCreateSelected
                                 ? [
                                     BoxShadow(
-                                      color: Colors.blue.withOpacity(0.2),
+                                      color: Colors.blue.withValues(alpha:0.2),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),
@@ -460,7 +460,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     /// 🔥 Outer Glow
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blueAccent.withOpacity(0.4),
+                        color: Colors.blueAccent.withValues(alpha:0.4),
                         blurRadius: 12,
                         spreadRadius: 1,
                       ),
@@ -479,7 +479,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       /// 🔹 Inner Shadow (depth feel)
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.6 : 0.1),
+                          color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.1),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -596,7 +596,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     /// 🔥 Glow Effect (NEW)
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.cyanAccent.withOpacity(
+                        color: Colors.cyanAccent.withValues(alpha:
                           isDark ? 0.4 : 0.3,
                         ),
                         blurRadius: 5,
@@ -605,7 +605,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                       /// 🔹 keep your original shadow feel
                       BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
                         offset: const Offset(4, 4),
                         blurRadius: 8,
                       ),
@@ -761,7 +761,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
                         offset: const Offset(3, 3),
                         blurRadius: 6,
                       ),
@@ -794,7 +794,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(
+                              color: Colors.black.withValues(alpha:
                                 isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
@@ -826,7 +826,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(
+                              color: Colors.black.withValues(alpha:
                                 isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
@@ -863,7 +863,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(
+                              color: Colors.black.withValues(alpha:
                                 isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
@@ -908,7 +908,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(
+                              color: Colors.black.withValues(alpha:
                                 isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
@@ -1047,12 +1047,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
+                        color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
                         offset: const Offset(-4, 0),
                         blurRadius: 8,
                       ),
                       BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
                         offset: const Offset(4, 4),
                         blurRadius: 10,
                       ),
@@ -1089,7 +1089,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
             blurRadius: 10,
           ),
         ],
@@ -1117,13 +1117,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 boxShadow: [
                   BoxShadow(
                     color: isDark
-                        ? Colors.blue.withOpacity(0.4)
-                        : Colors.blue.withOpacity(0.2),
+                        ? Colors.blue.withValues(alpha:0.4)
+                        : Colors.blue.withValues(alpha:0.2),
                     blurRadius: 2,
                     spreadRadius: 0,
                   ),
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.6 : 0.15),
+                    color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.15),
                     offset: const Offset(0, 0),
                     blurRadius: 2,
                   ),
@@ -1236,7 +1236,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         /// 🔥 glow
         boxShadow: [
           BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.4),
+            color: Colors.blueAccent.withValues(alpha:0.4),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -1262,12 +1262,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           boxShadow: [
             BoxShadow(
               color: isDark
-                  ? Colors.blue.withOpacity(0.3)
-                  : Colors.blue.withOpacity(0.2),
+                  ? Colors.blue.withValues(alpha:0.3)
+                  : Colors.blue.withValues(alpha:0.2),
               blurRadius: 1,
             ),
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.6 : 0.15),
+              color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.15),
               offset: const Offset(3, 3),
               blurRadius: 6,
             ),
@@ -1349,7 +1349,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withValues(alpha:0.3),
                     ),
                     child: Text(
                       "YOUR ROOM",
@@ -1416,7 +1416,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.blueAccent.withOpacity(0.4),
+                                color: Colors.blueAccent.withValues(alpha:0.4),
                                 blurRadius: 10,
                                 spreadRadius: 1,
                               ),
@@ -1488,7 +1488,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           controller: hiddenController,
           focusNode: hiddenFocus,
           maxLength: 6,
-          keyboardType: TextInputType.visiblePassword,
+          keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.characters,
 
           style: const TextStyle(
@@ -1628,7 +1628,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
           boxShadow: [
             BoxShadow(
-              color: Colors.blueAccent.withOpacity(0.4),
+              color: Colors.blueAccent.withValues(alpha:0.4),
               blurRadius: 10,
               spreadRadius: 1,
             ),
@@ -1688,7 +1688,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         /// 🔥 Outer glow
         boxShadow: [
           BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.5),
+            color: Colors.blueAccent.withValues(alpha: 0.5),
             blurRadius: 5,
             spreadRadius: 1,
           ),
@@ -2017,6 +2017,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Future<void> generateCode() async {
+    LoadingDialog.show(context, message: "Creating room...");
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     Random random = Random();
 
@@ -2041,7 +2042,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     print("🔥 Creating room...");
 
     await createPrivateRoomInFirebase(newCode); // 🔥 FIX
-
+    LoadingDialog.hide(context);
     print("✅ Done");
   }
 
@@ -2757,12 +2758,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                                     colors: isDark
                                         ? [
-                                      Colors.white.withOpacity(0.14),
-                                      Colors.white.withOpacity(0.05),
+                                      Colors.white.withValues(alpha:0.14),
+                                      Colors.white.withValues(alpha:0.05),
                                     ]
                                         : [
-                                      Colors.white.withOpacity(0.35),
-                                      Colors.white.withOpacity(0.12),
+                                      Colors.white.withValues(alpha:0.35),
+                                      Colors.white.withValues(alpha:0.12),
                                     ],
                                   ),
 
@@ -2770,7 +2771,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                                   /// 🔥 BORDER
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(
+                                    color: Colors.white.withValues(alpha:
                                       isDark ? 0.18 : 0.35,
                                     ),
                                     width: 1.5,
@@ -2779,7 +2780,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                   /// 🔥 SHADOW
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.cyanAccent.withOpacity(
+                                      color: Colors.cyanAccent.withValues(alpha:
                                         isDark ? 0.10 : 0.06,
                                       ),
                                       blurRadius: 24,
@@ -2787,7 +2788,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                     ),
 
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(
+                                      color: Colors.black.withValues(alpha:
                                         isDark ? 0.25 : 0.08,
                                       ),
                                       offset: const Offset(0, 8),
@@ -2821,13 +2822,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         ),
 
                                         border: Border.all(
-                                          color: Colors.white.withOpacity(0.5),
+                                          color: Colors.white.withValues(alpha:0.5),
                                           width: 2,
                                         ),
 
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.cyanAccent.withOpacity(0.35),
+                                            color: Colors.cyanAccent.withValues(alpha:0.35),
                                             blurRadius: 18,
                                           ),
                                         ],
@@ -2856,13 +2857,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         borderRadius: BorderRadius.circular(18),
 
                                         color: isDark
-                                            ? Colors.white.withOpacity(0.05)
-                                            : Colors.white.withOpacity(0.7),
+                                            ? Colors.white.withValues(alpha:0.05)
+                                            : Colors.white.withValues(alpha:0.7),
 
                                         border: Border.all(
                                           color: isDark
-                                              ? Colors.white.withOpacity(0.15)
-                                              : Colors.blue.withOpacity(0.2),
+                                              ? Colors.white.withValues(alpha:0.15)
+                                              : Colors.blue.withValues(alpha:0.2),
                                         ),
                                       ),
 
@@ -2997,8 +2998,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                               border: Border.all(
                                 color: isDark
-                                    ? Colors.white.withOpacity(0.5)
-                                    : Colors.blue.withOpacity(0.5),
+                                    ? Colors.white.withValues(alpha:0.5)
+                                    : Colors.blue.withValues(alpha:0.5),
                                 width: 2,
                               ),
 
@@ -3017,8 +3018,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                               boxShadow: [
                                 BoxShadow(
                                   color: isDark
-                                      ? Colors.white.withOpacity(0.5)
-                                      : Colors.blue.withOpacity(0.4),
+                                      ? Colors.white.withValues(alpha:0.5)
+                                      : Colors.blue.withValues(alpha:0.4),
                                   blurRadius: 6,
                                 ),
                               ],
@@ -4289,7 +4290,7 @@ class GlowThumb extends SliderComponentShape {
 
     /// 🔥 Glow effect
     final Paint glowPaint = Paint()
-      ..color = Colors.blueAccent.withOpacity(0.4)
+      ..color = Colors.blueAccent.withValues(alpha:0.4)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
     canvas.drawCircle(center, 14, glowPaint);
@@ -4334,7 +4335,7 @@ class GradientTrackShape extends RoundedRectSliderTrackShape {
 
     /// 🔹 Inactive Paint
     final Paint inactivePaint = Paint()
-      ..color = Colors.blueAccent.withOpacity(0.2);
+      ..color = Colors.blueAccent.withValues(alpha:0.2);
 
     /// 🔹 Active track (left)
     final Rect leftTrack = Rect.fromLTRB(
@@ -4382,7 +4383,7 @@ class BorderProgressPainter extends CustomPainter {
     /// 🔥 BACKGROUND BORDER (FULL)
     final bgPaint = Paint()
       ..color = color
-          .withOpacity(0.3) // 🔥 light shade
+          .withValues(alpha:0.3) // 🔥 light shade
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 

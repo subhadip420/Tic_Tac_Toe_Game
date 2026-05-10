@@ -163,7 +163,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.12),
+                            color: Colors.black.withValues(alpha:0.12),
                             blurRadius: 8,
                             offset: const Offset(2, 4),
                           ),
@@ -187,8 +187,8 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                           TableRow(
                             decoration: BoxDecoration(
                               color: isDark
-                                  ? Colors.blue.withOpacity(0.2)
-                                  : Colors.blue.withOpacity(0.1),
+                                  ? Colors.blue.withValues(alpha:0.2)
+                                  : Colors.blue.withValues(alpha:0.1),
                             ),
 
                             children: [
@@ -296,7 +296,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha:0.15),
             blurRadius: 8,
             offset: const Offset(2, 4),
           ),

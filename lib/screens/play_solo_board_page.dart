@@ -158,19 +158,19 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                         colors: isDark
                             ? [
-                          Colors.white.withOpacity(0.14),
-                          Colors.white.withOpacity(0.05),
+                          Colors.white.withValues(alpha:0.14),
+                          Colors.white.withValues(alpha:0.05),
                         ]
                             : [
-                          Colors.white.withOpacity(0.35),
-                          Colors.white.withOpacity(0.12),
+                          Colors.white.withValues(alpha:0.35),
+                          Colors.white.withValues(alpha:0.12),
                         ],
                       ),
 
                       borderRadius: BorderRadius.circular(28),
 
                       border: Border.all(
-                        color: Colors.white.withOpacity(
+                        color: Colors.white.withValues(alpha:
                           isDark ? 0.18 : 0.35,
                         ),
                         width: 1.5,
@@ -178,7 +178,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.transparent.withOpacity(
+                          color: Colors.transparent.withValues(alpha:
                             isDark ? 0.10 : 0.06,
                           ),
                           blurRadius: 24,
@@ -186,7 +186,7 @@ class _GameBoardPageState extends State<GameBoardPage>
                         ),
 
                         BoxShadow(
-                          color: Colors.black.withOpacity(
+                          color: Colors.black.withValues(alpha:
                             isDark ? 0.25 : 0.08,
                           ),
                           offset: const Offset(0, 8),
@@ -1063,7 +1063,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.4),
+                    color: Colors.blueAccent.withValues(alpha:0.4),
                     blurRadius: 8,
                     spreadRadius: 1,
                   ),
@@ -2064,7 +2064,7 @@ Widget build3DIconButton(IconData icon, bool isDark) {
       /// 🔥 Glow
       boxShadow: [
         BoxShadow(
-          color: Colors.blueAccent.withOpacity(0.4),
+          color: Colors.blueAccent.withValues(alpha:0.4),
           blurRadius: 10,
           spreadRadius: 1,
         ),
@@ -2079,12 +2079,12 @@ Widget build3DIconButton(IconData icon, bool isDark) {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
+            color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
             offset: const Offset(-3, -3),
             blurRadius: 6,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
             offset: const Offset(3, 3),
             blurRadius: 6,
           ),

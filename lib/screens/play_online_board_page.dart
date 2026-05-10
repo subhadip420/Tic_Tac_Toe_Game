@@ -1526,7 +1526,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.blueAccent.withOpacity(0.5),
+                              color: Colors.blueAccent.withValues(alpha:0.5),
                               blurRadius: 20,
                             ),
                             const BoxShadow(
@@ -3203,7 +3203,7 @@ Widget build3DIconButton(IconData icon, bool isDark) {
       /// 🔥 Glow
       boxShadow: [
         BoxShadow(
-          color: Colors.blueAccent.withOpacity(0.4),
+          color: Colors.blueAccent.withValues(alpha:0.4),
           blurRadius: 10,
           spreadRadius: 1,
         ),
@@ -3218,12 +3218,12 @@ Widget build3DIconButton(IconData icon, bool isDark) {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
+            color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
             offset: const Offset(-3, -3),
             blurRadius: 6,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
             offset: const Offset(3, 3),
             blurRadius: 6,
           ),
