@@ -739,18 +739,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           player2Symbol = p2["symbol"] ?? "";
         }
 
-        // if (!disconnectSetupDone && mySymbol.isNotEmpty) {
-        //   disconnectSetupDone = true;
-        //
-        //   String playerKey = mySymbol == player1Symbol ? "player1" : "player2";
-        //
-        //   roomRef.child("exitStatus/$playerKey").set("online");
-        //
-        //   roomRef.child("exitStatus/$playerKey").onDisconnect().set("disconnected");
-        //
-        //   //roomRef.child("exitStatus/$playerKey").onDisconnect().set(true);
-        //   //roomRef.child("players/$playerKey").onDisconnect().remove();
-        // }
 
         if (!disconnectSetupDone && mySymbol.isNotEmpty) {
           disconnectSetupDone = true;
@@ -1107,13 +1095,39 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           ),
 
           title: GestureDetector(
-            child: Text(
-              "Online Match", // changed
-              style: TextStyle(
-                color: isDark ? Colors.cyanAccent : Colors.blue,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+
+                Text(
+                  "Online Match",
+
+                  style: TextStyle(
+                    color: isDark
+                        ? Colors.cyanAccent
+                        : Colors.blue,
+
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 2),
+
+                Text(
+                  "Board Size : ${boardSize} x $boardSize",
+
+                  style: TextStyle(
+                    color: isDark
+                        ? Colors.white70
+                        : Colors.black87,
+
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -1298,7 +1312,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                       ],
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 10),
 
                     if (!gameOver)
                       AnimatedBuilder(
@@ -1307,10 +1321,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           int timeLeft = getTimeLeft();
 
                           return Text(
-                            "Time: $timeLeft",
+                            "Time: $timeLeft s ",
                             style: TextStyle(
                               color: timeLeft <= 5 ? Colors.red : textColor,
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                           );
@@ -1322,14 +1336,16 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                       const Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
-                          "TIME'S UP ⏳",
+                          "TIME'S UP",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.red,
                           ),
                         ),
                       ),
+
+                    const SizedBox(height: 10),
 
                     // 🔥 Turn Text (dummy for now)
                     if (gameMessage == "")
@@ -1341,6 +1357,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
+                    const SizedBox(height: 20),
 
                     if (gameMessage != "")
                       TweenAnimationBuilder(
@@ -1651,7 +1669,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       ),
     );
   }
-
 
 
   Future<void> handleReplayRequest() async {
