@@ -3212,7 +3212,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       if (hasHandledMatchAction) return;
 
       /// 🔥 USER CANCELLED
-      if (hasCancelled) return;
+      //if (hasCancelled) return;
 
       /// 🔥 ROOM DELETED
       if (!event.snapshot.exists) {
@@ -3232,6 +3232,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             opponentJoined = true;
           });
 
+          hasHandledMatchAction = false;
+          startDialogContext = null;
+
           showStartMatchDialog(code);
         }
       }
@@ -3239,7 +3242,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       /// ❌ OPPONENT CANCELLED
       if (data["cancelledBy"] == "player2") {
 
-        hasHandledMatchAction = true;
+        //hasHandledMatchAction = true;
 
         /// 🔥 CLOSE ONLY DIALOG
         if (startDialogContext != null) {
@@ -3449,6 +3452,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   // }
 
   Future<void> smartJoinRoom(String code) async {
+    hasCancelled = false;
+
     if (code.isEmpty) {
       showToast("Invalid room!");
       return;
@@ -3794,7 +3799,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   // }
 
 
-  //old
+  ///old
   // void showWaitingDialog(String code) {
   //   showDialog(
   //     context: context,
@@ -3880,6 +3885,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             "cancelledBy": "player2",
           });
 
+          /// 🔥 IMPORTANT
+          hasCancelled = true;
+
+          /// 🔥 STOP OLD LISTENER
+          await roomListener?.cancel();
+          roomListener = null;
+
         } catch (e) {
 
           print("Cancel error: $e");
@@ -3892,7 +3904,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
 
 
-  //old dialog
+  ///old dialog
   // void showStartMatchDialog(String code) {
   //   showDialog(
   //     context: context,
