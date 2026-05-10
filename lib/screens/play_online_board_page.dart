@@ -646,6 +646,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       final data = Map<String, dynamic>.from(event.snapshot.value as Map);
 
+      bool firebaseTimeUp = data["timeUp"] ?? false;
+
       // if (data["timerStart"] != null) {
       //   int newStart = data["timerStart"];
       //
@@ -713,6 +715,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       }
 
       setState(() {
+        isTimeUp = firebaseTimeUp;
         winner = data["winner"] ?? "";
         boardSize = data["boardSize"] ?? 3;
         board = List<String>.from(data["board"]);
@@ -1047,6 +1050,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       "currentTurn": "",
       "score/player1": p1Score,
       "score/player2": p2Score,
+
+      /// 🔥 ADD THIS
+      "timeUp": true,
     });
   }
 
@@ -1354,7 +1360,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                       ),
 
 
-                    if (gameOver && isTimeUp)
+                    if (isTimeUp)
                       const Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
@@ -2461,6 +2467,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       "timerStart": ServerValue.timestamp,
 
       "turnDuration": 30,
+
+      /// 🔥 ADD
+      "timeUp": false,
     });
 
     await Future.delayed(
