@@ -37,7 +37,7 @@ void main() async {
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  bool isDark = true;
+bool isDark = true;
 
 class TicTacToeApp extends StatelessWidget {
   const TicTacToeApp({super.key});

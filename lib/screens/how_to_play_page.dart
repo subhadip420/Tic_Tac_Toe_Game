@@ -1,77 +1,221 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HowToPlayPage extends StatelessWidget {
+bool isDark = true;
+
+class HowToPlayPage extends StatefulWidget {
   const HowToPlayPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<HowToPlayPage> createState() => _HowToPlayPageState();
+}
 
+class _HowToPlayPageState extends State<HowToPlayPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    loadTheme();
+  }
+
+  Future<void> loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      isDark = prefs.getBool("theme_dark") ?? true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1F2A44),
+      // backgroundColor: const Color(0xFF1F2A44),
+      backgroundColor: isDark
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF5F7FB),
+
       appBar: AppBar(
+        /// 🔥 FIX STATUS BAR ICON COLOR
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, // transparent status bar
+          statusBarIconBrightness: isDark
+              ? Brightness.light
+              : Brightness.dark, // Android
+          statusBarBrightness: isDark
+              ? Brightness.dark
+              : Brightness.light, // iOS
+        ),
+
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      /// 🔥 SCROLLABLE BODY
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
 
-            const SizedBox(height: 10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
-            const Text(
-              "Game Rules",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 0),
+
+                    Text(
+                      "Game Rules",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.blue,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Container(
+                      width: 145,
+                      height: 2,
+                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    ruleItem(
+                      icon: Icons.emoji_events,
+                      title: "WIN",
+                      description:
+                          "Get 3 marks in a row.\nPlayer wins, game ends.",
+                      graphic: buildWinGraphic(),
+                    ),
+
+                    Divider(
+                      color: isDark ? Colors.white24 : Colors.blue,
+                      height: 40,
+                    ),
+
+                    ruleItem(
+                      icon: Icons.sentiment_dissatisfied,
+                      title: "DEFEAT",
+                      description:
+                          "Opponent gets 3 in a row.\nPlayer loses, game ends.",
+                      graphic: buildDefeatGraphic(),
+                    ),
+
+                    Divider(
+                      color: isDark ? Colors.white24 : Colors.blue,
+                      height: 40,
+                    ),
+
+                    ruleItem(
+                      icon: Icons.handshake,
+                      title: "DRAW",
+                      description:
+                          "Board fills, no 3 in a row.\nNo winner, game ends.",
+                      graphic: buildDrawGraphic(),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    Text(
+                      "Win Conditions",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.blue,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Container(
+                      width: 170,
+                      height: 2,
+                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// 🔥 TABLE
+                    Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+
+                        borderRadius: BorderRadius.circular(6),
+
+                        border: Border.all(
+                          color: isDark ? Colors.white24 : Colors.black12,
+                        ),
+
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.12),
+                            blurRadius: 8,
+                            offset: const Offset(2, 4),
+                          ),
+                        ],
+                      ),
+
+                      child: Table(
+                        border: TableBorder.symmetric(
+                          inside: BorderSide(
+                            color: isDark ? Colors.white24 : Colors.black12,
+                          ),
+                        ),
+
+                        columnWidths: const {
+                          0: FlexColumnWidth(1.2),
+                          1: FlexColumnWidth(1.8),
+                        },
+
+                        children: [
+                          /// 🔥 HEADER
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.blue.withOpacity(0.2)
+                                  : Colors.blue.withOpacity(0.1),
+                            ),
+
+                            children: [
+                              tableCell("Board Size", isHeader: true),
+
+                              tableCell("Win Condition", isHeader: true),
+                            ],
+                          ),
+
+                          /// 🔥 ROWS
+                          buildTableRow("3x3", "Connect 3 symbols"),
+                          buildTableRow("4x4", "Connect 4 symbols"),
+                          buildTableRow("5x5", "Connect 4 symbols"),
+                          buildTableRow("6x6", "Connect 4 symbols"),
+                          buildTableRow("7x7", "Connect 5 symbols"),
+                          buildTableRow("8x8", "Connect 5 symbols"),
+                          buildTableRow("9x9", "Connect 5 symbols"),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
-            ),
-
-            const SizedBox(height: 8),
-
-            Container(
-              width: 140,
-              height: 3,
-              color: Colors.blueAccent,
-            ),
-
-
-
-            const SizedBox(height: 40),
-
-            ruleItem(
-              icon: Icons.emoji_events,
-              title: "WIN",
-              description: "Get 3 marks in a row.\nPlayer wins, game ends.",
-              graphic: buildWinGraphic(),
-            ),
-
-            const Divider(color: Colors.white24, height: 40),
-
-            ruleItem(
-              icon: Icons.sentiment_dissatisfied,
-              title: "DEFEAT",
-              description: "Opponent gets 3 in a row.\nPlayer loses, game ends.",
-              graphic: buildDefeatGraphic(),
-            ),
-
-            const Divider(color: Colors.white24, height: 40),
-
-            ruleItem(
-              icon: Icons.handshake,
-              title: "DRAW",
-              description: "Board fills, no 3 in a row.\nNo winner, game ends.",
-              graphic: buildDrawGraphic(),
-            ),
-
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -86,8 +230,7 @@ class HowToPlayPage extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        Icon(icon, color: Colors.amber, size: 28),
+        Icon(icon, color: isDark ? Colors.amber : Colors.blueAccent, size: 28),
 
         const SizedBox(width: 14),
 
@@ -95,13 +238,12 @@ class HowToPlayPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: isDark ? Colors.white : Colors.blue,
                 ),
               ),
 
@@ -109,8 +251,8 @@ class HowToPlayPage extends StatelessWidget {
 
               Text(
                 description,
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.blue,
                   fontSize: 14,
                 ),
               ),
@@ -120,64 +262,121 @@ class HowToPlayPage extends StatelessWidget {
 
         const SizedBox(width: 10),
 
-        graphic
+        graphic,
       ],
     );
   }
 
   // WIN Graphic
+  // WIN Graphic
   Widget buildWinGraphic() {
-    return miniBoard([
-      "O","O","O",
-      "","X","",
-      "X","",""
-    ]);
+    return miniBoard(["O", "O", "O", "", "X", "", "X", "", ""]);
   }
 
   // DEFEAT Graphic
   Widget buildDefeatGraphic() {
-    return miniBoard([
-      "X","","O",
-      "X","O","",
-      "X","",""
-    ]);
+    return miniBoard(["X", "", "O", "X", "O", "", "X", "", ""]);
   }
 
   // DRAW Graphic
   Widget buildDrawGraphic() {
-    return miniBoard([
-      "X","O","X",
-      "O","X","O",
-      "O","X","O"
-    ]);
+    return miniBoard(["X", "O", "X", "O", "X", "O", "O", "X", "O"]);
   }
 
   Widget miniBoard(List<String> values) {
-    return SizedBox(
-      width: 70,
-      height: 70,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 9,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-        ),
-        itemBuilder: (context, index) {
-          return Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white24),
-            ),
-            child: Text(
-              values[index],
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+    return Container(
+      padding: const EdgeInsets.all(6),
+
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+
+        borderRadius: BorderRadius.circular(6),
+
+        border: Border.all(color: isDark ? Colors.white24 : Colors.black12),
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 8,
+            offset: const Offset(2, 4),
+          ),
+        ],
+      ),
+
+      child: SizedBox(
+        width: 70,
+        height: 70,
+
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 9,
+
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+
+          itemBuilder: (context, index) {
+            String value = values[index];
+
+            Color textColor;
+
+            if (value == "X") {
+              textColor = Colors.blueAccent;
+            } else if (value == "O") {
+              textColor = Colors.orangeAccent;
+            } else {
+              textColor = Colors.transparent;
+            }
+
+            return Container(
+              alignment: Alignment.center,
+
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isDark ? Colors.white24 : Colors.black45,
+                ),
               ),
-            ),
-          );
-        },
+
+              child: Text(
+                value,
+
+                style: TextStyle(
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  TableRow buildTableRow(String board, String condition) {
+    return TableRow(children: [tableCell(board), tableCell(condition)]);
+  }
+
+  Widget tableCell(String text, {bool isHeader = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+
+        style: TextStyle(
+          fontSize: isHeader ? 16 : 14,
+
+          fontWeight: isHeader ? FontWeight.bold : FontWeight.w500,
+
+          color: isHeader
+              ? (isDark ? Colors.cyanAccent : Colors.blue)
+              : (isDark ? Colors.white : Colors.black87),
+        ),
       ),
     );
   }
 }
+
+///end main class
