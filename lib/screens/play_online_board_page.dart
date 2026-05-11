@@ -586,397 +586,1033 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
-  void listenToGame() async {
-    String winner = "";
+  // void listenToGame() async {
+  //   String winner = "";
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String userId = prefs.getString("nickname") ?? "";
+  //
+  //   roomRef.onValue.listen((event) {
+  //     // ১. রুম ডিলিট হলে (Normal বা Zombie)
+  //     if (!event.snapshot.exists) {
+  //       isRoomActive = false;
+  //       heartbeatTimer?.cancel();
+  //
+  //       // 💥 THE FIX: নতুন কোনো ডায়ালগের দরকার নেই, তোমার পুরোনো opponentExitDialogShown ফ্লাগ ব্যবহার করছি
+  //       if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
+  //         opponentExitDialogShown = true; // লক করে দিলাম, ডায়ালগ একবারই আসবে
+  //
+  //         // যদি অন্য কোনো ডিসকানেক্ট ডায়ালগ খোলা থাকে, সেটা বন্ধ করো
+  //         if (isDisconnectDialogOpen && disconnectDialogCtx != null) {
+  //           //Navigator.pop(disconnectDialogCtx!);
+  //           if (disconnectDialogCtx != null &&
+  //               Navigator.of(
+  //                 disconnectDialogCtx!,
+  //                 rootNavigator: true,
+  //               ).canPop()) {
+  //
+  //             Navigator.of(
+  //               disconnectDialogCtx!,
+  //               rootNavigator: true,
+  //             ).pop();
+  //           }
+  //           isDisconnectDialogOpen = false;
+  //         }
+  //         if (isDialogOpen && internetDialogCtx != null) {
+  //           //Navigator.pop(internetDialogCtx!);
+  //           if (internetDialogCtx != null &&
+  //               Navigator.of(
+  //                 internetDialogCtx!,
+  //                 rootNavigator: true,
+  //               ).canPop()) {
+  //
+  //             Navigator.of(
+  //               internetDialogCtx!,
+  //               rootNavigator: true,
+  //             ).pop();
+  //           }
+  //           isDialogOpen = false;
+  //         }
+  //
+  //         // 💥 তোমার আগের "Opponent Left" ডায়ালগটাই কল করে দিলাম
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           if (mounted) showOpponentExitDialog();
+  //         });
+  //       }
+  //       return;
+  //     }
+  //
+  //     final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+  //
+  //     bool firebaseTimeUp = data["timeUp"] ?? false;
+  //
+  //
+  //
+  //     ///new
+  //     if (data["timerStart"] != null) {
+  //
+  //       int newStart = data["timerStart"];
+  //
+  //       turnDuration = data["turnDuration"] ?? 30;
+  //
+  //       /// 🔥 ALWAYS UPDATE ON REPLAY
+  //       if (serverStartTime != newStart || timerController.value >= 1.0) {
+  //
+  //         serverStartTime = newStart;
+  //
+  //         lastAlertSecond = -1;
+  //
+  //         syncTimer();
+  //       }
+  //     }
+  //
+  //     // ২. 💥 THE ZOMBIE KILLER: ফায়ারবেস যদি জমানো ডেটা দিয়ে ভুল করে রুম বানায়!
+  //     if (data["board"] == null || data["players"] == null) {
+  //       roomRef.remove(); // জম্বি রুমটাকে সাথে সাথে আবার ডিলিট করে দাও!
+  //       isRoomActive = false;
+  //       heartbeatTimer?.cancel();
+  //
+  //       // 💥 THE FIX: অটো-ব্যাক না করে ডায়ালগ দেখাও
+  //       if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
+  //         opponentExitDialogShown = true;
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           if (mounted) showOpponentExitDialog();
+  //         });
+  //       }
+  //
+  //       return;
+  //     }
+  //
+  //     setState(() {
+  //       isTimeUp = firebaseTimeUp;
+  //       winner = data["winner"] ?? "";
+  //       boardSize = data["boardSize"] ?? 3;
+  //       board = List<String>.from(data["board"]);
+  //
+  //       List<String> newBoard = List<String>.from(data["board"]);
+  //
+  //       // 🔥 FIRST LOAD → SKIP SOUND
+  //       if (previousBoard.isEmpty) {
+  //         previousBoard = List.from(newBoard);
+  //       } else {
+  //         for (int i = 0; i < newBoard.length; i++) {
+  //           if (previousBoard[i] != newBoard[i]) {
+  //             if (newBoard[i] == "X") {
+  //               playXSound();
+  //               playVibration(120);
+  //             } else if (newBoard[i] == "O") {
+  //               playOSound();
+  //               playVibration(120);
+  //             }
+  //
+  //             break;
+  //           }
+  //         }
+  //
+  //         previousBoard = List.from(newBoard);
+  //       }
+  //
+  //       currentTurn = data["currentTurn"] ?? "";
+  //
+  //       final playersData = data["players"];
+  //       // 🔥 SAFE PARSING: Prevent crash if a player node is removed during disconnect
+  //       final p1 = playersData != null ? playersData["player1"] : null;
+  //       final p2 = playersData != null ? playersData["player2"] : null;
+  //
+  //       myId = userId;
+  //
+  //       if (p1 != null && p1["uid"] == userId) {
+  //         mySymbol = p1["symbol"] ?? "";
+  //         opponentId = p2?["uid"] ?? "Waiting...";
+  //         player1Symbol = p1["symbol"] ?? "";
+  //         player2Symbol = p2?["symbol"] ?? "";
+  //       } else if (p2 != null && p2["uid"] == userId) {
+  //         mySymbol = p2["symbol"] ?? "";
+  //         opponentId = p1?["uid"] ?? "Waiting...";
+  //         player1Symbol = p1?["symbol"] ?? "";
+  //         player2Symbol = p2["symbol"] ?? "";
+  //       }
+  //
+  //
+  //       if (!disconnectSetupDone && mySymbol.isNotEmpty) {
+  //         disconnectSetupDone = true;
+  //         setupPresence(); // 🔥 নতুন ফাংশন কল করা হলো
+  //         registerPresence();
+  //       }
+  //
+  //       List<int>? newLine = data["winningLine"] != null
+  //           ? List<int>.from(data["winningLine"])
+  //           : null;
+  //
+  //       if (newLine != null && newLine.isNotEmpty) {
+  //         // 🔥 only trigger if new line आया hai
+  //         if (winningLine == null) {
+  //           winningLine = newLine;
+  //
+  //           lineController.reset();
+  //           lineController.forward();
+  //         }
+  //       } else {
+  //         winningLine = null;
+  //       }
+  //
+  //       lastMove = data["lastMove"] ?? -1;
+  //
+  //       String firebaseWinner = data["winner"] ?? "";
+  //
+  //       gameOver = firebaseWinner.isNotEmpty;
+  //
+  //       if (firebaseWinner.isNotEmpty && !hasShownResult) {
+  //         hasShownResult = true; // 🔥 only once
+  //
+  //         if (firebaseWinner == "draw") {
+  //           gameMessage = " DRAW ";
+  //           playDrawSound();
+  //         } else if (firebaseWinner == mySymbol) {
+  //           gameMessage = " YOU WIN ";
+  //           confettiController.play(); // 🎉 only once
+  //           playWinSound();
+  //         } else {
+  //           gameMessage = " YOU LOSE ";
+  //           playLoseSound();
+  //         }
+  //       } else if (firebaseWinner.isEmpty) {
+  //
+  //         /// 🔥 NEW GAME RESET (CRITICAL FIX)
+  //         hasShownResult = false;
+  //         gameMessage = "";
+  //         isTimeUp = false;   // 🔥 ADD THIS
+  //         gameOver = false;   // 🔥 ADD THIS
+  //       }
+  //     });
+  //
+  //     final rematch = data["rematch"];
+  //
+  //     if (rematch != null) {
+  //       String requestedBy = rematch["requestedBy"] ?? "";
+  //       String status = rematch["status"] ?? "";
+  //
+  //       // 🔥 requester side
+  //       if (requestedBy == myId) {
+  //         if (status == "accepted") {
+  //           closeDialogSafe(); // ✅ FIX
+  //
+  //           if (!isRestarting) {
+  //             isRestarting = true;
+  //
+  //             /// 🔥 ADD THIS PART (CRITICAL)
+  //             timerController.stop();
+  //             timerController.reset();
+  //             clockSoundPlayer.stop();
+  //             lastAlertSecond = -1;
+  //
+  //
+  //             WidgetsBinding.instance.addPostFrameCallback((_) {
+  //               restartGame();
+  //             });
+  //           }
+  //         }
+  //
+  //         if (status == "rejected") {
+  //           closeDialogSafe();
+  //
+  //           // 🔥 CHECK if opponent actually left
+  //           final exitStatus = data["exitStatus"];
+  //
+  //           bool p1Exit = exitStatus?["player1"] ?? false;
+  //           bool p2Exit = exitStatus?["player2"] ?? false;
+  //
+  //           String myKey = mySymbol == player1Symbol ? "player1" : "player2";
+  //
+  //           bool opponentLeft =
+  //               (myKey == "player1" && p2Exit) ||
+  //               (myKey == "player2" && p1Exit);
+  //
+  //           // ✅ only show if NOT exit
+  //           if (!opponentLeft) {
+  //             showToast("Replay request rejected ❌");
+  //             // showRejectedDialog(); ❌ optional remove (toast enough)
+  //           }
+  //         }
+  //       }
+  //
+  //       final players = data["players"];
+  //
+  //       if (players == null || players.isEmpty) {
+  //         roomRef.remove(); // 🔥 auto delete room
+  //       }
+  //
+  //       // 🔥 cancel detect
+  //       if (status == "" && requestedBy == "") {
+  //         closeDialogSafe(); // ✅ FIX
+  //       }
+  //
+  //       // 🔥 opponent side → show dialog
+  //       if (status == "pending" &&
+  //           requestedBy.isNotEmpty &&
+  //           requestedBy != myId &&
+  //           !dialogOpen) {
+  //         dialogOpen = true;
+  //
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           showRematchDialog();
+  //         });
+  //       }
+  //
+  //       // 🔥 opponent cancel detect
+  //       if ((status == "" || status == "rejected") && dialogOpen) {
+  //         closeDialogSafe(); // ✅ FIX
+  //       }
+  //     }
+  //
+  //     final score = data["score"];
+  //
+  //     if (score != null) {
+  //       player1Score = score["player1"] ?? 0;
+  //       player2Score = score["player2"] ?? 0;
+  //     }
+  //
+  //     // 🔥 Heartbeat Signal logic inside listenToGame
+  //     // 🔥 Listen to pings
+  //     final pings = data["pings"];
+  //     if (pings != null && opponentId != "Waiting...") {
+  //       String oppKey = mySymbol == player1Symbol ? "player2" : "player1";
+  //       int oppPing = pings[oppKey] ?? -1;
+  //
+  //       // 🔥 Naya ping aane par time reset karo
+  //       if (oppPing != -1 && oppPing != lastOpponentPingValue) {
+  //         lastOpponentPingValue = oppPing;
+  //         lastPingReceivedLocalTime =
+  //             DateTime.now().millisecondsSinceEpoch; // Local Time Reset
+  //
+  //         // Reconnect hone par dialog hata do
+  //         if (isDisconnectDialogOpen) {
+  //           isDisconnectDialogOpen = false;
+  //           if (disconnectDialogCtx != null && mounted) {
+  //             //Navigator.pop(disconnectDialogCtx!);
+  //             if (disconnectDialogCtx != null &&
+  //                 Navigator.of(
+  //                   disconnectDialogCtx!,
+  //                   rootNavigator: true,
+  //                 ).canPop()) {
+  //
+  //               Navigator.of(
+  //                 disconnectDialogCtx!,
+  //                 rootNavigator: true,
+  //               ).pop();
+  //             }
+  //             disconnectDialogCtx = null;
+  //             showToast("Opponent reconnected! 🎮");
+  //           }
+  //         }
+  //       }
+  //     }
+  //
+  //
+  //
+  //     final exitStatus = data["exitStatus"];
+  //
+  //     if (exitStatus != null) {
+  //       String p1Status = exitStatus["player1"]?.toString() ?? "online";
+  //       String p2Status = exitStatus["player2"]?.toString() ?? "online";
+  //
+  //       String myKey = mySymbol == player1Symbol ? "player1" : "player2";
+  //       String opponentStatus = myKey == "player1" ? p2Status : p1Status;
+  //
+  //       // 🔴 Sirf tab jab Opponent khud "Exit" daba kar jaye
+  //       if (opponentStatus == "exited" && !opponentExitDialogShown) {
+  //         opponentExitDialogShown = true;
+  //
+  //         if (isDisconnectDialogOpen &&
+  //             disconnectDialogCtx != null &&
+  //             mounted) {
+  //           isDisconnectDialogOpen = false;
+  //           //Navigator.pop(disconnectDialogCtx!);
+  //           if (disconnectDialogCtx != null &&
+  //               Navigator.of(
+  //                 disconnectDialogCtx!,
+  //                 rootNavigator: true,
+  //               ).canPop()) {
+  //
+  //             Navigator.of(
+  //               disconnectDialogCtx!,
+  //               rootNavigator: true,
+  //             ).pop();
+  //           }
+  //           disconnectDialogCtx = null;
+  //         }
+  //
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           if (mounted) showOpponentExitDialog();
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
+
+  Future<void> listenToGame() async {
+
     final prefs = await SharedPreferences.getInstance();
-    String userId = prefs.getString("nickname") ?? "";
+
+    String userId =
+        prefs.getString("nickname") ?? "";
 
     roomRef.onValue.listen((event) {
-      // ১. রুম ডিলিট হলে (Normal বা Zombie)
-      if (!event.snapshot.exists) {
-        isRoomActive = false;
-        heartbeatTimer?.cancel();
 
-        // 💥 THE FIX: নতুন কোনো ডায়ালগের দরকার নেই, তোমার পুরোনো opponentExitDialogShown ফ্লাগ ব্যবহার করছি
-        if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
-          opponentExitDialogShown = true; // লক করে দিলাম, ডায়ালগ একবারই আসবে
-
-          // যদি অন্য কোনো ডিসকানেক্ট ডায়ালগ খোলা থাকে, সেটা বন্ধ করো
-          if (isDisconnectDialogOpen && disconnectDialogCtx != null) {
-            //Navigator.pop(disconnectDialogCtx!);
-            if (disconnectDialogCtx != null &&
-                Navigator.of(
-                  disconnectDialogCtx!,
-                  rootNavigator: true,
-                ).canPop()) {
-
-              Navigator.of(
-                disconnectDialogCtx!,
-                rootNavigator: true,
-              ).pop();
-            }
-            isDisconnectDialogOpen = false;
-          }
-          if (isDialogOpen && internetDialogCtx != null) {
-            //Navigator.pop(internetDialogCtx!);
-            if (internetDialogCtx != null &&
-                Navigator.of(
-                  internetDialogCtx!,
-                  rootNavigator: true,
-                ).canPop()) {
-
-              Navigator.of(
-                internetDialogCtx!,
-                rootNavigator: true,
-              ).pop();
-            }
-            isDialogOpen = false;
-          }
-
-          // 💥 তোমার আগের "Opponent Left" ডায়ালগটাই কল করে দিলাম
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) showOpponentExitDialog();
-          });
-        }
+      /// 🔥 ROOM DELETED
+      if (handleRoomDeleted(event)) {
         return;
       }
 
-      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+      final data = Map<String, dynamic>.from(
+        event.snapshot.value as Map,
+      );
 
-      bool firebaseTimeUp = data["timeUp"] ?? false;
+      /// 🔥 TIMER
+      handleTimerSync(data);
 
-      // if (data["timerStart"] != null) {
-      //   int newStart = data["timerStart"];
-      //
-      //   /// 🔥 ONLY UPDATE IF CHANGED
-      //   if (serverStartTime != newStart) {
-      //     serverStartTime = newStart;
-      //     turnDuration = data["turnDuration"] ?? 30;
-      //     lastAlertSecond = -1; // 🔥 RESET
-      //     syncTimer(); // 🔥 only once per turn
-      //   }
-      // }
+      /// 🔥 ZOMBIE ROOM
+      if (handleZombieRoom(data)) {
+        return;
+      }
 
+      /// 🔥 MAIN GAME UI
+      updateGameState(data, userId);
 
-      ///old
-      // if (data["timerStart"] != null) {
-      //
-      //   int newStart = data["timerStart"];
-      //
-      //   /// 🔥 ONLY UPDATE IF REALLY CHANGED
-      //   if (serverStartTime != newStart) {
-      //
-      //     serverStartTime = newStart;
-      //     turnDuration = data["turnDuration"] ?? 30;
-      //
-      //     lastAlertSecond = -1;
-      //
-      //     syncTimer(); // 🔥 only once per turn
-      //   }
-      // }
+      /// 🔥 REMATCH
+      handleRematch(data);
+
+      /// 🔥 SCORE
+      updateScore(data);
+
+      /// 🔥 HEARTBEAT
+      handleHeartbeat(data);
+
+      /// 🔥 EXIT STATUS
+      handleExitStatus(data);
+    });
+  }
 
 
-      ///new
-      if (data["timerStart"] != null) {
+  bool handleRoomDeleted(DatabaseEvent event) {
 
-        int newStart = data["timerStart"];
+    if (event.snapshot.exists) {
+      return false;
+    }
 
-        turnDuration = data["turnDuration"] ?? 30;
+    isRoomActive = false;
 
-        /// 🔥 ALWAYS UPDATE ON REPLAY
-        if (serverStartTime != newStart || timerController.value >= 1.0) {
+    heartbeatTimer?.cancel();
 
-          serverStartTime = newStart;
+    if (mounted &&
+        !isGamePageClosed &&
+        !opponentExitDialogShown) {
+
+      opponentExitDialogShown = true;
+
+      /// 🔥 CLOSE DISCONNECT DIALOG
+      if (isDisconnectDialogOpen &&
+          disconnectDialogCtx != null) {
+
+        if (Navigator.of(
+          disconnectDialogCtx!,
+          rootNavigator: true,
+        ).canPop()) {
+
+          Navigator.of(
+            disconnectDialogCtx!,
+            rootNavigator: true,
+          ).pop();
+        }
+
+        isDisconnectDialogOpen = false;
+      }
+
+      /// 🔥 CLOSE INTERNET DIALOG
+      if (isDialogOpen &&
+          internetDialogCtx != null) {
+
+        if (Navigator.of(
+          internetDialogCtx!,
+          rootNavigator: true,
+        ).canPop()) {
+
+          Navigator.of(
+            internetDialogCtx!,
+            rootNavigator: true,
+          ).pop();
+        }
+
+        isDialogOpen = false;
+      }
+
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) {
+
+        if (mounted) {
+          showOpponentExitDialog();
+        }
+      });
+    }
+
+    return true;
+  }
+
+
+  void handleTimerSync(Map<String, dynamic> data) {
+
+    if (data["timerStart"] != null) {
+
+      int newStart = data["timerStart"];
+
+      turnDuration =
+          data["turnDuration"] ?? 30;
+
+      if (serverStartTime != newStart ||
+          timerController.value >= 1.0) {
+
+        serverStartTime = newStart;
+
+        lastAlertSecond = -1;
+
+        syncTimer();
+      }
+    }
+  }
+
+
+  bool handleZombieRoom(
+      Map<String, dynamic> data,
+      ) {
+
+    if (data["board"] != null &&
+        data["players"] != null) {
+
+      return false;
+    }
+
+    roomRef.remove();
+
+    isRoomActive = false;
+
+    heartbeatTimer?.cancel();
+
+    if (mounted &&
+        !isGamePageClosed &&
+        !opponentExitDialogShown) {
+
+      opponentExitDialogShown = true;
+
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) {
+
+        if (mounted) {
+          showOpponentExitDialog();
+        }
+      });
+    }
+
+    return true;
+  }
+
+
+  void updateGameState(
+      Map<String, dynamic> data,
+      String userId,
+      ) {
+
+    setState(() {
+
+      updateBoardData(data);
+
+      updateBoardSound(data);
+
+      updatePlayerData(data, userId);
+
+      updateWinningLine(data);
+
+      updateWinnerState(data);
+    });
+  }
+
+
+  void updateBoardData(
+      Map<String, dynamic> data,
+      ) {
+
+    isTimeUp = data["timeUp"] ?? false;
+
+    boardSize = data["boardSize"] ?? 3;
+
+    board = List<String>.from(
+      data["board"],
+    );
+
+    currentTurn =
+        data["currentTurn"] ?? "";
+
+    lastMove =
+        data["lastMove"] ?? -1;
+  }
+
+
+  void updateBoardSound(
+      Map<String, dynamic> data,
+      ) {
+
+    List<String> newBoard =
+    List<String>.from(data["board"]);
+
+    if (previousBoard.isEmpty) {
+
+      previousBoard =
+          List.from(newBoard);
+
+      return;
+    }
+
+    for (int i = 0;
+    i < newBoard.length;
+    i++) {
+
+      if (previousBoard[i] !=
+          newBoard[i]) {
+
+        if (newBoard[i] == "X") {
+
+          playXSound();
+
+          playVibration(120);
+
+        } else if (newBoard[i] == "O") {
+
+          playOSound();
+
+          playVibration(120);
+        }
+
+        break;
+      }
+    }
+
+    previousBoard =
+        List.from(newBoard);
+  }
+
+
+  void updatePlayerData(
+      Map<String, dynamic> data,
+      String userId,
+      ) {
+
+    final playersData =
+    data["players"];
+
+    final p1 =
+    playersData != null
+        ? playersData["player1"]
+        : null;
+
+    final p2 =
+    playersData != null
+        ? playersData["player2"]
+        : null;
+
+    myId = userId;
+
+    if (p1 != null &&
+        p1["uid"] == userId) {
+
+      mySymbol =
+          p1["symbol"] ?? "";
+
+      opponentId =
+          p2?["uid"] ??
+              "Waiting...";
+
+      player1Symbol =
+          p1["symbol"] ?? "";
+
+      player2Symbol =
+          p2?["symbol"] ?? "";
+
+    } else if (p2 != null &&
+        p2["uid"] == userId) {
+
+      mySymbol =
+          p2["symbol"] ?? "";
+
+      opponentId =
+          p1?["uid"] ??
+              "Waiting...";
+
+      player1Symbol =
+          p1?["symbol"] ?? "";
+
+      player2Symbol =
+          p2["symbol"] ?? "";
+    }
+
+    if (!disconnectSetupDone &&
+        mySymbol.isNotEmpty) {
+
+      disconnectSetupDone = true;
+
+      setupPresence();
+
+      registerPresence();
+    }
+  }
+
+
+  void updateWinningLine(
+      Map<String, dynamic> data,
+      ) {
+
+    List<int>? newLine =
+    data["winningLine"] != null
+        ? List<int>.from(
+        data["winningLine"])
+        : null;
+
+    if (newLine != null &&
+        newLine.isNotEmpty) {
+
+      if (winningLine == null) {
+
+        winningLine = newLine;
+
+        lineController.reset();
+
+        lineController.forward();
+      }
+
+    } else {
+
+      winningLine = null;
+    }
+  }
+
+
+  void updateWinnerState(
+      Map<String, dynamic> data,
+      ) {
+
+    String firebaseWinner =
+        data["winner"] ?? "";
+
+    gameOver =
+        firebaseWinner.isNotEmpty;
+
+    if (firebaseWinner.isNotEmpty &&
+        !hasShownResult) {
+
+      hasShownResult = true;
+
+      if (firebaseWinner == "draw") {
+
+        gameMessage = " DRAW ";
+
+        playDrawSound();
+
+      } else if (
+      firebaseWinner == mySymbol) {
+
+        gameMessage = " YOU WIN ";
+
+        confettiController.play();
+
+        playWinSound();
+
+      } else {
+
+        gameMessage = " YOU LOSE ";
+
+        playLoseSound();
+      }
+
+    } else if (
+    firebaseWinner.isEmpty) {
+
+      hasShownResult = false;
+
+      gameMessage = "";
+
+      isTimeUp = false;
+
+      gameOver = false;
+    }
+  }
+
+  /// 🔥 REMATCH
+  void handleRematch(
+      Map<String, dynamic> data,
+      ) {
+
+    final rematch = data["rematch"];
+
+    if (rematch == null) return;
+
+    String requestedBy =
+        rematch["requestedBy"] ?? "";
+
+    String status =
+        rematch["status"] ?? "";
+
+    /// 🔥 REQUESTER SIDE
+    if (requestedBy == myId) {
+
+      /// ✅ ACCEPTED
+      if (status == "accepted") {
+
+        closeDialogSafe();
+
+        if (!isRestarting) {
+
+          isRestarting = true;
+
+          /// 🔥 RESET TIMER
+          timerController.stop();
+
+          timerController.reset();
+
+          clockSoundPlayer.stop();
 
           lastAlertSecond = -1;
 
-          syncTimer();
-        }
-      }
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) {
 
-      // ২. 💥 THE ZOMBIE KILLER: ফায়ারবেস যদি জমানো ডেটা দিয়ে ভুল করে রুম বানায়!
-      if (data["board"] == null || data["players"] == null) {
-        roomRef.remove(); // জম্বি রুমটাকে সাথে সাথে আবার ডিলিট করে দাও!
-        isRoomActive = false;
-        heartbeatTimer?.cancel();
-
-        // 💥 THE FIX: অটো-ব্যাক না করে ডায়ালগ দেখাও
-        if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
-          opponentExitDialogShown = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) showOpponentExitDialog();
+            restartGame();
           });
         }
-
-        return;
       }
 
-      setState(() {
-        isTimeUp = firebaseTimeUp;
-        winner = data["winner"] ?? "";
-        boardSize = data["boardSize"] ?? 3;
-        board = List<String>.from(data["board"]);
+      /// ❌ REJECTED
+      if (status == "rejected") {
 
-        List<String> newBoard = List<String>.from(data["board"]);
+        closeDialogSafe();
 
-        // 🔥 FIRST LOAD → SKIP SOUND
-        if (previousBoard.isEmpty) {
-          previousBoard = List.from(newBoard);
-        } else {
-          for (int i = 0; i < newBoard.length; i++) {
-            if (previousBoard[i] != newBoard[i]) {
-              if (newBoard[i] == "X") {
-                playXSound();
-                playVibration(120);
-              } else if (newBoard[i] == "O") {
-                playOSound();
-                playVibration(120);
-              }
+        /// 🔥 CHECK EXIT STATUS
+        final exitStatus =
+        data["exitStatus"];
 
-              break;
-            }
+        bool p1Exit =
+            exitStatus?["player1"] ?? false;
+
+        bool p2Exit =
+            exitStatus?["player2"] ?? false;
+
+        String myKey =
+        mySymbol == player1Symbol
+            ? "player1"
+            : "player2";
+
+        bool opponentLeft =
+
+            (myKey == "player1" &&
+                p2Exit) ||
+
+                (myKey == "player2" &&
+                    p1Exit);
+
+        /// 🔥 SHOW ONLY IF NOT EXITED
+        if (!opponentLeft) {
+
+          showToast(
+            "Replay request rejected ❌",
+          );
+        }
+      }
+    }
+
+    /// 🔥 AUTO DELETE ROOM
+    final players = data["players"];
+
+    if (players == null ||
+        players.isEmpty) {
+
+      roomRef.remove();
+    }
+
+    /// 🔥 CANCEL DETECT
+    if (status == "" &&
+        requestedBy == "") {
+
+      closeDialogSafe();
+    }
+
+    /// 🔥 OPPONENT SIDE
+    if (status == "pending" &&
+        requestedBy.isNotEmpty &&
+        requestedBy != myId &&
+        !dialogOpen) {
+
+      dialogOpen = true;
+
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) {
+
+        showRematchDialog();
+      });
+    }
+
+    /// 🔥 OPPONENT CANCEL DETECT
+    if ((status == "" ||
+        status == "rejected") &&
+        dialogOpen) {
+
+      closeDialogSafe();
+    }
+  }
+
+  /// 🔥 SCORE
+  void updateScore(
+      Map<String, dynamic> data,
+      ) {
+
+    final score = data["score"];
+
+    if (score == null) return;
+
+    player1Score =
+        score["player1"] ?? 0;
+
+    player2Score =
+        score["player2"] ?? 0;
+  }
+
+
+  /// 🔥 HEARTBEAT
+  void handleHeartbeat(
+      Map<String, dynamic> data,
+      ) {
+
+    final pings = data["pings"];
+
+    if (pings == null ||
+        opponentId == "Waiting...") {
+
+      return;
+    }
+
+    String oppKey =
+    mySymbol == player1Symbol
+        ? "player2"
+        : "player1";
+
+    int oppPing =
+        pings[oppKey] ?? -1;
+
+    /// 🔥 NEW PING
+    if (oppPing != -1 &&
+        oppPing !=
+            lastOpponentPingValue) {
+
+      lastOpponentPingValue =
+          oppPing;
+
+      lastPingReceivedLocalTime =
+          DateTime.now()
+              .millisecondsSinceEpoch;
+
+      /// 🔥 RECONNECTED
+      if (isDisconnectDialogOpen) {
+
+        isDisconnectDialogOpen = false;
+
+        if (disconnectDialogCtx != null &&
+            mounted) {
+
+          if (Navigator.of(
+            disconnectDialogCtx!,
+            rootNavigator: true,
+          ).canPop()) {
+
+            Navigator.of(
+              disconnectDialogCtx!,
+              rootNavigator: true,
+            ).pop();
           }
 
-          previousBoard = List.from(newBoard);
+          disconnectDialogCtx = null;
+
+          showToast(
+            "Opponent reconnected! 🎮",
+          );
+        }
+      }
+    }
+  }
+
+  /// 🔥 EXIT STATUS
+  void handleExitStatus(
+      Map<String, dynamic> data,
+      ) {
+
+    final exitStatus =
+    data["exitStatus"];
+
+    if (exitStatus == null) return;
+
+    String p1Status =
+        exitStatus["player1"]
+            ?.toString() ??
+            "online";
+
+    String p2Status =
+        exitStatus["player2"]
+            ?.toString() ??
+            "online";
+
+    String myKey =
+    mySymbol == player1Symbol
+        ? "player1"
+        : "player2";
+
+    String opponentStatus =
+
+    myKey == "player1"
+        ? p2Status
+        : p1Status;
+
+    /// 🔥 OPPONENT EXITED
+    if (opponentStatus == "exited" &&
+        !opponentExitDialogShown) {
+
+      opponentExitDialogShown = true;
+
+      /// 🔥 CLOSE DISCONNECT DIALOG
+      if (isDisconnectDialogOpen &&
+          disconnectDialogCtx != null &&
+          mounted) {
+
+        isDisconnectDialogOpen = false;
+
+        if (Navigator.of(
+          disconnectDialogCtx!,
+          rootNavigator: true,
+        ).canPop()) {
+
+          Navigator.of(
+            disconnectDialogCtx!,
+            rootNavigator: true,
+          ).pop();
         }
 
-        currentTurn = data["currentTurn"] ?? "";
+        disconnectDialogCtx = null;
+      }
 
-        final playersData = data["players"];
-        // 🔥 SAFE PARSING: Prevent crash if a player node is removed during disconnect
-        final p1 = playersData != null ? playersData["player1"] : null;
-        final p2 = playersData != null ? playersData["player2"] : null;
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) {
 
-        myId = userId;
+        if (mounted) {
 
-        if (p1 != null && p1["uid"] == userId) {
-          mySymbol = p1["symbol"] ?? "";
-          opponentId = p2?["uid"] ?? "Waiting...";
-          player1Symbol = p1["symbol"] ?? "";
-          player2Symbol = p2?["symbol"] ?? "";
-        } else if (p2 != null && p2["uid"] == userId) {
-          mySymbol = p2["symbol"] ?? "";
-          opponentId = p1?["uid"] ?? "Waiting...";
-          player1Symbol = p1?["symbol"] ?? "";
-          player2Symbol = p2["symbol"] ?? "";
-        }
-
-
-        if (!disconnectSetupDone && mySymbol.isNotEmpty) {
-          disconnectSetupDone = true;
-          setupPresence(); // 🔥 নতুন ফাংশন কল করা হলো
-          registerPresence();
-        }
-
-        List<int>? newLine = data["winningLine"] != null
-            ? List<int>.from(data["winningLine"])
-            : null;
-
-        if (newLine != null && newLine.isNotEmpty) {
-          // 🔥 only trigger if new line आया hai
-          if (winningLine == null) {
-            winningLine = newLine;
-
-            lineController.reset();
-            lineController.forward();
-          }
-        } else {
-          winningLine = null;
-        }
-
-        lastMove = data["lastMove"] ?? -1;
-
-        String firebaseWinner = data["winner"] ?? "";
-
-        gameOver = firebaseWinner.isNotEmpty;
-
-        if (firebaseWinner.isNotEmpty && !hasShownResult) {
-          hasShownResult = true; // 🔥 only once
-
-          if (firebaseWinner == "draw") {
-            gameMessage = " DRAW ";
-            playDrawSound();
-          } else if (firebaseWinner == mySymbol) {
-            gameMessage = " YOU WIN ";
-            confettiController.play(); // 🎉 only once
-            playWinSound();
-          } else {
-            gameMessage = " YOU LOSE ";
-            playLoseSound();
-          }
-        } else if (firebaseWinner.isEmpty) {
-
-          /// 🔥 NEW GAME RESET (CRITICAL FIX)
-          hasShownResult = false;
-          gameMessage = "";
-          isTimeUp = false;   // 🔥 ADD THIS
-          gameOver = false;   // 🔥 ADD THIS
+          showOpponentExitDialog();
         }
       });
-
-      final rematch = data["rematch"];
-
-      if (rematch != null) {
-        String requestedBy = rematch["requestedBy"] ?? "";
-        String status = rematch["status"] ?? "";
-
-        // 🔥 requester side
-        if (requestedBy == myId) {
-          if (status == "accepted") {
-            closeDialogSafe(); // ✅ FIX
-
-            if (!isRestarting) {
-              isRestarting = true;
-
-              /// 🔥 ADD THIS PART (CRITICAL)
-              timerController.stop();
-              timerController.reset();
-              clockSoundPlayer.stop();
-              lastAlertSecond = -1;
-
-
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                restartGame();
-              });
-            }
-          }
-
-          if (status == "rejected") {
-            closeDialogSafe();
-
-            // 🔥 CHECK if opponent actually left
-            final exitStatus = data["exitStatus"];
-
-            bool p1Exit = exitStatus?["player1"] ?? false;
-            bool p2Exit = exitStatus?["player2"] ?? false;
-
-            String myKey = mySymbol == player1Symbol ? "player1" : "player2";
-
-            bool opponentLeft =
-                (myKey == "player1" && p2Exit) ||
-                (myKey == "player2" && p1Exit);
-
-            // ✅ only show if NOT exit
-            if (!opponentLeft) {
-              showToast("Replay request rejected ❌");
-              // showRejectedDialog(); ❌ optional remove (toast enough)
-            }
-          }
-        }
-
-        final players = data["players"];
-
-        if (players == null || players.isEmpty) {
-          roomRef.remove(); // 🔥 auto delete room
-        }
-
-        // 🔥 cancel detect
-        if (status == "" && requestedBy == "") {
-          closeDialogSafe(); // ✅ FIX
-        }
-
-        // 🔥 opponent side → show dialog
-        if (status == "pending" &&
-            requestedBy.isNotEmpty &&
-            requestedBy != myId &&
-            !dialogOpen) {
-          dialogOpen = true;
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showRematchDialog();
-          });
-        }
-
-        // 🔥 opponent cancel detect
-        if ((status == "" || status == "rejected") && dialogOpen) {
-          closeDialogSafe(); // ✅ FIX
-        }
-      }
-
-      final score = data["score"];
-
-      if (score != null) {
-        player1Score = score["player1"] ?? 0;
-        player2Score = score["player2"] ?? 0;
-      }
-
-      // 🔥 Heartbeat Signal logic inside listenToGame
-      // 🔥 Listen to pings
-      final pings = data["pings"];
-      if (pings != null && opponentId != "Waiting...") {
-        String oppKey = mySymbol == player1Symbol ? "player2" : "player1";
-        int oppPing = pings[oppKey] ?? -1;
-
-        // 🔥 Naya ping aane par time reset karo
-        if (oppPing != -1 && oppPing != lastOpponentPingValue) {
-          lastOpponentPingValue = oppPing;
-          lastPingReceivedLocalTime =
-              DateTime.now().millisecondsSinceEpoch; // Local Time Reset
-
-          // Reconnect hone par dialog hata do
-          if (isDisconnectDialogOpen) {
-            isDisconnectDialogOpen = false;
-            if (disconnectDialogCtx != null && mounted) {
-              //Navigator.pop(disconnectDialogCtx!);
-              if (disconnectDialogCtx != null &&
-                  Navigator.of(
-                    disconnectDialogCtx!,
-                    rootNavigator: true,
-                  ).canPop()) {
-
-                Navigator.of(
-                  disconnectDialogCtx!,
-                  rootNavigator: true,
-                ).pop();
-              }
-              disconnectDialogCtx = null;
-              showToast("Opponent reconnected! 🎮");
-            }
-          }
-        }
-      }
-
-
-
-      final exitStatus = data["exitStatus"];
-
-      if (exitStatus != null) {
-        String p1Status = exitStatus["player1"]?.toString() ?? "online";
-        String p2Status = exitStatus["player2"]?.toString() ?? "online";
-
-        String myKey = mySymbol == player1Symbol ? "player1" : "player2";
-        String opponentStatus = myKey == "player1" ? p2Status : p1Status;
-
-        // 🔴 Sirf tab jab Opponent khud "Exit" daba kar jaye
-        if (opponentStatus == "exited" && !opponentExitDialogShown) {
-          opponentExitDialogShown = true;
-
-          if (isDisconnectDialogOpen &&
-              disconnectDialogCtx != null &&
-              mounted) {
-            isDisconnectDialogOpen = false;
-            //Navigator.pop(disconnectDialogCtx!);
-            if (disconnectDialogCtx != null &&
-                Navigator.of(
-                  disconnectDialogCtx!,
-                  rootNavigator: true,
-                ).canPop()) {
-
-              Navigator.of(
-                disconnectDialogCtx!,
-                rootNavigator: true,
-              ).pop();
-            }
-            disconnectDialogCtx = null;
-          }
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) showOpponentExitDialog();
-          });
-        }
-      }
-    });
+    }
   }
+
 
   void syncTimer() {
 
