@@ -2017,7 +2017,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Future<void> generateCode() async {
-    LoadingDialog.show(context, message: "Creating room...");
+
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     Random random = Random();
 
@@ -2039,16 +2039,20 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     borderController?.reset();
     borderController?.forward();
 
-    print("🔥 Creating room...");
+    print("🔥 Generating Code...");
 
     await createPrivateRoomInFirebase(newCode); // 🔥 FIX
-    LoadingDialog.hide(context);
+
     print("✅ Done");
   }
 
   Future<void> createPublicRoomInFirebase() async {
+
+
+
     // 🔥 already room check
     if (isCodeGenerated) {
+
       showToast("Room already created!");
       return;
     }
@@ -2056,6 +2060,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     bool isConnected = await checkInternet();
 
     if (!isConnected) {
+
       showToast("No Internet Connection ⚠️");
       return;
     }
@@ -2081,6 +2086,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     borderController?.reset();
     borderController?.forward();
+
+    LoadingDialog.show(context, message: "Creating Room...");
 
     // 🔥 CREATE PUBLIC ROOM
     try {
@@ -2118,14 +2125,23 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       showToast("Finding opponent...");
     } catch (e) {
+
       print("❌ Firebase ERROR: $e");
+    }finally {
+
+      LoadingDialog.hide(context);
     }
   }
 
   Future<void> createPrivateRoomInFirebase(String code) async {
+
+    LoadingDialog.show(
+      context,
+      message: "Creating room...",
+    );
+
+
     try {
-      // 🔥 Loading
-      LoadingDialog.show(context, message: "Creating room...");
 
       print("🔥 createRoomInFirebase start");
 
@@ -2159,10 +2175,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       });
 
       print("✅ Room created");
-      LoadingDialog.hide(context);
+
       listenForOpponent(code);
     } catch (e) {
       print("❌ Firebase ERROR: $e");
+    }finally {
+
       LoadingDialog.hide(context);
     }
   }
@@ -2288,6 +2306,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
+
     String link = generateInviteLink();
 
     DateTime now = DateTime.now();
@@ -2306,6 +2325,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             "Expires at: $formattedTime",
       ),
     );
+
   }
 
   // String generateInviteLink() {
@@ -2324,6 +2344,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       await deleteRoom(roomCode);
     }
 
+
+
     enteredCode = code;
     hiddenController.text = code;
 
@@ -2335,6 +2357,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   void handleIncomingLink(Uri uri) {
+
     if (uri.path.contains("join")) {
       String? code = uri.queryParameters['code'];
 
@@ -2358,6 +2381,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         });
       }
     }
+
   }
 
   // void handleIncomingLink(Uri uri) {
@@ -2382,6 +2406,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   /////////////////////////////////////////////////////////////////////
 
   Future<void> checkUser() async {
+
     final prefs = await SharedPreferences.getInstance();
 
     String name = prefs.getString("nickname") ?? "";
@@ -2396,8 +2421,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     setState(() {
       nickname = name;
     });
+
   }
 
+  ///old check user
   // Future<void> checkUser() async {
   //   final prefs = await SharedPreferences.getInstance();
   //
@@ -2547,59 +2574,159 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //   );
   // }
 
+
+  ///old cleanUp
+  // Future<void> cleanUpDeadRooms() async {
+  //   LoadingDialog.show(context, message: "Removing Expired Room");
+  //   try {
+  //     final dbRef = FirebaseDatabase.instanceFor(
+  //       app: FirebaseDatabase.instance.app,
+  //       databaseURL:
+  //           "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  //     ).ref();
+  //
+  //     final snapshot = await dbRef.child("rooms").get();
+  //
+  //     if (snapshot.exists) {
+  //       final rooms = Map<String, dynamic>.from(snapshot.value as Map);
+  //
+  //       int currentTime = DateTime.now().millisecondsSinceEpoch;
+  //
+  //       for (var entry in rooms.entries) {
+  //         String roomCode = entry.key;
+  //         Map<String, dynamic> roomData = Map<String, dynamic>.from(
+  //           entry.value as Map,
+  //         );
+  //
+  //         // ১. Time-based condition (১ ঘণ্টা = ৩৬,০০,০০০ মিলিসেকেন্ড)
+  //         int createdAt = roomData["createdAt"] as int? ?? currentTime;
+  //         bool isOlderThanOneHour = (currentTime - createdAt) > 3600000;
+  //         //bool isOlderThanOneHour = (currentTime - createdAt) > 180000;
+  //
+  //         // ২. Status-based conditions
+  //         final exitStatus = roomData["exitStatus"];
+  //         final players = roomData["players"];
+  //
+  //         String p1Status = exitStatus?["player1"]?.toString() ?? "";
+  //         String p2Status = exitStatus?["player2"]?.toString() ?? "";
+  //         bool p2Exists = players != null && players["player2"] != null;
+  //
+  //         bool bothExited = (p1Status == "exited" && p2Status == "exited");
+  //         bool onlyP1Exited = (p1Status == "exited" && !p2Exists);
+  //
+  //         // 💥 FINAL TRIGGER: ১ ঘণ্টা পার হলে অথবা স্ট্যাটাস exited হলে রুম ডিলিট!
+  //         if (isOlderThanOneHour || bothExited || onlyP1Exited) {
+  //           await dbRef.child("rooms/$roomCode").remove();
+  //           print("🧹 Garbage Collector: Deleted dead room -> $roomCode");
+  //         }
+  //       }
+  //     }
+  //     // LoadingDialog.hide(context);
+  //   } catch (e) {
+  //     //LoadingDialog.hide(context);
+  //     print("Garbage Collector Error: $e");
+  //   }
+  //   LoadingDialog.hide(context);
+  // }
+
+  ///new cleanUp
   Future<void> cleanUpDeadRooms() async {
+
+    LoadingDialog.show(
+      context,
+      message: "Removing Expired Room",
+    );
+
     try {
+
       final dbRef = FirebaseDatabase.instanceFor(
         app: FirebaseDatabase.instance.app,
         databaseURL:
-            "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
       ).ref();
 
       final snapshot = await dbRef.child("rooms").get();
 
       if (snapshot.exists) {
-        final rooms = Map<String, dynamic>.from(snapshot.value as Map);
 
-        int currentTime = DateTime.now().millisecondsSinceEpoch;
+        final rooms = Map<String, dynamic>.from(
+          snapshot.value as Map,
+        );
+
+        int currentTime =
+            DateTime.now().millisecondsSinceEpoch;
 
         for (var entry in rooms.entries) {
+
           String roomCode = entry.key;
-          Map<String, dynamic> roomData = Map<String, dynamic>.from(
+
+          Map<String, dynamic> roomData =
+          Map<String, dynamic>.from(
             entry.value as Map,
           );
 
-          // ১. Time-based condition (১ ঘণ্টা = ৩৬,০০,০০০ মিলিসেকেন্ড)
-          int createdAt = roomData["createdAt"] as int? ?? currentTime;
-          bool isOlderThanOneHour = (currentTime - createdAt) > 3600000;
-          //bool isOlderThanOneHour = (currentTime - createdAt) > 180000;
+          int createdAt =
+              roomData["createdAt"] as int? ??
+                  currentTime;
 
-          // ২. Status-based conditions
+          bool isOlderThanOneHour =
+              (currentTime - createdAt) > 3600000;
+
           final exitStatus = roomData["exitStatus"];
           final players = roomData["players"];
 
-          String p1Status = exitStatus?["player1"]?.toString() ?? "";
-          String p2Status = exitStatus?["player2"]?.toString() ?? "";
-          bool p2Exists = players != null && players["player2"] != null;
+          String p1Status =
+              exitStatus?["player1"]?.toString() ?? "";
 
-          bool bothExited = (p1Status == "exited" && p2Status == "exited");
-          bool onlyP1Exited = (p1Status == "exited" && !p2Exists);
+          String p2Status =
+              exitStatus?["player2"]?.toString() ?? "";
 
-          // 💥 FINAL TRIGGER: ১ ঘণ্টা পার হলে অথবা স্ট্যাটাস exited হলে রুম ডিলিট!
-          if (isOlderThanOneHour || bothExited || onlyP1Exited) {
-            await dbRef.child("rooms/$roomCode").remove();
-            print("🧹 Garbage Collector: Deleted dead room -> $roomCode");
+          bool p2Exists =
+              players != null &&
+                  players["player2"] != null;
+
+          bool bothExited =
+          (p1Status == "exited" &&
+              p2Status == "exited");
+
+          bool onlyP1Exited =
+          (p1Status == "exited" &&
+              !p2Exists);
+
+          if (isOlderThanOneHour ||
+              bothExited ||
+              onlyP1Exited) {
+
+            await dbRef
+                .child("rooms/$roomCode")
+                .remove();
+
+            print(
+              "🧹 Deleted dead room -> $roomCode",
+            );
           }
         }
       }
+
     } catch (e) {
+
       print("Garbage Collector Error: $e");
+
+    } finally {
+
+      /// 🔥 ALWAYS CLOSE LOADING
+      if (mounted) {
+        LoadingDialog.hide(context);
+      }
     }
   }
 
   String generatePlayerName() {
+
     Random random = Random();
     int number = 100000 + random.nextInt(900000); // 6 digit
     return "Player$number";
+
   }
 
   void openProfileDialog() async {
@@ -3062,7 +3189,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// 🔥 EMPTY CHECK
     if (newName.isEmpty) {
-
+      LoadingDialog.hide(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please enter name"),
@@ -3077,6 +3204,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// 🔥 UPDATE UI
     onProfileUpdated(newName);
+
+
 
     /// 🔥 CLOSE DIALOG
     Navigator.pop(context);
@@ -3130,14 +3259,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         });
       }
 
-      LoadingDialog.hide(context);
-
       showToast("Room closed!");
     } catch (e) {
-      LoadingDialog.hide(context);
 
       print("🔥 Firebase Error: $e");
       showToast("Failed to close room!");
+    }finally {
+
+      LoadingDialog.hide(context);
     }
   }
 
@@ -3275,9 +3404,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Future<void> startMatch(String code) async {
-    // 🔥 Loading
-    // LoadingDialog.show(context, message: "Starting Match");
-    // LoadingDialog.hide(context);
 
     /// 🔥 STOP OLD INTERNET LISTENER
     await internetSubscription?.cancel();
@@ -3473,7 +3599,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return; // 🔥 STOP — no auto join
     }
 
-    LoadingDialog.show(context, message: "Joining room...");
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusManager.instance.primaryFocus?.unfocus();
@@ -3505,7 +3631,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       showToast("Failed to join room!");
     }
 
-    LoadingDialog.hide(context);
   }
 
   Future<void> _joinRoomInternal(String code) async {
@@ -3555,6 +3680,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
+    LoadingDialog.show(context, message: "Joining room...");
     activeRoomCode = code;
 
     // 🔥 SAFE JOIN (atomic style)
@@ -3568,6 +3694,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       "currentTurn": "X",
     });
 
+    /// 🔥 CLOSE LOADING FIRST
+    LoadingDialog.hide(context);
     // 🔥 WAIT UI
     Future.delayed(Duration.zero, () {
       showWaitingDialog(code);
@@ -3602,6 +3730,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       // 🔴 🔥 ADD HERE (VERY IMPORTANT POSITION)
       if (data["rejectedBy"] == "player1") {
+
         // 🔥 IMPORTANT: resume timer
         setState(() {
           opponentJoined = false;
@@ -3637,6 +3766,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       }
 
       if (data["status"] == "playing") {
+
         if (mounted && Navigator.canPop(context)) {
           Navigator.pop(context);
         }
@@ -3660,6 +3790,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         roomListener?.cancel();
       }
     });
+
   }
 
   Future<void> showCloseRoomDialog() async {
@@ -3874,6 +4005,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       onNegative: () async {
 
+        LoadingDialog.show(context, message: "Cancelling Request...",);
+
         try {
 
           await dbRef
@@ -3896,13 +4029,15 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         } catch (e) {
 
           print("Cancel error: $e");
+        }finally {
+
+          LoadingDialog.hide(context);
         }
 
         showToast("Cancelled ❌");
       },
     );
   }
-
 
 
   ///old dialog
@@ -4008,6 +4143,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       onNegative: () async {
 
         startDialogContext = null;
+        LoadingDialog.show(
+          context,
+          message: "Rejecting Request...",
+        );
 
         try {
 
@@ -4021,6 +4160,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         } catch (e) {
 
           print("🔥 Firebase Error: $e");
+        }finally {
+
+          LoadingDialog.hide(context);
         }
 
         setState(() {
@@ -4034,6 +4176,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       onPositive: () async {
 
         startDialogContext = null;
+
+
 
         try {
 
