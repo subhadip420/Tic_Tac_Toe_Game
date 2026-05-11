@@ -591,9 +591,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString("nickname") ?? "";
 
-
-
-
     roomRef.onValue.listen((event) {
       // ১. রুম ডিলিট হলে (Normal বা Zombie)
       if (!event.snapshot.exists) {
@@ -1799,11 +1796,39 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         dialogOpen = false;
 
-        /// 🔥 CANCEL REQUEST
-        await roomRef.child("rematch").set({
-          "requestedBy": "",
-          "status": "",
-        });
+        // /// 🔥 CANCEL REQUEST
+        // await roomRef.child("rematch").set({
+        //   "requestedBy": "",
+        //   "status": "",
+        // });
+
+        LoadingDialog.show(
+          context,
+          message: "Cancelling Request...",
+        );
+
+        try {
+
+          /// 🔥 CANCEL REQUEST
+          await roomRef
+              .child("rematch")
+              .set({
+
+            "requestedBy": "",
+
+            "status": "",
+          });
+
+          showToast("Request cancelled ❌");
+
+        } catch (e) {
+
+          print("Rematch cancel error: $e");
+
+        } finally {
+
+          LoadingDialog.hide(context);
+        }
 
         showToast("Request cancelled ❌");
       },
@@ -1911,9 +1936,32 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         dialogOpen = false;
 
-        await roomRef.child("rematch").update({
-          "status": "rejected",
-        });
+        // await roomRef.child("rematch").update({
+        //   "status": "rejected",
+        // });
+
+        LoadingDialog.show(
+          context,
+          message: "Declining Request...",
+        );
+
+        try {
+
+          await roomRef
+              .child("rematch")
+              .update({
+
+            "status": "rejected",
+          });
+
+        } catch (e) {
+
+          print("Rematch reject error: $e");
+
+        } finally {
+
+          LoadingDialog.hide(context);
+        }
       },
 
       /// ✅ PLAY AGAIN
@@ -1921,9 +1969,31 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         dialogOpen = false;
 
-        await roomRef.child("rematch").update({
-          "status": "accepted",
-        });
+        // await roomRef.child("rematch").update({
+        //   "status": "accepted",
+        // });
+        LoadingDialog.show(
+          context,
+          message: "Starting Rematch...",
+        );
+
+        try {
+
+          await roomRef
+              .child("rematch")
+              .update({
+
+            "status": "accepted",
+          });
+
+        } catch (e) {
+
+          print("Rematch accept error: $e");
+
+        } finally {
+
+          LoadingDialog.hide(context);
+        }
       },
     );
   }
@@ -2413,17 +2483,106 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   isRestarting = false;
   // }
 
-  ///new restart game
+  ///new restart game 1
+  // Future<void> restartGame() async {
+  //
+  //   if (isReplayResetting) return;
+  //
+  //   isReplayResetting = true;
+  //
+  //   String nextStart = Random().nextBool() ? "X" : "O";
+  //
+  //   /// 🔥 HARD RESET TIMER
+  //   timerController.stop();
+  //   timerController.reset();
+  //
+  //   clockSoundPlayer.stop();
+  //
+  //   lastAlertSecond = -1;
+  //
+  //   serverStartTime = 0;
+  //
+  //   /// 🔥 LOCAL RESET
+  //   if (mounted) {
+  //     setState(() {
+  //
+  //       winningLine = null;
+  //
+  //       gameMessage = "";
+  //
+  //       lastMove = -1;
+  //
+  //       hasShownResult = false;
+  //
+  //       gameOver = false;
+  //
+  //       isTimeUp = false;
+  //     });
+  //   }
+  //
+  //   /// 🔥 FIREBASE RESET
+  //   await roomRef.update({
+  //
+  //     "board": List.filled(boardSize * boardSize, ""),
+  //
+  //     "winner": "",
+  //
+  //     "winningLine": [],
+  //
+  //     "currentTurn": nextStart,
+  //
+  //     "lastMove": -1,
+  //
+  //     /// 🔥 IMPORTANT
+  //     "timerStart": ServerValue.timestamp,
+  //
+  //     "turnDuration": 30,
+  //
+  //     /// 🔥 ADD
+  //     "timeUp": false,
+  //   });
+  //
+  //   await Future.delayed(
+  //     const Duration(milliseconds: 300),
+  //   );
+  //
+  //   await roomRef.child("rematch").set({
+  //
+  //     "requestedBy": "",
+  //
+  //     "status": ""
+  //   });
+  //
+  //   confettiController.stop();
+  //
+  //   lineController.reset();
+  //
+  //   isRestarting = false;
+  //
+  //   isReplayResetting = false;
+  // }
+
+
+  ///new restart game 2
   Future<void> restartGame() async {
 
     if (isReplayResetting) return;
 
+    LoadingDialog.show(
+      context,
+      message: "Restarting Match...\n Please Wait",
+    );
+
     isReplayResetting = true;
 
-    String nextStart = Random().nextBool() ? "X" : "O";
+    String nextStart =
+    Random().nextBool()
+        ? "X"
+        : "O";
 
     /// 🔥 HARD RESET TIMER
     timerController.stop();
+
     timerController.reset();
 
     clockSoundPlayer.stop();
@@ -2434,6 +2593,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     /// 🔥 LOCAL RESET
     if (mounted) {
+
       setState(() {
 
         winningLine = null;
@@ -2450,46 +2610,62 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       });
     }
 
-    /// 🔥 FIREBASE RESET
-    await roomRef.update({
+    try {
 
-      "board": List.filled(boardSize * boardSize, ""),
+      /// 🔥 FIREBASE RESET
+      await roomRef.update({
 
-      "winner": "",
+        "board": List.filled(
+          boardSize * boardSize,
+          "",
+        ),
 
-      "winningLine": [],
+        "winner": "",
 
-      "currentTurn": nextStart,
+        "winningLine": [],
 
-      "lastMove": -1,
+        "currentTurn": nextStart,
 
-      /// 🔥 IMPORTANT
-      "timerStart": ServerValue.timestamp,
+        "lastMove": -1,
 
-      "turnDuration": 30,
+        /// 🔥 IMPORTANT
+        "timerStart":
+        ServerValue.timestamp,
 
-      /// 🔥 ADD
-      "timeUp": false,
-    });
+        "turnDuration": 30,
 
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-    );
+        "timeUp": false,
+      });
 
-    await roomRef.child("rematch").set({
+      await Future.delayed(
+        const Duration(milliseconds: 300),
+      );
 
-      "requestedBy": "",
+      await roomRef
+          .child("rematch")
+          .set({
 
-      "status": ""
-    });
+        "requestedBy": "",
 
-    confettiController.stop();
+        "status": ""
+      });
 
-    lineController.reset();
+      confettiController.stop();
 
-    isRestarting = false;
+      lineController.reset();
 
-    isReplayResetting = false;
+      isRestarting = false;
+
+      isReplayResetting = false;
+
+    } catch (e) {
+
+      print("Restart error: $e");
+
+    } finally {
+
+      LoadingDialog.hide(context);
+    }
   }
 
   ///old showInternetDialog()
