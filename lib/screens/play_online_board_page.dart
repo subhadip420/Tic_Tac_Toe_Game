@@ -121,6 +121,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   bool isTimeUp = false;
   int lastAlertSecond = -1;
 
+  String lastRematchAction = "";
+
   @override
   void initState() {
     super.initState();
@@ -1343,7 +1345,130 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
-  /// 🔥 REMATCH
+  /// old REMATCH
+  // void handleRematch(
+  //     Map<String, dynamic> data,
+  //     ) {
+  //
+  //   final rematch = data["rematch"];
+  //
+  //   if (rematch == null) return;
+  //
+  //   String requestedBy =
+  //       rematch["requestedBy"] ?? "";
+  //
+  //   String status =
+  //       rematch["status"] ?? "";
+  //
+  //   /// 🔥 REQUESTER SIDE
+  //   if (requestedBy == myId) {
+  //
+  //     /// ✅ ACCEPTED
+  //     if (status == "accepted") {
+  //
+  //       closeDialogSafe();
+  //
+  //       if (!isRestarting) {
+  //
+  //         isRestarting = true;
+  //
+  //         /// 🔥 RESET TIMER
+  //         timerController.stop();
+  //
+  //         timerController.reset();
+  //
+  //         clockSoundPlayer.stop();
+  //
+  //         lastAlertSecond = -1;
+  //
+  //         WidgetsBinding.instance
+  //             .addPostFrameCallback((_) {
+  //
+  //           restartGame();
+  //         });
+  //       }
+  //     }
+  //
+  //     /// ❌ REJECTED
+  //     if (status == "rejected") {
+  //
+  //       closeDialogSafe();
+  //
+  //       /// 🔥 CHECK EXIT STATUS
+  //       final exitStatus =
+  //       data["exitStatus"];
+  //
+  //       bool p1Exit =
+  //           exitStatus?["player1"] ?? false;
+  //
+  //       bool p2Exit =
+  //           exitStatus?["player2"] ?? false;
+  //
+  //       String myKey =
+  //       mySymbol == player1Symbol
+  //           ? "player1"
+  //           : "player2";
+  //
+  //       bool opponentLeft =
+  //
+  //           (myKey == "player1" &&
+  //               p2Exit) ||
+  //
+  //               (myKey == "player2" &&
+  //                   p1Exit);
+  //
+  //       /// 🔥 SHOW ONLY IF NOT EXITED
+  //       if (!opponentLeft) {
+  //
+  //         showToast(
+  //           "Replay request rejected ❌",
+  //         );
+  //       }
+  //
+  //     }
+  //   }
+  //
+  //   /// 🔥 AUTO DELETE ROOM
+  //   final players = data["players"];
+  //
+  //   if (players == null ||
+  //       players.isEmpty) {
+  //
+  //     roomRef.remove();
+  //   }
+  //
+  //   /// 🔥 CANCEL DETECT
+  //   if (status == "" &&
+  //       requestedBy == "") {
+  //
+  //     closeDialogSafe();
+  //   }
+  //
+  //   /// 🔥 OPPONENT SIDE
+  //   if (status == "pending" &&
+  //       requestedBy.isNotEmpty &&
+  //       requestedBy != myId &&
+  //       !dialogOpen) {
+  //
+  //     dialogOpen = true;
+  //
+  //     WidgetsBinding.instance
+  //         .addPostFrameCallback((_) {
+  //
+  //       showRematchDialog();
+  //     });
+  //   }
+  //
+  //   /// 🔥 OPPONENT CANCEL DETECT
+  //   if ((status == "" ||
+  //       status == "rejected") &&
+  //       dialogOpen) {
+  //
+  //     closeDialogSafe();
+  //   }
+  // }
+
+  ///new handleRematch
   void handleRematch(
       Map<String, dynamic> data,
       ) {
@@ -1358,71 +1483,94 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     String status =
         rematch["status"] ?? "";
 
-    /// 🔥 REQUESTER SIDE
-    if (requestedBy == myId) {
+    String cancelledBy =
+        rematch["cancelledBy"] ?? "";
 
-      /// ✅ ACCEPTED
-      if (status == "accepted") {
+    /// 🔥 UNIQUE ACTION KEY
+    String actionKey =
+        "$status-$requestedBy-$cancelledBy";
 
-        closeDialogSafe();
+    /// ✅ ACCEPTED
+    if (requestedBy == myId &&
+        status == "accepted") {
 
-        if (!isRestarting) {
+      closeDialogSafe();
 
-          isRestarting = true;
+      lastRematchAction = "";
 
-          /// 🔥 RESET TIMER
-          timerController.stop();
+      if (!isRestarting) {
 
-          timerController.reset();
+        isRestarting = true;
 
-          clockSoundPlayer.stop();
+        timerController.stop();
 
-          lastAlertSecond = -1;
+        timerController.reset();
 
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) {
+        clockSoundPlayer.stop();
 
-            restartGame();
-          });
-        }
+        lastAlertSecond = -1;
+
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) {
+
+          restartGame();
+        });
       }
+    }
 
-      /// ❌ REJECTED
-      if (status == "rejected") {
+    /// ❌ REJECTED
+    if (status == "rejected") {
 
-        closeDialogSafe();
+      closeDialogSafe();
 
-        /// 🔥 CHECK EXIT STATUS
-        final exitStatus =
-        data["exitStatus"];
+      /// 🔥 PREVENT MULTIPLE TOAST
+      if (lastRematchAction != actionKey) {
 
-        bool p1Exit =
-            exitStatus?["player1"] ?? false;
+        lastRematchAction = actionKey;
 
-        bool p2Exit =
-            exitStatus?["player2"] ?? false;
-
-        String myKey =
-        mySymbol == player1Symbol
-            ? "player1"
-            : "player2";
-
-        bool opponentLeft =
-
-            (myKey == "player1" &&
-                p2Exit) ||
-
-                (myKey == "player2" &&
-                    p1Exit);
-
-        /// 🔥 SHOW ONLY IF NOT EXITED
-        if (!opponentLeft) {
+        /// 🔥 SENDER SIDE
+        if (cancelledBy != myId) {
 
           showToast(
-            "Replay request rejected ❌",
+            "Opponent rejected ❌",
           );
         }
       }
+    }
+
+    /// ❌ CANCELLED
+    if (status == "" &&
+        requestedBy == "" &&
+        cancelledBy.isNotEmpty) {
+
+      closeDialogSafe();
+
+      /// 🔥 PREVENT MULTIPLE TOAST
+      if (lastRematchAction != actionKey) {
+
+        lastRematchAction = actionKey;
+
+        /// 🔥 OPPONENT SIDE
+        if (cancelledBy != myId) {
+
+          showToast(
+            "Opponent cancelled ❌",
+          );
+        }
+      }
+
+      /// 🔥 CLEANUP
+      roomRef
+          .child("rematch/cancelledBy")
+          .remove();
+    }
+
+    /// 🔥 RESET ACTION
+    if (status == "" &&
+        requestedBy == "" &&
+        cancelledBy == "") {
+
+      lastRematchAction = "";
     }
 
     /// 🔥 AUTO DELETE ROOM
@@ -1432,13 +1580,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         players.isEmpty) {
 
       roomRef.remove();
-    }
-
-    /// 🔥 CANCEL DETECT
-    if (status == "" &&
-        requestedBy == "") {
-
-      closeDialogSafe();
     }
 
     /// 🔥 OPPONENT SIDE
@@ -1456,7 +1597,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       });
     }
 
-    /// 🔥 OPPONENT CANCEL DETECT
+    /// 🔥 CLOSE DIALOG
     if ((status == "" ||
         status == "rejected") &&
         dialogOpen) {
@@ -2461,6 +2602,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             "requestedBy": "",
 
             "status": "",
+
+            "cancelledBy": myId,
           });
 
           showToast("Request cancelled ❌");
@@ -2474,7 +2617,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           LoadingDialog.hide(context);
         }
 
-        showToast("Request cancelled ❌");
+        //showToast("Request cancelled ❌");
       },
     );
   }
@@ -2596,7 +2739,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               .update({
 
             "status": "rejected",
+            "cancelledBy": myId,
           });
+
+          /// 🔥 SELF TOAST
+          showToast("Replay rejected ❌");
 
         } catch (e) {
 
