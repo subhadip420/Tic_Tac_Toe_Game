@@ -117,7 +117,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   int turnDuration = 30;
   int serverStartTime = 0;
   bool isReplayResetting = false;
-
+  bool isSendingReplay = false;
   bool isTimeUp = false;
   int lastAlertSecond = -1;
 
@@ -2333,6 +2333,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
 
   Future<void> handleReplayRequest() async {
+
+    if (isSendingReplay) return;
+
+    isSendingReplay = true;
+
     playVibration(120);
 
     try {
@@ -2350,6 +2355,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     } catch (e) {
       print("Replay Error: $e");
       showToast("Something went wrong ❌");
+    }finally {
+
+      isSendingReplay = false;
     }
   }
 
