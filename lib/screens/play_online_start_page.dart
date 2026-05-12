@@ -75,7 +75,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   BuildContext? waitingDialogContext;
 
   bool isError = false;
-
+  bool isPageActive = true;
   bool hasHandledMatchAction = false;
 
   late AnimationController shakeController;
@@ -1948,15 +1948,37 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     });
 
     // 🔥 3. Web listener
+    // if (kIsWeb) {
+    //   setupWebListeners(
+    //     onOffline: () => _updateInternetState(false),
+    //     onOnline: () => _updateInternetState(true),
+    //   );
+    // }
+
     if (kIsWeb) {
+
       setupWebListeners(
-        onOffline: () => _updateInternetState(false),
-        onOnline: () => _updateInternetState(true),
+
+        onOffline: () {
+
+          if (!isPageActive || !mounted) return;
+
+          _updateInternetState(false);
+        },
+
+        onOnline: () {
+
+          if (!isPageActive || !mounted) return;
+
+          _updateInternetState(true);
+        },
       );
     }
   }
 
   void _updateInternetState(bool hasInternet) {
+    /// 🔥 PAGE NOT ACTIVE
+    if (!isPageActive) return;
     if (!mounted) return;
 
     if (!hasInternet) {
@@ -3407,7 +3429,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// 🔥 STOP OLD INTERNET LISTENER
     await internetSubscription?.cancel();
-
+    /// 🔥 PAGE NO LONGER ACTIVE
+    isPageActive = false;
     showToast("Match Started!");
 
     // 🔥 Navigate to game screen
