@@ -376,11 +376,32 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     super.dispose();
   }
 
+  ///old
+  // void closeGamePage() {
+  //   if (!isGamePageClosed && mounted) {
+  //     isGamePageClosed = true;
+  //     Navigator.of(context).pop(); // এই ফাংশন গেম পেজকে মাত্র একবারই কাটতে দেবে
+  //   }
+  // }
+
+  ///new
   void closeGamePage() {
-    if (!isGamePageClosed && mounted) {
-      isGamePageClosed = true;
-      Navigator.of(context).pop(); // এই ফাংশন গেম পেজকে মাত্র একবারই কাটতে দেবে
-    }
+
+    if (!mounted || isGamePageClosed) return;
+
+    isGamePageClosed = true;
+
+    /// 🔥 CLOSE ALL DIALOGS FIRST
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).popUntil((route) {
+
+      return route is PageRoute;
+    });
+
+    /// 🔥 CLOSE GAME PAGE
+    Navigator.of(context).pop();
   }
 
   void stopTickingSound() {
@@ -2960,13 +2981,28 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       onPositive: () async {
 
-        heartbeatTimer?.cancel();
+        isDisconnectDialogOpen = false;
 
-        /// 🔥 REMOVE ROOM
-        await roomRef.remove();
+        disconnectDialogCtx = null;
 
-        /// 🔥 CLOSE PAGE
-        closeGamePage();
+        /// 🔥 CLOSE DIALOG FIRST
+        final navigator = Navigator.of(
+          context,
+          rootNavigator: true,
+        );
+
+        if (navigator.canPop()) {
+
+          navigator.pop();
+        }
+
+        /// 🔥 SMALL DELAY
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+        );
+
+        /// 🔥 SAFE EXIT
+        await exitFromGame();
       },
     ).then((_) {
 
