@@ -58,7 +58,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   String dots = "";
   Timer? dotTimer;
 
-  String activeRoomCode = "";
+  //String activeRoomCode = "";
 
   StreamSubscription? internetSubscription;
   BuildContext? noInternetDialogCtx;
@@ -103,7 +103,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       checkUser(); // 🔥 ADD THIS
     });
 
-    initSetup(); // 🔥 new function
+    //initSetup(); // 🔥 new function
 
     borderController = AnimationController(
       vsync: this,
@@ -1752,44 +1752,44 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     await prefs.setInt("board_size", size);
   }
 
-  Future<void> initSetup() async {
-    await loadActiveRoom(); // 🔥 now allowed
-
-    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-
-    // 🔥 deep link logic AFTER state load
-    if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        String code = widget.initialCode!;
-
-        print("🔥 Deep link join request: $code");
-
-        if (isCodeGenerated && roomCode.isNotEmpty) {
-          print("🔥 SHOWING DIALOG");
-
-          await showCloseRoomBeforeJoinDialog();
-        } else {
-          print("🔥 DIRECT JOIN");
-
-          await handleDeepLinkJoin(code);
-        }
-      });
-    }
-  }
-
-  Future<void> loadActiveRoom() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    bool hasRoom = prefs.getBool("hasActiveRoom") ?? false;
-    String savedCode = prefs.getString("activeRoomCode") ?? "";
-
-    if (hasRoom && savedCode.isNotEmpty) {
-      isCodeGenerated = true;
-      roomCode = savedCode;
-    }
-
-    print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-  }
+  // Future<void> initSetup() async {
+  //   await loadActiveRoom(); // 🔥 now allowed
+  //
+  //   print("🔥 Loaded room: $roomCode | $isCodeGenerated");
+  //
+  //   // 🔥 deep link logic AFTER state load
+  //   if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //       String code = widget.initialCode!;
+  //
+  //       print("🔥 Deep link join request: $code");
+  //
+  //       if (isCodeGenerated && roomCode.isNotEmpty) {
+  //         print("🔥 SHOWING DIALOG");
+  //
+  //         await showCloseRoomBeforeJoinDialog();
+  //       } else {
+  //         print("🔥 DIRECT JOIN");
+  //
+  //         await handleDeepLinkJoin(code);
+  //       }
+  //     });
+  //   }
+  // }
+  //
+  // Future<void> loadActiveRoom() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //
+  //   bool hasRoom = prefs.getBool("hasActiveRoom") ?? false;
+  //   String savedCode = prefs.getString("activeRoomCode") ?? "";
+  //
+  //   if (hasRoom && savedCode.isNotEmpty) {
+  //     isCodeGenerated = true;
+  //     roomCode = savedCode;
+  //   }
+  //
+  //   print("🔥 Loaded room: $roomCode | $isCodeGenerated");
+  // }
 
   Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -2118,8 +2118,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       //final prefs = await SharedPreferences.getInstance();
 
-      await prefs.setBool("hasActiveRoom", true);
-      await prefs.setString("activeRoomCode", roomCode);
+      //await prefs.setBool("hasActiveRoom", true);
+      //await prefs.setString("activeRoomCode", roomCode);
 
       await dbRef.child("rooms/$newCode").set({
         "roomCode": newCode,
@@ -2172,8 +2172,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       //final prefs = await SharedPreferences.getInstance();
 
-      await prefs.setBool("hasActiveRoom", true);
-      await prefs.setString("activeRoomCode", roomCode);
+      //await prefs.setBool("hasActiveRoom", true);
+      //await prefs.setString("activeRoomCode", roomCode);
 
       await dbRef.child("rooms/$code").set({
         "roomCode": code,
@@ -3265,8 +3265,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       final prefs = await SharedPreferences.getInstance();
 
-      await prefs.remove("hasActiveRoom");
-      await prefs.remove("activeRoomCode");
+      //await prefs.remove("hasActiveRoom");
+      //await prefs.remove("activeRoomCode");
 
       print("✅ Room deleted from Firebase");
 
@@ -3704,7 +3704,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
 
     LoadingDialog.show(context, message: "Joining room...");
-    activeRoomCode = code;
+    //activeRoomCode = code;
 
     // 🔥 SAFE JOIN (atomic style)
     await dbRef.child("rooms/$code/players/player2").set({
