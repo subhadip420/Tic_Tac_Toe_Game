@@ -181,7 +181,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           isOfflineDialogShown = true;
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            showInternetDialog();
+            noInternetDialog();
           });
         }
       }
@@ -192,17 +192,32 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           // 🔥 Safe Pop: গেম পেজ না কেটে শুধু ইন্টারনেট ডায়ালগটাই কাটবে
           if (mounted && internetDialogCtx != null) {
-            //Navigator.pop(internetDialogCtx!);
-            if (internetDialogCtx != null &&
-                Navigator.of(
-                  internetDialogCtx!,
-                  rootNavigator: true,
-                ).canPop()) {
 
-              Navigator.of(
-                internetDialogCtx!,
-                rootNavigator: true,
-              ).pop();
+            // if (internetDialogCtx != null &&
+            //     Navigator.of(
+            //       internetDialogCtx!,
+            //       rootNavigator: true,
+            //     ).canPop()) {
+            //
+            //   Navigator.of(
+            //     internetDialogCtx!,
+            //     rootNavigator: true,
+            //   ).pop();
+            // }
+            /// 🔥 CLOSE INTERNET DIALOG
+            final navigator = Navigator.of(
+              context,
+              rootNavigator: true,
+            );
+
+            if (isDialogOpen &&
+                navigator.canPop()) {
+
+              navigator.pop();
+
+              isDialogOpen = false;
+
+              internetDialogCtx = null;
             }
             internetDialogCtx = null;
           }
@@ -247,7 +262,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         onOffline: () {
           if (!isOfflineDialogShown) {
             isOfflineDialogShown = true;
-            showInternetDialog();
+            noInternetDialog();
           }
         },
         onOnline: () async {
@@ -3602,8 +3617,74 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   // }
 
 
-  ///new showInternetDialog()
-  Future<void> showInternetDialog() async {
+  ///new showInternetDialog()1
+  // Future<void> showInternetDialog() async {
+  //
+  //   isDialogOpen = true;
+  //
+  //   await showAppDialog(
+  //     context: context,
+  //
+  //     /// 🔥 SAVE DIALOG CONTEXT
+  //     onDialogCreated: (dialogContext) {
+  //       internetDialogCtx = dialogContext;
+  //     },
+  //
+  //     title: "NO INTERNET",
+  //
+  //     message:
+  //     "Connection lost.\nPlease check your internet connection.",
+  //
+  //     positiveText: "TRY AGAIN",
+  //     negativeText: "",
+  //
+  //     barrierDismissible: false,
+  //
+  //     onPositive: () async {
+  //
+  //       if (kIsWeb) {
+  //
+  //         showToast("Waiting for internet... 🌐");
+  //         return;
+  //       }
+  //
+  //       bool hasInternet = await checkInternet();
+  //
+  //       if (hasInternet) {
+  //
+  //         isOfflineDialogShown = false;
+  //         isDialogOpen = false;
+  //
+  //         /// 🔥 CLOSE DIALOG
+  //         if (internetDialogCtx != null &&
+  //             Navigator.of(
+  //               internetDialogCtx!,
+  //               rootNavigator: true,
+  //             ).canPop()) {
+  //
+  //           Navigator.of(
+  //             internetDialogCtx!,
+  //             rootNavigator: true,
+  //           ).pop();
+  //         }
+  //
+  //       } else {
+  //
+  //         showToast("Still offline ❌");
+  //       }
+  //     },
+  //   ).then((_) {
+  //
+  //     isDialogOpen = false;
+  //     internetDialogCtx = null;
+  //   });
+  // }
+
+
+  ///new noInternetDialog()2
+  Future<void> noInternetDialog() async {
+
+    if (isDialogOpen) return;
 
     isDialogOpen = true;
 
@@ -3618,49 +3699,31 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       title: "NO INTERNET",
 
       message:
-      "Connection lost.\nPlease check your internet connection.",
+      "Connection lost.\nWaiting for internet connection...",
 
-      positiveText: "TRY AGAIN",
-      negativeText: "",
+      positiveText: "",
+      negativeText: "EXIT",
 
       barrierDismissible: false,
 
-      onPositive: () async {
+      showContentLoading: true,
 
-        if (kIsWeb) {
+      /// 🔥 EXIT GAME
+      onNegative: () async {
 
-          showToast("Waiting for internet... 🌐");
-          return;
-        }
+        isDialogOpen = false;
 
-        bool hasInternet = await checkInternet();
+        internetDialogCtx = null;
 
-        if (hasInternet) {
+        stopTickingSound();
 
-          isOfflineDialogShown = false;
-          isDialogOpen = false;
-
-          /// 🔥 CLOSE DIALOG
-          if (internetDialogCtx != null &&
-              Navigator.of(
-                internetDialogCtx!,
-                rootNavigator: true,
-              ).canPop()) {
-
-            Navigator.of(
-              internetDialogCtx!,
-              rootNavigator: true,
-            ).pop();
-          }
-
-        } else {
-
-          showToast("Still offline ❌");
-        }
+        /// 🔥 DIRECT EXIT
+        closeGamePage();
       },
     ).then((_) {
 
       isDialogOpen = false;
+
       internetDialogCtx = null;
     });
   }
