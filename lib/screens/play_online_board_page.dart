@@ -345,7 +345,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           gameOver = true;
         });
 
-        clockSoundPlayer.stop();
+        stopTickingSound();
         timerController.stop();
 
         onTimeUpOnline();
@@ -355,11 +355,39 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     loadSettings();
   }
 
+
+  @override
+  void dispose() {
+    heartbeatTimer?.cancel();
+    presenceSubscription?.cancel();
+
+    if (mySymbol.isNotEmpty) {
+      String playerKey = mySymbol == player1Symbol ? "player1" : "player2";
+      roomRef.child("exitStatus/$playerKey").onDisconnect().cancel();
+    }
+    resendTimer?.cancel();
+    confettiController.dispose();
+    glowController.dispose();
+    lineController.dispose();
+    connectivitySubscription.cancel();
+    nameScrollAnim.dispose();
+    nameScrollController.dispose();
+    stopTickingSound();
+    super.dispose();
+  }
+
   void closeGamePage() {
     if (!isGamePageClosed && mounted) {
       isGamePageClosed = true;
       Navigator.of(context).pop(); // এই ফাংশন গেম পেজকে মাত্র একবারই কাটতে দেবে
     }
+  }
+
+  void stopTickingSound() {
+
+    clockSoundPlayer.stop();
+
+    lastAlertSecond = -1;
   }
 
   Future<bool> checkInternet() async {
@@ -501,6 +529,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       scoreUpdate = {"score/player1": p1Score, "score/player2": p2Score};
     }
 
+    /// 🔥 STOP OLD TURN TICK SOUND
+    stopTickingSound();
+
     await roomRef.update({
       "board": newBoard,
       "currentTurn": result["winner"] == "" ? nextTurn : "",
@@ -516,24 +547,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     });
   }
 
-  @override
-  void dispose() {
-    heartbeatTimer?.cancel();
-    presenceSubscription?.cancel();
 
-    if (mySymbol.isNotEmpty) {
-      String playerKey = mySymbol == player1Symbol ? "player1" : "player2";
-      roomRef.child("exitStatus/$playerKey").onDisconnect().cancel();
-    }
-    resendTimer?.cancel();
-    confettiController.dispose();
-    glowController.dispose();
-    lineController.dispose();
-    connectivitySubscription.cancel();
-    nameScrollAnim.dispose();
-    nameScrollController.dispose();
-    super.dispose();
-  }
 
   Future loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1051,6 +1065,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           .addPostFrameCallback((_) {
 
         if (mounted) {
+          stopTickingSound();
           showOpponentExitDialog();
         }
       });
@@ -1136,7 +1151,27 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     });
   }
 
+  ///old updateBoardData
+  // void updateBoardData(
+  //     Map<String, dynamic> data,
+  //     ) {
+  //
+  //   isTimeUp = data["timeUp"] ?? false;
+  //
+  //   boardSize = data["boardSize"] ?? 3;
+  //
+  //   board = List<String>.from(
+  //     data["board"],
+  //   );
+  //
+  //   currentTurn =
+  //       data["currentTurn"] ?? "";
+  //
+  //   lastMove =
+  //       data["lastMove"] ?? -1;
+  // }
 
+  ///new updateBoardData
   void updateBoardData(
       Map<String, dynamic> data,
       ) {
@@ -1149,13 +1184,21 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       data["board"],
     );
 
+    /// 🔥 SAVE OLD TURN
+    String oldTurn = currentTurn;
+
     currentTurn =
         data["currentTurn"] ?? "";
+
+    /// 🔥 TURN CHANGED
+    if (oldTurn != currentTurn) {
+
+      stopTickingSound();
+    }
 
     lastMove =
         data["lastMove"] ?? -1;
   }
-
 
   void updateBoardSound(
       Map<String, dynamic> data,
@@ -1307,6 +1350,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     if (firebaseWinner.isNotEmpty &&
         !hasShownResult) {
+
+      stopTickingSound();
 
       hasShownResult = true;
 
@@ -1506,9 +1551,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         timerController.reset();
 
-        clockSoundPlayer.stop();
-
-        lastAlertSecond = -1;
+        stopTickingSound();
 
         WidgetsBinding.instance
             .addPostFrameCallback((_) {
@@ -1522,7 +1565,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     if (status == "rejected") {
 
       closeDialogSafe();
-
+      stopTickingSound();
       /// 🔥 PREVENT MULTIPLE TOAST
       if (lastRematchAction != actionKey) {
 
@@ -1544,6 +1587,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         cancelledBy.isNotEmpty) {
 
       closeDialogSafe();
+      stopTickingSound();
 
       /// 🔥 PREVENT MULTIPLE TOAST
       if (lastRematchAction != actionKey) {
@@ -1748,6 +1792,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         if (mounted) {
 
+          stopTickingSound();
           showOpponentExitDialog();
         }
       });
@@ -1795,7 +1840,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       isTimeUp = true;
       gameOver = true;
 
-      clockSoundPlayer.stop();
+      stopTickingSound();
       timerController.stop();
 
       onTimeUpOnline();
@@ -1818,6 +1863,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     } else {
       p2Score++;
     }
+
+    stopTickingSound();
 
     await roomRef.update({
       "winner": winner,
@@ -2974,7 +3021,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   Future<void> exitFromGame() async {
-
+    stopTickingSound();
     heartbeatTimer?.cancel();
 
     String playerKey =
@@ -3376,9 +3423,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     timerController.reset();
 
-    clockSoundPlayer.stop();
-
-    lastAlertSecond = -1;
+    stopTickingSound();
 
     serverStartTime = 0;
 
