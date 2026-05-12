@@ -120,7 +120,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   bool isSendingReplay = false;
   bool isTimeUp = false;
   int lastAlertSecond = -1;
-
+  bool isExitDialogOpen = false;
   String lastRematchAction = "";
 
   @override
@@ -474,7 +474,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               !isOfflineDialogShown) {
             isDisconnectDialogOpen = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) showDisconnectDialog();
+              if (mounted) showOpponentDisconnectDialog();
             });
           }
         }
@@ -1792,7 +1792,24 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         if (mounted) {
 
+          /// 🔥 CLOSE OLD EXIT DIALOG
+          if (isExitDialogOpen) {
+
+            final navigator = Navigator.of(
+              context,
+              rootNavigator: true,
+            );
+
+            if (navigator.canPop()) {
+
+              navigator.pop();
+            }
+
+            isExitDialogOpen = false;
+          }
+
           stopTickingSound();
+
           showOpponentExitDialog();
         }
       });
@@ -2917,7 +2934,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
 
   ///new
-  Future<void> showDisconnectDialog() async {
+  Future<void> showOpponentDisconnectDialog() async {
 
     isDisconnectDialogOpen = true;
 
@@ -2995,7 +3012,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
   ///new
   Future<void> showExitDialog() async {
-
+    isExitDialogOpen = true;
     await showAppDialog(
       context: context,
 
@@ -3010,14 +3027,17 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       barrierDismissible: false,
 
       onNegative: () {
+        isExitDialogOpen = false;
         // 🔥 nothing needed
       },
 
       onPositive: () async {
-
+        isExitDialogOpen = false;
         await exitFromGame();
       },
     );
+    /// 🔥 SAFETY
+    isExitDialogOpen = false;
   }
 
   Future<void> exitFromGame() async {
