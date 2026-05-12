@@ -2987,14 +2987,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       message:
       "Opponent disconnected.\nWaiting for reconnection...",
 
-      positiveText: "LEAVE GAME",
-      negativeText: "",
+      positiveText: "",
+      negativeText: "LEAVE GAME",
 
       barrierDismissible: false,
 
       showContentLoading: true,
 
-      onPositive: () async {
+      onNegative: () async {
 
         isDisconnectDialogOpen = false;
 
