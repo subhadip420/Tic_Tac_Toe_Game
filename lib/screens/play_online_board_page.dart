@@ -3162,7 +3162,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
 
-  ///old
+  ///old OpponentExitDialog
   // void showOpponentExitDialog() {
   //   showDialog(
   //     context: context,
@@ -3194,6 +3194,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //new
 
   //new
+
+  ///new OpponentExitDialog
   Future<void> showOpponentExitDialog() async {
 
     await showAppDialog(
