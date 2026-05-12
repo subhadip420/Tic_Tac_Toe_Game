@@ -43,7 +43,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   bool isCodeGenerated = false;
   bool isButtonDisabled = false; // NEW
   bool opponentJoined = false; // NEW
-
+  /// 🔥 HEARTBEAT TIMER
+  Timer? roomHeartbeatTimer;
   int countdown = 300; // 5 min
   Timer? timer;
   late double progress = countdown / 300;
@@ -82,6 +83,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   late Animation<double> shakeAnimation;
   AnimationController? borderController;
 
+  StreamSubscription? publicRoomListener;
+  Timer? publicRoomRefreshTimer;
   final DatabaseReference dbRef = FirebaseDatabase.instanceFor(
     app: FirebaseDatabase.instance.app,
     databaseURL:
@@ -98,7 +101,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     loadUser();
     loadSettings();
     cleanUpDeadRooms();
-
+    startPublicRoomRefresh();
     Future.delayed(Duration.zero, () {
       checkUser(); // 🔥 ADD THIS
     });
@@ -168,12 +171,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     roomListener?.cancel();
     super.dispose();
     instance = null; // 🔥 ADD
-    roomListener?.cancel();
+    publicRoomListener?.cancel();
     dotTimer?.cancel();
     internetSubscription?.cancel();
     shakeController.dispose();
     borderController?.dispose();
     hasHandledMatchAction = true;
+    publicRoomRefreshTimer?.cancel();
   }
 
 
@@ -1854,48 +1858,244 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
   }
 
-  void listenPublicRooms() {
-    roomListener?.cancel();
-    dbRef.child("rooms").onValue.listen((event) {
-      if (!mounted) return; // 🔥 MOST IMPORTANT
-      final data = event.snapshot.value;
+  /// 🔥 START ROOM HEARTBEAT
+  void startRoomHeartbeat(String roomCode) {
 
-      if (data == null) {
-        setState(() => publicRooms = []);
-        return;
+    /// 🔥 STOP OLD TIMER
+    roomHeartbeatTimer?.cancel();
+
+    roomHeartbeatTimer = Timer.periodic(
+      const Duration(seconds: 5),
+          (_) async {
+
+        try {
+
+          await dbRef
+              .child(
+            "rooms/$roomCode/heartbeat/player1",
+          )
+              .set(
+            DateTime.now()
+                .millisecondsSinceEpoch,
+          );
+
+        } catch (e) {
+
+          print(
+            "Heartbeat Error: $e",
+          );
+        }
+      },
+    );
+  }
+
+
+  /// 🔥 STOP HEARTBEAT
+  void stopRoomHeartbeat() {
+
+    if (roomHeartbeatTimer?.isActive ?? false) {
+
+      roomHeartbeatTimer?.cancel();
+
+      print("🔥 Room heartbeat stopped");
+    }
+  }
+
+  void startPublicRoomRefresh() {
+
+    publicRoomRefreshTimer?.cancel();
+
+    publicRoomRefreshTimer =
+        Timer.periodic(
+          const Duration(seconds: 3),
+              (_) {
+
+            if (!mounted) return;
+
+            updatePublicRoomsFromCache();
+          },
+        );
+  }
+
+  void updatePublicRoomsFromCache() {
+
+    List<Map> temp = [];
+
+    int currentTime =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    for (var room in publicRooms) {
+
+      int heartbeat =
+          room["heartbeat"] ?? 0;
+
+      if (heartbeat > 0) {
+
+        bool isAlive =
+            (currentTime - heartbeat)
+                <= 15000;
+
+        if (!isAlive) continue;
       }
 
-      Map rooms = data as Map;
+      temp.add(room);
+    }
 
-      List<Map> temp = [];
+    if (!mounted) return;
 
-      rooms.forEach((key, value) {
-        if (value == null) return;
+    setState(() {
 
-        // 🔥 define creatorId here
-        //String creatorId = value["players"]?["player1"]?["uid"] ?? "";
-
-        if (value["roomType"] == "public" && value["status"] == "waiting") {
-          temp.add({
-            "code": key,
-            "name": value["players"]["player1"]["uid"] ?? "Player",
-            "boardSize": value["boardSize"] ?? 3,
-            "creatorId": value["creatorId"],
-            "createdAt": value["createdAt"] ?? 0,
-          });
-        }
-      });
-
-      // 🔥 latest first
-      temp = temp.reversed.toList();
-
-      if (!mounted) return; // 🔥 MOST IMPORTANT
-      setState(() {
-        publicRooms = temp;
-      });
+      publicRooms = temp;
     });
   }
 
+  void updatePublicRooms(dynamic data) {
+
+    if (data == null) {
+
+      setState(() {
+
+        publicRooms = [];
+      });
+
+      return;
+    }
+
+    Map rooms = data as Map;
+
+    List<Map> temp = [];
+
+    int currentTime =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    rooms.forEach((key, value) {
+
+      if (value == null) return;
+
+      if (value["roomType"] == "public" &&
+          value["status"] == "waiting") {
+
+        final heartbeatData =
+        value["heartbeat"];
+
+        int heartbeat = 0;
+
+        if (heartbeatData != null &&
+            heartbeatData["player1"] != null) {
+
+          heartbeat =
+          heartbeatData["player1"];
+        }
+
+        /// 🔥 HEARTBEAT EXPIRED
+        if (heartbeat > 0) {
+
+          bool isAlive =
+              (currentTime - heartbeat)
+                  <= 15000;
+
+          if (!isAlive) return;
+        }
+
+        temp.add({
+
+          "code": key,
+
+          "name":
+          value["players"]
+          ["player1"]
+          ["uid"] ??
+              "Player",
+
+          "boardSize":
+          value["boardSize"] ?? 3,
+
+          "creatorId":
+          value["creatorId"],
+
+          "createdAt":
+          value["createdAt"] ?? 0,
+
+          /// 🔥 SAVE HEARTBEAT
+          "heartbeat": heartbeat,
+        });
+      }
+    });
+
+    temp = temp.reversed.toList();
+
+    if (!mounted) return;
+
+    setState(() {
+
+      publicRooms = temp;
+    });
+  }
+
+  ///old listenPublicRooms
+  // void listenPublicRooms() {
+  //   roomListener?.cancel();
+  //   dbRef.child("rooms").onValue.listen((event) {
+  //     if (!mounted) return; // 🔥 MOST IMPORTANT
+  //     final data = event.snapshot.value;
+  //
+  //     if (data == null) {
+  //       setState(() => publicRooms = []);
+  //       return;
+  //     }
+  //
+  //     Map rooms = data as Map;
+  //
+  //     List<Map> temp = [];
+  //
+  //     rooms.forEach((key, value) {
+  //       if (value == null) return;
+  //
+  //       // 🔥 define creatorId here
+  //       //String creatorId = value["players"]?["player1"]?["uid"] ?? "";
+  //
+  //       if (value["roomType"] == "public" && value["status"] == "waiting") {
+  //         temp.add({
+  //           "code": key,
+  //           "name": value["players"]["player1"]["uid"] ?? "Player",
+  //           "boardSize": value["boardSize"] ?? 3,
+  //           "creatorId": value["creatorId"],
+  //           "createdAt": value["createdAt"] ?? 0,
+  //         });
+  //       }
+  //     });
+  //
+  //     // 🔥 latest first
+  //     temp = temp.reversed.toList();
+  //
+  //     if (!mounted) return; // 🔥 MOST IMPORTANT
+  //     setState(() {
+  //       publicRooms = temp;
+  //     });
+  //   });
+  // }
+
+
+  ///new listenPublicRooms
+  void listenPublicRooms() {
+
+    publicRoomListener?.cancel();
+
+    publicRoomListener =
+        dbRef
+            .child("rooms")
+            .onValue
+            .listen((event) {
+
+          if (!mounted) return;
+
+          updatePublicRooms(
+            event.snapshot.value,
+          );
+        });
+  }
   /////////////////////////////////////////////
   // void addCharacter(String char) {
   //   if (enteredCode.length >= 6) return;
@@ -2027,7 +2227,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   ///new
   Future<void> _exitFromNoInternet() async {
-
+    /// 🔥 STOP ROOM HEARTBEAT
+    stopRoomHeartbeat();
     /// 🔥 RESET FLAGS
     noInternetDialogCtx = null;
     isOfflineDialogShowing = false;
@@ -2068,9 +2269,95 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     print("✅ Done");
   }
 
+
+  ///new PublicRoom
+  // Future<void> createPublicRoomInFirebase() async {
+  //
+  //   // 🔥 already room check
+  //   if (isCodeGenerated) {
+  //
+  //     showToast("Room already created!");
+  //     return;
+  //   }
+  //
+  //   bool isConnected = await checkInternet();
+  //
+  //   if (!isConnected) {
+  //
+  //     showToast("No Internet Connection ⚠️");
+  //     return;
+  //   }
+  //
+  //   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  //   Random random = Random();
+  //
+  //   String newCode = List.generate(6, (index) {
+  //     return chars[random.nextInt(chars.length)];
+  //   }).join();
+  //
+  //   setState(() {
+  //     roomCode = newCode;
+  //     isCodeGenerated = true;
+  //     isButtonDisabled = true;
+  //     opponentJoined = false;
+  //     countdown = 300;
+  //     isPublicRoom = true; // 🔥 ADD THIS
+  //   });
+  //
+  //   startTimer();
+  //   startDotAnimation();
+  //
+  //   borderController?.reset();
+  //   borderController?.forward();
+  //
+  //   LoadingDialog.show(context, message: "Creating Room...");
+  //
+  //   // 🔥 CREATE PUBLIC ROOM
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     String userId = prefs.getString("nickname") ?? "Player";
+  //
+  //     //final prefs = await SharedPreferences.getInstance();
+  //
+  //     //await prefs.setBool("hasActiveRoom", true);
+  //     //await prefs.setString("activeRoomCode", roomCode);
+  //
+  //     await dbRef.child("rooms/$newCode").set({
+  //       "roomCode": newCode,
+  //       "creatorId": userId,
+  //       "createdAt": DateTime.now().millisecondsSinceEpoch,
+  //       "status": "waiting",
+  //
+  //       // 🔥 IMPORTANT
+  //       "roomType": "public",
+  //
+  //       "boardSize": selectedBoardSize,
+  //
+  //       "players": {
+  //         "player1": {"uid": userId, "symbol": "O"},
+  //       },
+  //
+  //       "exitStatus": {"player1": "online", "player2": "online"},
+  //
+  //       "currentTurn": "",
+  //       "board": List.filled(selectedBoardSize * selectedBoardSize, ""),
+  //       "winner": "",
+  //     });
+  //
+  //     listenForOpponent(newCode);
+  //
+  //     showToast("Finding opponent...");
+  //   } catch (e) {
+  //
+  //     print("❌ Firebase ERROR: $e");
+  //   }finally {
+  //
+  //     LoadingDialog.hide(context);
+  //   }
+  // }
+
+///new PublicRoom
   Future<void> createPublicRoomInFirebase() async {
-
-
 
     // 🔥 already room check
     if (isCodeGenerated) {
@@ -2079,77 +2366,148 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    bool isConnected = await checkInternet();
+    bool isConnected =
+    await checkInternet();
 
     if (!isConnected) {
 
-      showToast("No Internet Connection ⚠️");
+      showToast(
+        "No Internet Connection ⚠️",
+      );
+
       return;
     }
 
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     Random random = Random();
 
-    String newCode = List.generate(6, (index) {
-      return chars[random.nextInt(chars.length)];
-    }).join();
+    String newCode = List.generate(
+      6,
+          (index) {
+
+        return chars[
+        random.nextInt(
+          chars.length,
+        )
+        ];
+      },
+    ).join();
 
     setState(() {
+
       roomCode = newCode;
+
       isCodeGenerated = true;
+
       isButtonDisabled = true;
+
       opponentJoined = false;
+
       countdown = 300;
-      isPublicRoom = true; // 🔥 ADD THIS
+
+      isPublicRoom = true;
     });
 
     startTimer();
+
     startDotAnimation();
 
     borderController?.reset();
+
     borderController?.forward();
 
-    LoadingDialog.show(context, message: "Creating Room...");
+    LoadingDialog.show(
+      context,
+      message: "Creating Room...",
+    );
 
-    // 🔥 CREATE PUBLIC ROOM
     try {
-      final prefs = await SharedPreferences.getInstance();
-      String userId = prefs.getString("nickname") ?? "Player";
 
-      //final prefs = await SharedPreferences.getInstance();
+      final prefs =
+      await SharedPreferences
+          .getInstance();
 
-      //await prefs.setBool("hasActiveRoom", true);
-      //await prefs.setString("activeRoomCode", roomCode);
+      String userId =
+          prefs.getString(
+            "nickname",
+          ) ??
+              "Player";
 
-      await dbRef.child("rooms/$newCode").set({
+      /// 🔥 CURRENT TIME
+      int now =
+          DateTime.now()
+              .millisecondsSinceEpoch;
+
+      await dbRef
+          .child("rooms/$newCode")
+          .set({
+
         "roomCode": newCode,
+
         "creatorId": userId,
-        "createdAt": DateTime.now().millisecondsSinceEpoch,
+
+        "createdAt": now,
+
         "status": "waiting",
 
-        // 🔥 IMPORTANT
+        /// 🔥 PUBLIC ROOM
         "roomType": "public",
 
-        "boardSize": selectedBoardSize,
+        "boardSize":
+        selectedBoardSize,
 
         "players": {
-          "player1": {"uid": userId, "symbol": "O"},
+
+          "player1": {
+
+            "uid": userId,
+
+            "symbol": "O",
+          },
         },
 
-        "exitStatus": {"player1": "online", "player2": "online"},
+        /// 🔥 HEARTBEAT
+        "heartbeat": {
+
+          "player1": now,
+        },
+
+        "exitStatus": {
+
+          "player1": "online",
+
+          "player2": "online",
+        },
 
         "currentTurn": "",
-        "board": List.filled(selectedBoardSize * selectedBoardSize, ""),
+
+        "board": List.filled(
+          selectedBoardSize *
+              selectedBoardSize,
+          "",
+        ),
+
         "winner": "",
       });
 
+      /// 🔥 START HEARTBEAT
+      startRoomHeartbeat(newCode);
+
       listenForOpponent(newCode);
 
-      showToast("Finding opponent...");
+      showToast(
+        "Finding opponent...",
+      );
+
     } catch (e) {
 
-      print("❌ Firebase ERROR: $e");
-    }finally {
+      print(
+        "❌ Firebase ERROR: $e",
+      );
+
+    } finally {
 
       LoadingDialog.hide(context);
     }
@@ -3260,6 +3618,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       dotTimer?.cancel();
       borderController?.stop();
 
+      stopRoomHeartbeat();
+
       // 🔥 delete from Firebase
       await dbRef.child("rooms/$code").remove();
 
@@ -3441,6 +3801,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       ),
     );
 
+    stopRoomHeartbeat();
     // 🔥 UI reset (optional)
     setState(() {
       roomCode = "XXXXXX";
