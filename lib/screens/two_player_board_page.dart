@@ -901,10 +901,26 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           child: Tooltip(
             message: "Back",
             child: GestureDetector(
+              // onTap: () async {
+              //   await showExitDialog();
+              //   // playVibration(120);
+              //   // Navigator.pop(context);
+              // },
               onTap: () async {
-                await showExitDialog();
-                // playVibration(120);
-                // Navigator.pop(context);
+
+                /// 🔥 MATCH RUNNING
+                if (!gameOver &&
+                    board.any((e) => e != "")) {
+
+                  await showExitDialog();
+
+                } else {
+
+                  /// 🔥 DIRECT BACK
+                  playVibration(120);
+
+                  Navigator.pop(context);
+                }
               },
               child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
             ),
