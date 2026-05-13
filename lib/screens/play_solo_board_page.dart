@@ -848,6 +848,34 @@ class _GameBoardPageState extends State<GameBoardPage>
     return board.contains("X") || board.contains("O");
   }
 
+  Future<void> showResetGameDialog() async {
+
+    await showAppDialog(
+      context: context,
+
+      title: "RESET GAME",
+
+      message:
+      "Are you sure you want to reset the current match?",
+
+      positiveText: "RESET",
+
+      negativeText: "CANCEL",
+
+      barrierDismissible: true,
+
+      onPositive: () async {
+
+        resetGame();
+      },
+
+      onNegative: () {
+
+        // dialog auto close
+      },
+    );
+  }
+
   void resetGame() {
     playVibration(120);
     setState(() {
@@ -1596,7 +1624,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                             resetPressed = false;
                           });
 
-                          resetGame();
+                          //resetGame();
+                          showResetGameDialog();
                         },
 
                         onTapCancel: () {
