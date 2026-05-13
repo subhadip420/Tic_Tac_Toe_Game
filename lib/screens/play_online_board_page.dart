@@ -11,6 +11,7 @@ import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
 import 'two_player_draw_board_page.dart';
@@ -3817,130 +3818,237 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   );
   // }
 
+
+  ///old
+  // void showSettingsMenu() {
+  //   showMenu(
+  //     context: context,
+  //     position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
+  //
+  //     color: isDark ? const Color(0xFF344364) : Colors.white,
+  //
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+  //
+  //     items: [
+  //       PopupMenuItem(
+  //         enabled: false,
+  //         child: SizedBox(
+  //           width: 200,
+  //           child: StatefulBuilder(
+  //             builder: (context, setStateMenu) {
+  //               return Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   // 🌙 THEME
+  //                   settingsTile(
+  //                     icon: isDark ? Icons.dark_mode : Icons.light_mode,
+  //                     title: "Dark Theme",
+  //                     value: isDark,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //                       Navigator.pop(context);
+  //                       playVibration(130);
+  //
+  //                       setState(() {
+  //                         isDark = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("theme_dark", isDark);
+  //                     },
+  //                   ),
+  //
+  //                   // 🔊 SOUND
+  //                   settingsTile(
+  //                     icon: soundOn ? Icons.volume_up : Icons.volume_off,
+  //                     title: "Sound",
+  //                     value: soundOn,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //
+  //                       playVibration(130);
+  //
+  //                       setState(() {
+  //                         soundOn = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("sound_on", soundOn);
+  //                     },
+  //                   ),
+  //
+  //                   // 📳 VIBRATION
+  //                   settingsTile(
+  //                     icon: vibrationOn
+  //                         ? Icons.vibration
+  //                         : Icons.phonelink_erase,
+  //                     title: "Vibration",
+  //                     value: vibrationOn,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //
+  //                       setState(() {
+  //                         vibrationOn = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("vibration_on", vibrationOn);
+  //                     },
+  //                   ),
+  //                 ],
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+  //
+  // Widget settingsTile({
+  //   required IconData icon,
+  //   required String title,
+  //   required bool value,
+  //   required Function(bool) onChanged,
+  // }) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 1),
+  //     child: Row(
+  //       children: [
+  //         Icon(icon, size: 20, color: Colors.blueAccent),
+  //         const SizedBox(width: 8),
+  //
+  //         Expanded(
+  //           child: Text(
+  //             title,
+  //             style: TextStyle(
+  //               color: isDark ? Colors.white : Colors.black,
+  //               fontWeight: FontWeight.w500,
+  //             ),
+  //           ),
+  //         ),
+  //
+  //         Transform.scale(
+  //           scale: 0.8,
+  //           child: Switch(
+  //             value: value,
+  //             activeThumbColor: Colors.blueAccent,
+  //             onChanged: onChanged,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  ///new
   void showSettingsMenu() {
-    showMenu(
+
+    showGlassSettingsMenu(
+
       context: context,
-      position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
 
-      color: isDark ? const Color(0xFF344364) : Colors.white,
-
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      isDark: isDark,
 
       items: [
-        PopupMenuItem(
-          enabled: false,
-          child: SizedBox(
-            width: 200,
-            child: StatefulBuilder(
-              builder: (context, setStateMenu) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 🌙 THEME
-                    settingsTile(
-                      icon: isDark ? Icons.dark_mode : Icons.light_mode,
-                      title: "Dark Theme",
-                      value: isDark,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        Navigator.pop(context);
-                        playVibration(130);
 
-                        setState(() {
-                          isDark = value;
-                        });
+        /// 🌙 THEME
+        SettingsMenuItem(
 
-                        setStateMenu(() {});
+          icon: isDark
+              ? Icons.dark_mode
+              : Icons.light_mode,
 
-                        prefs.setBool("theme_dark", isDark);
-                      },
-                    ),
+          title: "Dark Theme",
 
-                    // 🔊 SOUND
-                    settingsTile(
-                      icon: soundOn ? Icons.volume_up : Icons.volume_off,
-                      title: "Sound",
-                      value: soundOn,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
+          value: isDark,
 
-                        playVibration(130);
+          onChanged: (value) async {
 
-                        setState(() {
-                          soundOn = value;
-                        });
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
 
-                        setStateMenu(() {});
+            playVibration(130);
 
-                        prefs.setBool("sound_on", soundOn);
-                      },
-                    ),
+            setState(() {
 
-                    // 📳 VIBRATION
-                    settingsTile(
-                      icon: vibrationOn
-                          ? Icons.vibration
-                          : Icons.phonelink_erase,
-                      title: "Vibration",
-                      value: vibrationOn,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
+              isDark = value;
+            });
 
-                        setState(() {
-                          vibrationOn = value;
-                        });
+            await prefs.setBool(
+              "theme_dark",
+              isDark,
+            );
+          },
+        ),
 
-                        setStateMenu(() {});
+        /// 🔊 SOUND
+        SettingsMenuItem(
 
-                        prefs.setBool("vibration_on", vibrationOn);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+          icon: soundOn
+              ? Icons.volume_up
+              : Icons.volume_off,
+
+          title: "Sound",
+
+          value: soundOn,
+
+          onChanged: (value) async {
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            playVibration(130);
+
+            setState(() {
+
+              soundOn = value;
+            });
+
+            await prefs.setBool(
+              "sound_on",
+              soundOn,
+            );
+          },
+        ),
+
+        /// 📳 VIBRATION
+        SettingsMenuItem(
+
+          icon: vibrationOn
+              ? Icons.vibration
+              : Icons.phonelink_erase,
+
+          title: "Vibration",
+
+          value: vibrationOn,
+
+          onChanged: (value) async {
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            setState(() {
+
+              vibrationOn = value;
+            });
+
+            await prefs.setBool(
+              "vibration_on",
+              vibrationOn,
+            );
+          },
         ),
       ],
-    );
-  }
-
-  Widget settingsTile({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required Function(bool) onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Colors.blueAccent),
-          const SizedBox(width: 8),
-
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: isDark ? Colors.white : Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-
-          Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: value,
-              activeThumbColor: Colors.blueAccent,
-              onChanged: onChanged,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

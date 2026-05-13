@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 
 class DrawBoardPage extends StatefulWidget {
@@ -62,159 +63,278 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     selectedColor = isDark ? Colors.white : Colors.black;
   }
 
+  ///old
+  // void showSettingsMenu() {
+  //   showMenu(
+  //     context: context,
+  //     position: RelativeRect.fromLTRB(
+  //       MediaQuery
+  //           .of(context)
+  //           .size
+  //           .width,
+  //       kToolbarHeight,
+  //       0,
+  //       0,
+  //     ),
+  //
+  //     color: isDark ? const Color(0xFF344364) : Colors.white,
+  //
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //
+  //     items: [
+  //       PopupMenuItem(
+  //         enabled: false,
+  //         child: SizedBox(
+  //           width: 200,
+  //           child: StatefulBuilder(
+  //             builder: (context, setStateMenu) {
+  //               return Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   // 🌙 THEME TOGGLE
+  //                   settingsTile(
+  //                     icon: isDark ? Icons.dark_mode : Icons.light_mode,
+  //                     title: "Dark Theme",
+  //                     value: isDark,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                       await SharedPreferences.getInstance();
+  //
+  //                       setState(() {
+  //                         isDark = value;
+  //                         setDefaultColor(); // ✅ RESET COLOR
+  //                       });
+  //
+  //                       // setStateMenu(() {});
+  //                       prefs.setBool("theme_dark", isDark);
+  //                       Navigator.pop(context);
+  //                     },
+  //                   ),
+  //
+  //                   const Divider(height: 10, thickness: 0.6),
+  //
+  //                   // 🎮 AUTO GRID
+  //                   settingsTile(
+  //                     icon: Icons.grid_on,
+  //                     title: "Auto Grid",
+  //                     value: autoGrid,
+  //                     onChanged: (value) {
+  //                       setState(() {
+  //                         autoGrid = value;
+  //                       });
+  //                       setStateMenu(() {});
+  //                     },
+  //                   ),
+  //
+  //
+  //
+  //                   //
+  //                   // // 🎯 SNAP TO BOX
+  //                   // settingsTile(
+  //                   //   icon: Icons.crop_square,
+  //                   //   title: "Snap to Box",
+  //                   //   value: snapToBox,
+  //                   //   onChanged: (value) {
+  //                   //     setState(() {
+  //                   //       snapToBox = value;
+  //                   //     });
+  //                   //     setStateMenu(() {});
+  //                   //   },
+  //                   // ),
+  //                   //
+  //                   // // ❌⭕ DETECT XO
+  //                   // settingsTile(
+  //                   //   icon: Icons.gesture,
+  //                   //   title: "Detect X / O",
+  //                   //   value: detectXO,
+  //                   //   onChanged: (value) {
+  //                   //     setState(() {
+  //                   //       detectXO = value;
+  //                   //     });
+  //                   //     setStateMenu(() {});
+  //                   //   },
+  //                   // ),
+  //
+  //                   // 🔄 TURN BASED MODE
+  //                   // settingsTile(
+  //                   //   icon: Icons.swap_horiz,
+  //                   //   title: "Turn Based Mode",
+  //                   //   value: turnBased,
+  //                   //   onChanged: (value) {
+  //                   //     setState(() {
+  //                   //       turnBased = value;
+  //                   //     });
+  //                   //     setStateMenu(() {});
+  //                   //   },
+  //                   // ),
+  //                 ],
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+  //
+  // Widget settingsTile({
+  //   required IconData icon,
+  //   required String title,
+  //   required bool value,
+  //   required Function(bool) onChanged,
+  // }) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 2),
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min, // ✅ IMPORTANT
+  //
+  //       children: [
+  //         Icon(icon, size: 20, color: Colors.blueAccent),
+  //         const SizedBox(width: 8),
+  //
+  //         Expanded(
+  //           // ✅ takes only needed space
+  //           child: Text(
+  //             title,
+  //             style: TextStyle(
+  //               fontSize: 13,
+  //               color: isDark ? Colors.white : Colors.black,
+  //             ),
+  //           ),
+  //         ),
+  //
+  //         // ✅ SHRINK SWITCH
+  //         Transform.scale(
+  //           scale: 0.8, // 👈 make switch smaller
+  //
+  //           child: Switch(
+  //             value: value,
+  //             activeThumbColor: Colors.blueAccent,
+  //             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  //             // 👈 remove extra padding
+  //             onChanged: onChanged,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  ///new
   void showSettingsMenu() {
-    showMenu(
+
+    showGlassSettingsMenu(
+
       context: context,
-      position: RelativeRect.fromLTRB(
-        MediaQuery
-            .of(context)
-            .size
-            .width,
-        kToolbarHeight,
-        0,
-        0,
-      ),
 
-      color: isDark ? const Color(0xFF344364) : Colors.white,
-
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      isDark: isDark,
 
       items: [
-        PopupMenuItem(
-          enabled: false,
-          child: SizedBox(
-            width: 200,
-            child: StatefulBuilder(
-              builder: (context, setStateMenu) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 🌙 THEME TOGGLE
-                    settingsTile(
-                      icon: isDark ? Icons.dark_mode : Icons.light_mode,
-                      title: "Dark Theme",
-                      value: isDark,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
 
-                        setState(() {
-                          isDark = value;
-                          setDefaultColor(); // ✅ RESET COLOR
-                        });
+        /// 🌙 THEME
+        SettingsMenuItem(
 
-                        // setStateMenu(() {});
-                        prefs.setBool("theme_dark", isDark);
-                        Navigator.pop(context);
-                      },
-                    ),
+          icon: isDark
+              ? Icons.dark_mode
+              : Icons.light_mode,
 
-                    const Divider(height: 10, thickness: 0.6),
+          title: "Dark Theme",
 
-                    // 🎮 AUTO GRID
-                    settingsTile(
-                      icon: Icons.grid_on,
-                      title: "Auto Grid",
-                      value: autoGrid,
-                      onChanged: (value) {
-                        setState(() {
-                          autoGrid = value;
-                        });
-                        setStateMenu(() {});
-                      },
-                    ),
+          value: isDark,
 
+          onChanged: (value) async {
 
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
 
-                    //
-                    // // 🎯 SNAP TO BOX
-                    // settingsTile(
-                    //   icon: Icons.crop_square,
-                    //   title: "Snap to Box",
-                    //   value: snapToBox,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       snapToBox = value;
-                    //     });
-                    //     setStateMenu(() {});
-                    //   },
-                    // ),
-                    //
-                    // // ❌⭕ DETECT XO
-                    // settingsTile(
-                    //   icon: Icons.gesture,
-                    //   title: "Detect X / O",
-                    //   value: detectXO,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       detectXO = value;
-                    //     });
-                    //     setStateMenu(() {});
-                    //   },
-                    // ),
+            setState(() {
 
-                    // 🔄 TURN BASED MODE
-                    // settingsTile(
-                    //   icon: Icons.swap_horiz,
-                    //   title: "Turn Based Mode",
-                    //   value: turnBased,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       turnBased = value;
-                    //     });
-                    //     setStateMenu(() {});
-                    //   },
-                    // ),
-                  ],
-                );
-              },
-            ),
-          ),
+              isDark = value;
+
+              /// ✅ RESET COLOR
+              setDefaultColor();
+            });
+
+            await prefs.setBool(
+              "theme_dark",
+              isDark,
+            );
+          },
         ),
+
+        /// 🎮 AUTO GRID
+        SettingsMenuItem(
+
+          icon: Icons.grid_on,
+
+          title: "Auto Grid",
+
+          value: autoGrid,
+
+          onChanged: (value) {
+
+            setState(() {
+
+              autoGrid = value;
+            });
+          },
+        ),
+
+        // /// 🎯 SNAP TO BOX
+        // SettingsMenuItem(
+        //
+        //   icon: Icons.crop_square,
+        //
+        //   title: "Snap to Box",
+        //
+        //   value: snapToBox,
+        //
+        //   onChanged: (value) {
+        //
+        //     setState(() {
+        //
+        //       snapToBox = value;
+        //     });
+        //   },
+        // ),
+
+        // /// ❌⭕ DETECT XO
+        // SettingsMenuItem(
+        //
+        //   icon: Icons.gesture,
+        //
+        //   title: "Detect X / O",
+        //
+        //   value: detectXO,
+        //
+        //   onChanged: (value) {
+        //
+        //     setState(() {
+        //
+        //       detectXO = value;
+        //     });
+        //   },
+        // ),
+
+        // /// 🔄 TURN BASED MODE
+        // SettingsMenuItem(
+        //
+        //   icon: Icons.swap_horiz,
+        //
+        //   title: "Turn Based Mode",
+        //
+        //   value: turnBased,
+        //
+        //   onChanged: (value) {
+        //
+        //     setState(() {
+        //
+        //       turnBased = value;
+        //     });
+        //   },
+        // ),
       ],
-    );
-  }
-
-  Widget settingsTile({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required Function(bool) onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min, // ✅ IMPORTANT
-
-        children: [
-          Icon(icon, size: 20, color: Colors.blueAccent),
-          const SizedBox(width: 8),
-
-          Expanded(
-            // ✅ takes only needed space
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
-          ),
-
-          // ✅ SHRINK SWITCH
-          Transform.scale(
-            scale: 0.8, // 👈 make switch smaller
-
-            child: Switch(
-              value: value,
-              activeThumbColor: Colors.blueAccent,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              // 👈 remove extra padding
-              onChanged: onChanged,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

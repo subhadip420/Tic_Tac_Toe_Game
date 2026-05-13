@@ -1752,6 +1752,8 @@ class _GameBoardPageState extends State<GameBoardPage>
     );
   } // end widget build
 
+
+  ///old showSettingsMenu
   // void showSettingsMenu() {
   //   showMenu(
   //     context: context,
@@ -1880,6 +1882,7 @@ class _GameBoardPageState extends State<GameBoardPage>
   // }
 
 
+  ///new showSettingsMenu
   void showSettingsMenu() {
 
     showGlassSettingsMenu(

@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
+import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
 import 'two_player_draw_board_page.dart';
@@ -635,175 +636,165 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     }
   }
 
-  void showSettingsMenu() {
-    showMenu(
-      context: context,
-      position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
-
-      color: isDark ? const Color(0xFF344364) : Colors.white,
-
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-
-      items: [
-        PopupMenuItem(
-          enabled: false,
-          child: SizedBox(
-            width: 200,
-            child: StatefulBuilder(
-              builder: (context, setStateMenu) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 🌙 THEME
-                    settingsTile(
-                      icon: isDark ? Icons.dark_mode : Icons.light_mode,
-                      title: "Dark Theme",
-                      value: isDark,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        Navigator.pop(context);
-                        playVibration(130);
-
-                        setState(() {
-                          isDark = value;
-                        });
-
-                        setStateMenu(() {});
-
-                        prefs.setBool("theme_dark", isDark);
-                      },
-                    ),
-
-                    // 🔊 SOUND
-                    settingsTile(
-                      icon: soundOn ? Icons.volume_up : Icons.volume_off,
-                      title: "Sound",
-                      value: soundOn,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
-                        playVibration(130);
-
-                        setState(() {
-                          soundOn = value;
-                        });
-
-                        setStateMenu(() {});
-
-                        prefs.setBool("sound_on", soundOn);
-                      },
-                    ),
-
-                    // 📳 VIBRATION
-                    settingsTile(
-                      icon: vibrationOn
-                          ? Icons.vibration
-                          : Icons.phonelink_erase,
-                      title: "Vibration",
-                      value: vibrationOn,
-                      onChanged: (value) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
-                        setState(() {
-                          vibrationOn = value;
-                        });
-
-                        setStateMenu(() {});
-
-                        prefs.setBool("vibration_on", vibrationOn);
-                      },
-                    ),
-
-                    //const Divider(height: 10, thickness: 0.6),
-
-                    // 🕒 TIMER OPTION
-                    // settingsTile(
-                    //   icon: timerEnabled
-                    //       ? Icons.timer
-                    //       : Icons.timer_off, // 🔥 clock icon
-                    //   title: "Timer",
-                    //   value: timerEnabled,
-                    //   onChanged: (value) async {
-                    //
-                    //     SharedPreferences prefs =
-                    //     await SharedPreferences.getInstance();
-                    //
-                    //     setState(() {
-                    //       timerEnabled = value;
-                    //     });
-                    //
-                    //     setStateMenu(() {}); // 🔥 update menu UI
-                    //
-                    //     prefs.setBool("timer_enabled", timerEnabled); // save
-                    //
-                    //   },
-                    // ),
-                    settingsTile(
-                      icon: timerEnabled ? Icons.timer : Icons.timer_off,
-                      title: "Timer",
-                      value: timerEnabled,
-
-                      onChanged: (value) async {
-                        /// 🔥 LOCK CONDITION
-                        if (isGameRunning) {
-                          Fluttertoast.showToast(
-                            msg: "Can't change during game",
-                            toastLength: Toast.LENGTH_SHORT,
-                          );
-                          return;
-                        }
-
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
-                        setState(() {
-                          timerEnabled = value;
-                        });
-
-                        setStateMenu(() {});
-                        prefs.setBool("timer_enabled", timerEnabled);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
+  // void showSettingsMenu() {
+  //   showMenu(
+  //     context: context,
+  //     position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
+  //
+  //     color: isDark ? const Color(0xFF344364) : Colors.white,
+  //
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+  //
+  //     items: [
+  //       PopupMenuItem(
+  //         enabled: false,
+  //         child: SizedBox(
+  //           width: 200,
+  //           child: StatefulBuilder(
+  //             builder: (context, setStateMenu) {
+  //               return Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   // 🌙 THEME
+  //                   settingsTile(
+  //                     icon: isDark ? Icons.dark_mode : Icons.light_mode,
+  //                     title: "Dark Theme",
+  //                     value: isDark,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //                       Navigator.pop(context);
+  //                       playVibration(130);
+  //
+  //                       setState(() {
+  //                         isDark = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("theme_dark", isDark);
+  //                     },
+  //                   ),
+  //
+  //                   // 🔊 SOUND
+  //                   settingsTile(
+  //                     icon: soundOn ? Icons.volume_up : Icons.volume_off,
+  //                     title: "Sound",
+  //                     value: soundOn,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //
+  //                       playVibration(130);
+  //
+  //                       setState(() {
+  //                         soundOn = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("sound_on", soundOn);
+  //                     },
+  //                   ),
+  //
+  //                   // 📳 VIBRATION
+  //                   settingsTile(
+  //                     icon: vibrationOn
+  //                         ? Icons.vibration
+  //                         : Icons.phonelink_erase,
+  //                     title: "Vibration",
+  //                     value: vibrationOn,
+  //                     onChanged: (value) async {
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //
+  //                       setState(() {
+  //                         vibrationOn = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //
+  //                       prefs.setBool("vibration_on", vibrationOn);
+  //                     },
+  //                   ),
+  //
+  //                   //const Divider(height: 10, thickness: 0.6),
+  //
+  //                   // 🕒 TIMER OPTION
+  //                   // settingsTile(
+  //                   //   icon: timerEnabled
+  //                   //       ? Icons.timer
+  //                   //       : Icons.timer_off, // 🔥 clock icon
+  //                   //   title: "Timer",
+  //                   //   value: timerEnabled,
+  //                   //   onChanged: (value) async {
+  //                   //
+  //                   //     SharedPreferences prefs =
+  //                   //     await SharedPreferences.getInstance();
+  //                   //
+  //                   //     setState(() {
+  //                   //       timerEnabled = value;
+  //                   //     });
+  //                   //
+  //                   //     setStateMenu(() {}); // 🔥 update menu UI
+  //                   //
+  //                   //     prefs.setBool("timer_enabled", timerEnabled); // save
+  //                   //
+  //                   //   },
+  //                   // ),
+  //                   settingsTile(
+  //                     icon: timerEnabled ? Icons.timer : Icons.timer_off,
+  //                     title: "Timer",
+  //                     value: timerEnabled,
+  //
+  //                     onChanged: (value) async {
+  //                       /// 🔥 LOCK CONDITION
+  //                       if (isGameRunning) {
+  //                         Fluttertoast.showToast(
+  //                           msg: "Can't change during game",
+  //                           toastLength: Toast.LENGTH_SHORT,
+  //                         );
+  //                         return;
+  //                       }
+  //
+  //                       SharedPreferences prefs =
+  //                           await SharedPreferences.getInstance();
+  //
+  //                       setState(() {
+  //                         timerEnabled = value;
+  //                       });
+  //
+  //                       setStateMenu(() {});
+  //                       prefs.setBool("timer_enabled", timerEnabled);
+  //                     },
+  //                   ),
+  //                 ],
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   // Widget settingsTile({
   //   required IconData icon,
   //   required String title,
   //   required bool value,
-  //   //required Function(bool) onChanged,
   //   ValueChanged<bool>? onChanged,
   // }) {
   //   return Padding(
   //     padding: const EdgeInsets.symmetric(vertical: 1),
   //     child: Row(
   //       children: [
-  //         Icon(
-  //           icon,
-  //           size: 20,
-  //           color: isGameRunning
-  //               ? Colors.grey
-  //               : Colors.blueAccent,
-  //         ),
+  //         Icon(icon, size: 20, color: Colors.blueAccent),
   //         const SizedBox(width: 8),
   //
   //         Expanded(
   //           child: Text(
   //             title,
   //             style: TextStyle(
-  //               color: isGameRunning
-  //                   ? Colors.grey
-  //                   : (isDark ? Colors.white : Colors.black),
+  //               color: isDark ? Colors.white : Colors.black,
   //               fontWeight: FontWeight.w500,
   //             ),
   //           ),
@@ -814,9 +805,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   //           child: Switch(
   //             value: value,
   //             activeThumbColor: Colors.blueAccent,
-  //
-  //             /// 🔥 disable UI
-  //             onChanged: isGameRunning ? null : onChanged,
+  //             onChanged: onChanged,
   //           ),
   //         ),
   //       ],
@@ -824,41 +813,154 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   //   );
   // }
 
-  Widget settingsTile({
-    required IconData icon,
-    required String title,
-    required bool value,
-    ValueChanged<bool>? onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Colors.blueAccent),
-          const SizedBox(width: 8),
 
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: isDark ? Colors.white : Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+  void showSettingsMenu() {
 
-          Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: value,
-              activeThumbColor: Colors.blueAccent,
-              onChanged: onChanged,
-            ),
-          ),
-        ],
-      ),
+    showGlassSettingsMenu(
+
+      context: context,
+
+      isDark: isDark,
+
+      items: [
+
+        /// 🌙 THEME
+        SettingsMenuItem(
+
+          icon: isDark
+              ? Icons.dark_mode
+              : Icons.light_mode,
+
+          title: "Dark Theme",
+
+          value: isDark,
+
+          onChanged: (value) async {
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            playVibration(130);
+
+            setState(() {
+
+              isDark = value;
+            });
+
+            await prefs.setBool(
+              "theme_dark",
+              isDark,
+            );
+          },
+        ),
+
+        /// 🔊 SOUND
+        SettingsMenuItem(
+
+          icon: soundOn
+              ? Icons.volume_up
+              : Icons.volume_off,
+
+          title: "Sound",
+
+          value: soundOn,
+
+          onChanged: (value) async {
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            playVibration(130);
+
+            setState(() {
+
+              soundOn = value;
+            });
+
+            await prefs.setBool(
+              "sound_on",
+              soundOn,
+            );
+          },
+        ),
+
+        /// 📳 VIBRATION
+        SettingsMenuItem(
+
+          icon: vibrationOn
+              ? Icons.vibration
+              : Icons.phonelink_erase,
+
+          title: "Vibration",
+
+          value: vibrationOn,
+
+          onChanged: (value) async {
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            setState(() {
+
+              vibrationOn = value;
+            });
+
+            await prefs.setBool(
+              "vibration_on",
+              vibrationOn,
+            );
+          },
+        ),
+
+        /// ⏱ TIMER
+        SettingsMenuItem(
+
+          icon: timerEnabled
+              ? Icons.timer
+              : Icons.timer_off,
+
+          title: "Timer",
+
+          value: timerEnabled,
+
+          onChanged: (value) async {
+
+            if (isGameRunning) {
+
+              Fluttertoast.showToast(
+
+                msg:
+                "Can't change during game",
+
+                toastLength:
+                Toast.LENGTH_SHORT,
+              );
+
+              return;
+            }
+
+            SharedPreferences prefs =
+            await SharedPreferences
+                .getInstance();
+
+            setState(() {
+
+              timerEnabled = value;
+            });
+
+            await prefs.setBool(
+              "timer_enabled",
+              timerEnabled,
+            );
+          },
+        ),
+      ],
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
