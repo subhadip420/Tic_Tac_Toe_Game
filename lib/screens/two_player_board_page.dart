@@ -1513,7 +1513,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     //       ),
                     //     ),
                     //   ),
-                    if (!gameOver)
+
+
+
+                    if (!gameOver && board.any((e) => e != ""))
                       GestureDetector(
                         onTapDown: (_) {
                           setState(() {

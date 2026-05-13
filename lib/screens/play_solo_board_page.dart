@@ -1654,7 +1654,7 @@ class _GameBoardPageState extends State<GameBoardPage>
                     //   ),
 
 
-                    if (!gameOver)
+                    if (!gameOver && board.any((e) => e != ""))
                       GestureDetector(
 
                         onTapDown: (_) {
