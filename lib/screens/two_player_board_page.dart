@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_3d_icon_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
+import '../widgets/neon_glowing_button.dart';
 import 'two_player_draw_board_page.dart';
 
 class TwoPlayerBoardPage extends StatefulWidget {
@@ -1323,16 +1324,21 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                       children: [
-                        neonButton(
+                        NeonGlowingButton(
                           text: "Home",
                           icon: Icons.home,
                           onTap: () {
                             playVibration(120);
                             Navigator.pop(context);
                           },
+                          isDark: isDark,
+
+                          glowController: glowController,
+
+                          glowAnimation: glowAnimation,
                         ),
 
-                        neonButton(
+                        NeonGlowingButton(
                           text: "Replay",
                           icon: Icons.refresh,
                           onTap: () {
@@ -1340,6 +1346,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                             playVibration(120);
                             resetGame();
                           },
+                          isDark: isDark,
+
+                          glowController: glowController,
+
+                          glowAnimation: glowAnimation,
                         ),
                       ],
                     ),
@@ -1472,77 +1483,77 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     );
   }
 
-  Widget neonButton({
-    required String text,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    List<Color> colors = isDark
-        ? [Colors.blueAccent, Colors.purpleAccent]
-        : [Colors.orangeAccent, Colors.pinkAccent];
-
-    return Material(
-      color: Colors.transparent,
-
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-
-        child: AnimatedBuilder(
-          animation: glowController,
-
-          builder: (context, child) {
-            return Container(
-              padding: const EdgeInsets.all(1),
-
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(colors: colors),
-
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.first.withValues(alpha: glowAnimation.value),
-                    blurRadius: 20 * glowAnimation.value,
-                  ),
-                ],
-              ),
-
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-
-                  borderRadius: BorderRadius.circular(14),
-                ),
-
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, color: colors.first),
-
-                    const SizedBox(width: 6),
-
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+  // Widget neonButton({
+  //   required String text,
+  //   required IconData icon,
+  //   required VoidCallback onTap,
+  // }) {
+  //   List<Color> colors = isDark
+  //       ? [Colors.blueAccent, Colors.purpleAccent]
+  //       : [Colors.orangeAccent, Colors.pinkAccent];
+  //
+  //   return Material(
+  //     color: Colors.transparent,
+  //
+  //     child: InkWell(
+  //       onTap: onTap,
+  //       borderRadius: BorderRadius.circular(16),
+  //
+  //       child: AnimatedBuilder(
+  //         animation: glowController,
+  //
+  //         builder: (context, child) {
+  //           return Container(
+  //             padding: const EdgeInsets.all(1),
+  //
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(16),
+  //               gradient: LinearGradient(colors: colors),
+  //
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: colors.first.withValues(alpha: glowAnimation.value),
+  //                   blurRadius: 20 * glowAnimation.value,
+  //                 ),
+  //               ],
+  //             ),
+  //
+  //             child: Container(
+  //               padding: const EdgeInsets.symmetric(
+  //                 horizontal: 20,
+  //                 vertical: 10,
+  //               ),
+  //
+  //               decoration: BoxDecoration(
+  //                 color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
+  //
+  //                 borderRadius: BorderRadius.circular(14),
+  //               ),
+  //
+  //               child: Row(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Icon(icon, color: colors.first),
+  //
+  //                   const SizedBox(width: 6),
+  //
+  //                   Text(
+  //                     text,
+  //                     style: TextStyle(
+  //                       fontSize: 16,
+  //                       fontWeight: FontWeight.bold,
+  //                       color: isDark ? Colors.white : Colors.black87,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget scoreBox(String player, String symbol, Color bg, Color textColor) {
 

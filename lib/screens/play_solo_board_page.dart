@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_3d_icon_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
+import '../widgets/neon_glowing_button.dart';
 
 class GameBoardPage extends StatefulWidget {
   const GameBoardPage({super.key});
@@ -1471,16 +1472,21 @@ class _GameBoardPageState extends State<GameBoardPage>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                           children: [
-                            neonButton(
+                            NeonGlowingButton(
                               text: "Home",
                               icon: Icons.home,
                               onTap: () {
                                 playVibration(120);
                                 Navigator.pop(context);
                               },
+                              isDark: isDark,
+
+                              glowController: glowController,
+
+                              glowAnimation: glowAnimation,
                             ),
 
-                            neonButton(
+                            NeonGlowingButton(
                               text: "Replay",
                               icon: Icons.refresh,
                               onTap: () {
@@ -1488,6 +1494,12 @@ class _GameBoardPageState extends State<GameBoardPage>
                                 playVibration(120);
                                 resetGame();
                               },
+
+                              isDark: isDark,
+
+                              glowController: glowController,
+
+                              glowAnimation: glowAnimation,
                             ),
                           ],
                         ),
@@ -1742,77 +1754,77 @@ class _GameBoardPageState extends State<GameBoardPage>
     );
   }
 
-  Widget neonButton({
-    required String text,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    List<Color> colors = isDark
-        ? [Colors.blueAccent, Colors.cyanAccent]
-        : [Colors.blueAccent, Colors.blueAccent];
-
-    return Material(
-      color: Colors.transparent,
-
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-
-        child: AnimatedBuilder(
-          animation: glowController,
-
-          builder: (context, child) {
-            return Container(
-              padding: const EdgeInsets.all(1),
-
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(colors: colors),
-
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.first.withValues(alpha: glowAnimation.value),
-                    blurRadius: 20 * glowAnimation.value,
-                  ),
-                ],
-              ),
-
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-
-                  borderRadius: BorderRadius.circular(14),
-                ),
-
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, color: colors.first),
-
-                    const SizedBox(width: 6),
-
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+  // Widget neonButton({
+  //   required String text,
+  //   required IconData icon,
+  //   required VoidCallback onTap,
+  // }) {
+  //   List<Color> colors = isDark
+  //       ? [Colors.blueAccent, Colors.cyanAccent]
+  //       : [Colors.blueAccent, Colors.blueAccent];
+  //
+  //   return Material(
+  //     color: Colors.transparent,
+  //
+  //     child: InkWell(
+  //       onTap: onTap,
+  //       borderRadius: BorderRadius.circular(16),
+  //
+  //       child: AnimatedBuilder(
+  //         animation: glowController,
+  //
+  //         builder: (context, child) {
+  //           return Container(
+  //             padding: const EdgeInsets.all(1),
+  //
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(16),
+  //               gradient: LinearGradient(colors: colors),
+  //
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: colors.first.withValues(alpha: glowAnimation.value),
+  //                   blurRadius: 20 * glowAnimation.value,
+  //                 ),
+  //               ],
+  //             ),
+  //
+  //             child: Container(
+  //               padding: const EdgeInsets.symmetric(
+  //                 horizontal: 20,
+  //                 vertical: 10,
+  //               ),
+  //
+  //               decoration: BoxDecoration(
+  //                 color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
+  //
+  //                 borderRadius: BorderRadius.circular(14),
+  //               ),
+  //
+  //               child: Row(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Icon(icon, color: colors.first),
+  //
+  //                   const SizedBox(width: 6),
+  //
+  //                   Text(
+  //                     text,
+  //                     style: TextStyle(
+  //                       fontSize: 16,
+  //                       fontWeight: FontWeight.bold,
+  //                       color: isDark ? Colors.white : Colors.black87,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget scoreBox(String player, String symbol, Color bg, Color textColor) {
     bool isPlayer = player == "You";
