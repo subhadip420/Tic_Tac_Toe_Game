@@ -137,177 +137,169 @@ class _GameBoardPageState extends State<GameBoardPage>
             //             colors: [Colors.blue, Colors.orange],
             //           ),
             //   ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(28),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(28),
 
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
 
-                  child: Container(
-                    width: 300,
-                    height: 200,
-                    padding: const EdgeInsets.all(20),
+                child: Container(
+                  width: 300,
+                  height: 200,
+                  padding: const EdgeInsets.all(20),
 
+                  decoration: BoxDecoration(
+                    /// 🔥 GLASS EFFECT
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
 
-                    decoration: BoxDecoration(
+                      colors: isDark
+                          ? [
+                              Colors.white.withValues(alpha: 0.14),
+                              Colors.white.withValues(alpha: 0.05),
+                            ]
+                          : [
+                              Colors.white.withValues(alpha: 0.35),
+                              Colors.white.withValues(alpha: 0.12),
+                            ],
+                    ),
 
-                      /// 🔥 GLASS EFFECT
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    borderRadius: BorderRadius.circular(28),
 
-                        colors: isDark
-                            ? [
-                          Colors.white.withValues(alpha:0.14),
-                          Colors.white.withValues(alpha:0.05),
-                        ]
-                            : [
-                          Colors.white.withValues(alpha:0.35),
-                          Colors.white.withValues(alpha:0.12),
+                    border: Border.all(
+                      color: Colors.white.withValues(
+                        alpha: isDark ? 0.18 : 0.35,
+                      ),
+                      width: 1.5,
+                    ),
+
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.transparent.withValues(
+                          alpha: isDark ? 0.10 : 0.06,
+                        ),
+                        blurRadius: 24,
+                        spreadRadius: 2,
+                      ),
+
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.25 : 0.08,
+                        ),
+                        offset: const Offset(0, 8),
+                        blurRadius: 18,
+                      ),
+                    ],
+                  ),
+
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Choose Your Symbol",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // X BUTTON
+                          GestureDetector(
+                            onTap: () {
+                              playVibration(120);
+
+                              setState(() {
+                                playerSymbol = "X";
+                                botSymbol = "O";
+                              });
+
+                              Navigator.pop(context);
+                            },
+
+                            child: Container(
+                              width: 90,
+                              height: 90,
+
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF1F2A44)
+                                    : const Color(0xFFF0F0F0),
+
+                                borderRadius: BorderRadius.circular(18),
+
+                                border: Border.all(
+                                  color: Colors.blueAccent,
+                                  width: 1.5,
+                                ),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(2, 4),
+                                  ),
+                                ],
+                              ),
+
+                              child: const Center(child: GameX()),
+                            ),
+                          ),
+
+                          // O BUTTON
+                          GestureDetector(
+                            onTap: () {
+                              playVibration(120);
+
+                              setState(() {
+                                playerSymbol = "O";
+                                botSymbol = "X";
+                              });
+
+                              Navigator.pop(context);
+                            },
+
+                            child: Container(
+                              width: 90,
+                              height: 90,
+
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF1F2A44)
+                                    : const Color(0xFFF0F0F0),
+
+                                borderRadius: BorderRadius.circular(18),
+
+                                border: Border.all(
+                                  color: Colors.orangeAccent,
+                                  width: 1.5,
+                                ),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(2, 4),
+                                  ),
+                                ],
+                              ),
+
+                              child: const Center(child: GameO()),
+                            ),
+                          ),
                         ],
                       ),
-
-                      borderRadius: BorderRadius.circular(28),
-
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha:
-                          isDark ? 0.18 : 0.35,
-                        ),
-                        width: 1.5,
-                      ),
-
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.transparent.withValues(alpha:
-                            isDark ? 0.10 : 0.06,
-                          ),
-                          blurRadius: 24,
-                          spreadRadius: 2,
-                        ),
-
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha:
-                            isDark ? 0.25 : 0.08,
-                          ),
-                          offset: const Offset(0, 8),
-                          blurRadius: 18,
-                        ),
-                      ],
-                    ),
-
-
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Choose Your Symbol",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // X BUTTON
-                            GestureDetector(
-                              onTap: () {
-                                playVibration(120);
-
-                                setState(() {
-                                  playerSymbol = "X";
-                                  botSymbol = "O";
-                                });
-
-                                Navigator.pop(context);
-                              },
-
-                              child: Container(
-                                width: 90,
-                                height: 90,
-
-                                decoration: BoxDecoration(
-                                  color: isDark
-                                      ? const Color(0xFF1F2A44)
-                                      : const Color(0xFFF0F0F0),
-
-                                  borderRadius: BorderRadius.circular(18),
-
-                                  border: Border.all(
-                                    color: Colors.blueAccent,
-                                    width: 1.5,
-                                  ),
-
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.25,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(2, 4),
-                                    ),
-                                  ],
-                                ),
-
-                                child: const Center(child: GameX()),
-                              ),
-                            ),
-
-                            // O BUTTON
-                            GestureDetector(
-                              onTap: () {
-                                playVibration(120);
-
-                                setState(() {
-                                  playerSymbol = "O";
-                                  botSymbol = "X";
-                                });
-
-                                Navigator.pop(context);
-                              },
-
-                              child: Container(
-                                width: 90,
-                                height: 90,
-
-                                decoration: BoxDecoration(
-                                  color: isDark
-                                      ? const Color(0xFF1F2A44)
-                                      : const Color(0xFFF0F0F0),
-
-                                  borderRadius: BorderRadius.circular(18),
-
-                                  border: Border.all(
-                                    color: Colors.orangeAccent,
-                                    width: 1.5,
-                                  ),
-
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.25,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(2, 4),
-                                    ),
-                                  ],
-                                ),
-
-                                child: const Center(child: GameO()),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
               ),
-
+            ),
           ),
         );
       },
@@ -1063,7 +1055,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blueAccent.withValues(alpha:0.4),
+                    color: Colors.blueAccent.withValues(alpha: 0.4),
                     blurRadius: 8,
                     spreadRadius: 1,
                   ),
@@ -1142,422 +1134,438 @@ class _GameBoardPageState extends State<GameBoardPage>
             ],
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-
-                // SCORE SECTION
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
                   children: [
-                    scoreBox("You", playerSymbol, boardColor, textColor),
+                    const SizedBox(height: 20),
 
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: boardColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        "$playerScore - $aiScore",
+                    // SCORE SECTION
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        scoreBox("You", playerSymbol, boardColor, textColor),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: boardColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            "$playerScore - $aiScore",
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        scoreBox("AI", botSymbol, boardColor, textColor),
+                      ],
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    if (!gameOver)
+                      Text(
+                        playerTurn ? "Your Turn" : "AI Turn",
                         style: TextStyle(
                           color: textColor,
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
 
-                    scoreBox("AI", botSymbol, boardColor, textColor),
-                  ],
-                ),
+                    const SizedBox(height: 00),
 
-                const SizedBox(height: 40),
+                    if (gameMessage != "")
+                      TweenAnimationBuilder(
+                        duration: const Duration(milliseconds: 450),
+                        tween: Tween<double>(begin: 0.85, end: 1),
+                        curve: Curves.easeOutBack,
+                        builder: (context, double scale, child) {
+                          Color cardColor = isDark
+                              ? const Color(0xFF2B3A5A)
+                              : Colors.white;
 
-                if (!gameOver)
-                  Text(
-                    playerTurn ? "Your Turn" : "AI Turn",
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                          List<Color> gradientColors;
 
-                const SizedBox(height: 00),
+                          if (gameMessage.contains("WIN")) {
+                            gradientColors = [
+                              Colors.greenAccent,
+                              Colors.blueAccent,
+                            ];
+                          } else if (gameMessage.contains("LOSE")) {
+                            gradientColors = [Colors.redAccent, Colors.orange];
+                          } else {
+                            gradientColors = [
+                              Colors.orangeAccent,
+                              Colors.yellow,
+                            ];
+                          }
 
-                if (gameMessage != "")
-                  TweenAnimationBuilder(
-                    duration: const Duration(milliseconds: 450),
-                    tween: Tween<double>(begin: 0.85, end: 1),
-                    curve: Curves.easeOutBack,
-                    builder: (context, double scale, child) {
-                      Color cardColor = isDark
-                          ? const Color(0xFF2B3A5A)
-                          : Colors.white;
+                          return AnimatedBuilder(
+                            animation: glowAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: scale,
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 14),
+                                  padding: const EdgeInsets.all(2),
 
-                      List<Color> gradientColors;
-
-                      if (gameMessage.contains("WIN")) {
-                        gradientColors = [
-                          Colors.greenAccent,
-                          Colors.blueAccent,
-                        ];
-                      } else if (gameMessage.contains("LOSE")) {
-                        gradientColors = [Colors.redAccent, Colors.orange];
-                      } else {
-                        gradientColors = [Colors.orangeAccent, Colors.yellow];
-                      }
-
-                      return AnimatedBuilder(
-                        animation: glowAnimation,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 14),
-                              padding: const EdgeInsets.all(2),
-
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: gradientColors,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: gradientColors.first.withValues(
-                                      alpha: glowAnimation.value,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: gradientColors,
                                     ),
-                                    blurRadius: 25 * glowAnimation.value,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
+                                    borderRadius: BorderRadius.circular(20),
 
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 28,
-                                  vertical: 14,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: cardColor,
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    // GRADIENT TEXT BORDER
-                                    ShaderMask(
-                                      shaderCallback: (rect) {
-                                        return LinearGradient(
-                                          colors: gradientColors,
-                                        ).createShader(rect);
-                                      },
-                                      child: Text(
-                                        gameMessage,
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 2,
-                                          foreground: Paint()
-                                            ..style = PaintingStyle.stroke
-                                            ..strokeWidth = 3
-                                            ..color = Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: gradientColors.first.withValues(
+                                          alpha: glowAnimation.value,
                                         ),
+                                        blurRadius: 25 * glowAnimation.value,
+                                        spreadRadius: 1,
                                       ),
+                                    ],
+                                  ),
+
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 28,
+                                      vertical: 14,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: cardColor,
+                                      borderRadius: BorderRadius.circular(18),
                                     ),
 
-                                    // MAIN WHITE TEXT
-                                    Text(
-                                      gameMessage,
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-
-                                        shadows: [
-                                          Shadow(
-                                            color: gradientColors.first
-                                                .withValues(
-                                                  alpha: glowAnimation.value,
-                                                ),
-                                            blurRadius:
-                                                20 * glowAnimation.value,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        // GRADIENT TEXT BORDER
+                                        ShaderMask(
+                                          shaderCallback: (rect) {
+                                            return LinearGradient(
+                                              colors: gradientColors,
+                                            ).createShader(rect);
+                                          },
+                                          child: Text(
+                                            gameMessage,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 2,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 3
+                                                ..color = Colors.white,
+                                            ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+
+                                        // MAIN WHITE TEXT
+                                        Text(
+                                          gameMessage,
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 2,
+                                            color: Colors.white,
+
+                                            shadows: [
+                                              Shadow(
+                                                color: gradientColors.first
+                                                    .withValues(
+                                                      alpha:
+                                                          glowAnimation.value,
+                                                    ),
+                                                blurRadius:
+                                                    20 * glowAnimation.value,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
-
-                const SizedBox(height: 20),
-
-                // GAME BOARD (CENTERED)
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 280,
-                      height: 280,
-                      padding: const EdgeInsets.all(1.5),
-
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-
-                        gradient: LinearGradient(
-                          colors: isDark
-                              ? [
-                                  Colors.blueAccent,
-                                  Colors.purpleAccent,
-                                  Colors.blueAccent,
-                                ]
-                              : [
-                                  Colors.orangeAccent,
-                                  Colors.pinkAccent,
-                                  Colors.orangeAccent,
-                                ],
-                        ),
-
-                        boxShadow: [
-                          // outer glow
-                          BoxShadow(
-                            color:
-                                (isDark
-                                        ? Colors.blueAccent
-                                        : Colors.orangeAccent)
-                                    .withValues(alpha: 0.5),
-                            blurRadius: 20,
-                            spreadRadius: 1,
-                          ),
-
-                          // 3D depth
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.25),
-                            offset: const Offset(4, 4),
-                            blurRadius: 8,
-                          ),
-                        ],
                       ),
 
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
+                    const SizedBox(height: 20),
 
-                        decoration: BoxDecoration(
-                          color: boardColor,
-                          borderRadius: BorderRadius.circular(20),
+                    // GAME BOARD (CENTERED)
+                    // Expanded(
+                    //   child: Align(
+                    SizedBox(
+                      height: 320,
+
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          padding: const EdgeInsets.all(1.5),
+
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+
+                            gradient: LinearGradient(
+                              colors: isDark
+                                  ? [
+                                      Colors.blueAccent,
+                                      Colors.purpleAccent,
+                                      Colors.blueAccent,
+                                    ]
+                                  : [
+                                      Colors.orangeAccent,
+                                      Colors.pinkAccent,
+                                      Colors.orangeAccent,
+                                    ],
+                            ),
+
+                            boxShadow: [
+                              // outer glow
+                              BoxShadow(
+                                color:
+                                    (isDark
+                                            ? Colors.blueAccent
+                                            : Colors.orangeAccent)
+                                        .withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 1,
+                              ),
+
+                              // 3D depth
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.25),
+                                offset: const Offset(4, 4),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+
+                            decoration: BoxDecoration(
+                              color: boardColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+
+                            child: Stack(
+                              children: [
+                                GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: 9,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                      ),
+
+                                  itemBuilder: (context, index) {
+                                    bool highlight = index == lastMove;
+                                    bool win =
+                                        winningLine != null &&
+                                        winningLine!.contains(index);
+
+                                    return GestureDetector(
+                                      onTap: () => handleTap(index),
+
+                                      child: AnimatedScale(
+                                        scale: pressedIndex == index ? 0.92 : 1,
+                                        duration: const Duration(
+                                          milliseconds: 120,
+                                        ),
+
+                                        child: Container(
+                                          margin: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: cellColor,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+
+                                            border: board[index] != ""
+                                                ? Border.all(
+                                                    color: isDark
+                                                        ? Color(0xFF47798A)
+                                                        : Color(0xFF9ED3E8),
+                                                    width: 1,
+                                                  )
+                                                : null,
+
+                                            boxShadow: [
+                                              if (highlight)
+                                                const BoxShadow(
+                                                  color: Colors.blueAccent,
+                                                  blurRadius: 6,
+                                                  spreadRadius: 1,
+                                                ),
+
+                                              if (win)
+                                                const BoxShadow(
+                                                  color: Colors.green,
+                                                  blurRadius: 8,
+                                                  spreadRadius: 1,
+                                                ),
+                                            ],
+                                          ),
+
+                                          child: Center(
+                                            child: board[index] == "X"
+                                                ? const GameX()
+                                                : board[index] == "O"
+                                                ? const GameO()
+                                                : const SizedBox(),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                // WINNING LINE DRAW
+                                if (winningLine != null)
+                                  AnimatedBuilder(
+                                    animation: lineAnimation,
+                                    builder: (context, child) {
+                                      return CustomPaint(
+                                        size: const Size(260, 260),
+                                        painter: WinLinePainter(
+                                          winningLine!,
+                                          lineAnimation.value,
+                                          3,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
+                      ),
+                    ),
 
-                        child: Stack(
+                    const SizedBox(height: 20),
+
+                    if (gameOver)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                           children: [
-                            GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 9,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                  ),
-
-                              itemBuilder: (context, index) {
-                                bool highlight = index == lastMove;
-                                bool win =
-                                    winningLine != null &&
-                                    winningLine!.contains(index);
-
-                                return GestureDetector(
-                                  onTap: () => handleTap(index),
-
-                                  child: AnimatedScale(
-                                    scale: pressedIndex == index ? 0.92 : 1,
-                                    duration: const Duration(milliseconds: 120),
-
-                                    child: Container(
-                                      margin: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: cellColor,
-                                        borderRadius: BorderRadius.circular(12),
-
-                                        border: board[index] != ""
-                                            ? Border.all(
-                                                color: isDark
-                                                    ? Color(0xFF47798A)
-                                                    : Color(0xFF9ED3E8),
-                                                width: 1,
-                                              )
-                                            : null,
-
-                                        boxShadow: [
-                                          if (highlight)
-                                            const BoxShadow(
-                                              color: Colors.blueAccent,
-                                              blurRadius: 6,
-                                              spreadRadius: 1,
-                                            ),
-
-                                          if (win)
-                                            const BoxShadow(
-                                              color: Colors.green,
-                                              blurRadius: 8,
-                                              spreadRadius: 1,
-                                            ),
-                                        ],
-                                      ),
-
-                                      child: Center(
-                                        child: board[index] == "X"
-                                            ? const GameX()
-                                            : board[index] == "O"
-                                            ? const GameO()
-                                            : const SizedBox(),
-                                      ),
-                                    ),
-                                  ),
-                                );
+                            neonButton(
+                              text: "Home",
+                              icon: Icons.home,
+                              onTap: () {
+                                playVibration(120);
+                                Navigator.pop(context);
                               },
                             ),
 
-                            // WINNING LINE DRAW
-                            if (winningLine != null)
-                              AnimatedBuilder(
-                                animation: lineAnimation,
-                                builder: (context, child) {
-                                  return CustomPaint(
-                                    size: const Size(260, 260),
-                                    painter: WinLinePainter(
-                                      winningLine!,
-                                      lineAnimation.value,
-                                      3,
-                                    ),
-                                  );
-                                },
-                              ),
+                            neonButton(
+                              text: "Replay",
+                              icon: Icons.refresh,
+                              onTap: () {
+                                //playXSound();   // replay sound
+                                playVibration(120);
+                                resetGame();
+                              },
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 20),
+                    const SizedBox(height: 60),
 
-                if (gameOver)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                    if (!gameOver)
+                      GestureDetector(
+                        onTapDown: (_) {
+                          setState(() {
+                            resetPressed = true;
+                          });
+                        },
 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        onTapUp: (_) {
+                          setState(() {
+                            resetPressed = false;
+                          });
+                          resetGame();
+                        },
 
-                      children: [
-                        neonButton(
-                          text: "Home",
-                          icon: Icons.home,
-                          onTap: () {
-                            playVibration(120);
-                            Navigator.pop(context);
-                          },
-                        ),
+                        onTapCancel: () {
+                          setState(() {
+                            resetPressed = false;
+                          });
+                        },
 
-                        neonButton(
-                          text: "Replay",
-                          icon: Icons.refresh,
-                          onTap: () {
-                            //playXSound();   // replay sound
-                            playVibration(120);
-                            resetGame();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                        child: AnimatedScale(
+                          scale: resetPressed ? 0.92 : 1,
+                          duration: const Duration(milliseconds: 120),
 
-                const SizedBox(height: 60),
+                          child: Container(
+                            width: double.infinity,
+                            height: 50,
+                            padding: const EdgeInsets.all(1.5),
 
-                if (!gameOver)
-                  GestureDetector(
-                    onTapDown: (_) {
-                      setState(() {
-                        resetPressed = true;
-                      });
-                    },
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
 
-                    onTapUp: (_) {
-                      setState(() {
-                        resetPressed = false;
-                      });
-                      resetGame();
-                    },
+                              gradient: LinearGradient(
+                                colors: isDark
+                                    ? [
+                                        Colors.pinkAccent,
+                                        Colors.orangeAccent,
+                                        Colors.pinkAccent,
+                                      ]
+                                    : [
+                                        Colors.blueAccent,
+                                        Colors.cyanAccent,
+                                        Colors.blueAccent,
+                                      ],
+                              ),
+                            ),
 
-                    onTapCancel: () {
-                      setState(() {
-                        resetPressed = false;
-                      });
-                    },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: boardColor,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
 
-                    child: AnimatedScale(
-                      scale: resetPressed ? 0.92 : 1,
-                      duration: const Duration(milliseconds: 120),
-
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        padding: const EdgeInsets.all(1.5),
-
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-
-                          gradient: LinearGradient(
-                            colors: isDark
-                                ? [
-                              Colors.pinkAccent,
-                              Colors.orangeAccent,
-                              Colors.pinkAccent,
-
-                                  ]
-                                : [
-                              Colors.blueAccent,
-                              Colors.cyanAccent,
-                              Colors.blueAccent,
-                                  ],
-                          ),
-                        ),
-
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: boardColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-
-                          child: Center(
-                            child: Text(
-                              "Reset Game",
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              child: Center(
+                                child: Text(
+                                  "Reset Game",
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
 
-                const SizedBox(height: 30),
-              ],
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
             ),
           ),
 
@@ -1709,14 +1717,12 @@ class _GameBoardPageState extends State<GameBoardPage>
   }
 
   Future<void> showExitDialog() async {
-
     await showAppDialog(
       context: context,
 
       title: "EXIT MATCH",
 
-      message:
-      "Exit and end the match?",
+      message: "Exit and end the match?",
 
       positiveText: "EXIT",
       negativeText: "CANCEL",
@@ -1728,7 +1734,6 @@ class _GameBoardPageState extends State<GameBoardPage>
       },
 
       onPositive: () async {
-
         playVibration(120);
         Navigator.pop(context);
       },
@@ -2064,7 +2069,7 @@ Widget build3DIconButton(IconData icon, bool isDark) {
       /// 🔥 Glow
       boxShadow: [
         BoxShadow(
-          color: Colors.blueAccent.withValues(alpha:0.4),
+          color: Colors.blueAccent.withValues(alpha: 0.4),
           blurRadius: 10,
           spreadRadius: 1,
         ),
@@ -2079,12 +2084,12 @@ Widget build3DIconButton(IconData icon, bool isDark) {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
+            color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.9),
             offset: const Offset(-3, -3),
             blurRadius: 6,
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+            color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.2),
             offset: const Offset(3, 3),
             blurRadius: 6,
           ),
@@ -2099,5 +2104,3 @@ Widget build3DIconButton(IconData icon, bool isDark) {
     ),
   );
 }
-
-
