@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/screens/play_online_board_page.dart';
 import '../main.dart';
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/build_icon_text_button.dart';
 import 'web_listener_stub.dart'
     if (dart.library.js_interop) 'web_listener.dart';
 import '../../widgets/loading_widget.dart';
@@ -754,10 +755,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     await generateCode();
                   },
-                  child: build3DButton(
-                    Icons.auto_awesome,
-                    "GENERATE CODE",
-                    //isDark,
+                  child: BuildIconTextButton(
+                    icon:Icons.auto_awesome,
+                    text:"GENERATE CODE",
+                    isDark: isDark,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(0),
                       topRight: Radius.circular(0),
@@ -787,10 +788,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           HapticFeedback.lightImpact();
                           handleCopyRoomCode();
                         }, // call function
-                        child: build3DButton(
-                          Icons.copy,
-                          "COPY",
-                          //isDark,
+                        child: BuildIconTextButton(
+                          icon:Icons.copy,
+                          text:"COPY",
+                          isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -819,10 +820,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           HapticFeedback.lightImpact();
                           handleShareRoomCode();
                         },
-                        child: build3DButton(
-                          Icons.share,
-                          "SHARE",
-                          //isDark,
+                        child: BuildIconTextButton(
+                          icon:Icons.share,
+                          text:"SHARE",
+                          isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -856,10 +857,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           HapticFeedback.lightImpact();
                           handlePasteRoomCode();
                         }, // function call
-                        child: build3DButton(
-                          Icons.paste,
-                          "PASTE",
-                          //isDark,
+                        child: BuildIconTextButton(
+                          icon:Icons.paste,
+                          text:"PASTE",
+                          isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -901,10 +902,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           // 🔥 STEP 2: validation
                           await validateRoomCode();
                         },
-                        child: build3DButton(
-                          Icons.play_arrow,
-                          "PLAY",
-                          //isDark,
+                        child: BuildIconTextButton(
+                          icon:Icons.play_arrow,
+                          text:"PLAY",
+                          isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
                             topRight: Radius.circular(0),
@@ -1045,11 +1046,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     await createPublicRoomInFirebase(); // 🔥 main logic
                   },
-                  child: build3DButton(
-                    Icons.public,
-                    "QUICK MATCH",
-                    //isDark,
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: BuildIconTextButton(
+                    icon: Icons.public,
+                    text: "QUICK MATCH",
+                    isDark: isDark,
+                    borderRadius: const BorderRadius.all(Radius.circular(19.5)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
@@ -1670,83 +1671,83 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //   );
   // }
 
-  Widget build3DButton(
-    IconData icon,
-    String text,
-    //bool isDark,
-      {
-    BorderRadius? borderRadius,
-    List<BoxShadow>? boxShadow, // 🔥 new parameter
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(1.5), // 🔥 border thickness
-
-      decoration: BoxDecoration(
-        borderRadius: borderRadius ?? BorderRadius.circular(18),
-
-        /// 🔥 Gradient Border
-        // gradient: const LinearGradient(
-        //   colors: [Colors.blueAccent, Colors.purpleAccent],
-        // ),
-        gradient: isDark
-            ? const LinearGradient(
-                colors: [Colors.blueAccent, Colors.cyanAccent],
-              )
-            : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-
-        /// 🔥 Outer glow
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.withValues(alpha: 0.5),
-            blurRadius: 5,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.blue,
-
-          borderRadius: borderRadius ?? BorderRadius.circular(18),
-
-          /// 🔹 Keep your neumorphic shadows
-          // boxShadow: [
-          //   ...(boxShadow ??
-          //       [
-          //         BoxShadow(
-          //           color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
-          //           offset: const Offset(-4, -4),
-          //           blurRadius: 8,
-          //         ),
-          //         BoxShadow(
-          //           color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
-          //           offset: const Offset(4, 4),
-          //           blurRadius: 8,
-          //         ),
-          //       ]),
-          // ],
-        ),
-
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: isDark ? Colors.cyanAccent : Colors.white),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.cyanAccent : Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget build3DButton(
+  //   IconData icon,
+  //   String text,
+  //   //bool isDark,
+  //     {
+  //   BorderRadius? borderRadius,
+  //   List<BoxShadow>? boxShadow, // 🔥 new parameter
+  // }) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+  //
+  //     decoration: BoxDecoration(
+  //       borderRadius: borderRadius ?? BorderRadius.circular(18),
+  //
+  //       /// 🔥 Gradient Border
+  //       // gradient: const LinearGradient(
+  //       //   colors: [Colors.blueAccent, Colors.purpleAccent],
+  //       // ),
+  //       gradient: isDark
+  //           ? const LinearGradient(
+  //               colors: [Colors.blueAccent, Colors.cyanAccent],
+  //             )
+  //           : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
+  //
+  //       /// 🔥 Outer glow
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.blueAccent.withValues(alpha: 0.5),
+  //           blurRadius: 5,
+  //           spreadRadius: 1,
+  //         ),
+  //       ],
+  //     ),
+  //
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(vertical: 14),
+  //
+  //       decoration: BoxDecoration(
+  //         color: isDark ? const Color(0xFF1E293B) : Colors.blue,
+  //
+  //         borderRadius: borderRadius ?? BorderRadius.circular(18),
+  //
+  //         /// 🔹 Keep your neumorphic shadows
+  //         // boxShadow: [
+  //         //   ...(boxShadow ??
+  //         //       [
+  //         //         BoxShadow(
+  //         //           color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
+  //         //           offset: const Offset(-4, -4),
+  //         //           blurRadius: 8,
+  //         //         ),
+  //         //         BoxShadow(
+  //         //           color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
+  //         //           offset: const Offset(4, 4),
+  //         //           blurRadius: 8,
+  //         //         ),
+  //         //       ]),
+  //         // ],
+  //       ),
+  //
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Icon(icon, color: isDark ? Colors.cyanAccent : Colors.white),
+  //           const SizedBox(width: 8),
+  //           Text(
+  //             text,
+  //             style: TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: isDark ? Colors.cyanAccent : Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
   Future<void> loadBoardSize() async {

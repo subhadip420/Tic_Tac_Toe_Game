@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/build_icon_text_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
 
@@ -1507,70 +1508,139 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                     const SizedBox(height: 60),
 
+                    // if (!gameOver)
+                    //   GestureDetector(
+                    //     onTapDown: (_) {
+                    //       setState(() {
+                    //         resetPressed = true;
+                    //       });
+                    //     },
+                    //
+                    //     onTapUp: (_) {
+                    //       setState(() {
+                    //         resetPressed = false;
+                    //       });
+                    //       resetGame();
+                    //     },
+                    //
+                    //     onTapCancel: () {
+                    //       setState(() {
+                    //         resetPressed = false;
+                    //       });
+                    //     },
+                    //
+                    //     child: AnimatedScale(
+                    //       scale: resetPressed ? 0.92 : 1,
+                    //       duration: const Duration(milliseconds: 120),
+                    //
+                    //       child: Container(
+                    //         width: double.infinity,
+                    //         height: 50,
+                    //         padding: const EdgeInsets.all(1.5),
+                    //
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(14),
+                    //
+                    //           gradient: LinearGradient(
+                    //             colors: isDark
+                    //                 ? [
+                    //                     Colors.pinkAccent,
+                    //                     Colors.orangeAccent,
+                    //                     Colors.pinkAccent,
+                    //                   ]
+                    //                 : [
+                    //                     Colors.blueAccent,
+                    //                     Colors.cyanAccent,
+                    //                     Colors.blueAccent,
+                    //                   ],
+                    //           ),
+                    //         ),
+                    //
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: boardColor,
+                    //             borderRadius: BorderRadius.circular(12),
+                    //           ),
+                    //
+                    //           child: Center(
+                    //             child: Text(
+                    //               "Reset Game",
+                    //               style: TextStyle(
+                    //                 color: textColor,
+                    //                 fontSize: 16,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+
+
                     if (!gameOver)
                       GestureDetector(
+
                         onTapDown: (_) {
+
                           setState(() {
+
                             resetPressed = true;
                           });
                         },
 
                         onTapUp: (_) {
+
                           setState(() {
+
                             resetPressed = false;
                           });
+
                           resetGame();
                         },
 
                         onTapCancel: () {
+
                           setState(() {
+
                             resetPressed = false;
                           });
                         },
 
                         child: AnimatedScale(
+
                           scale: resetPressed ? 0.92 : 1,
-                          duration: const Duration(milliseconds: 120),
 
-                          child: Container(
+                          duration: const Duration(
+                            milliseconds: 120,
+                          ),
+
+                          child: SizedBox(
+
                             width: double.infinity,
-                            height: 50,
-                            padding: const EdgeInsets.all(1.5),
 
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
+                            child: BuildIconTextButton(
 
-                              gradient: LinearGradient(
-                                colors: isDark
-                                    ? [
-                                        Colors.pinkAccent,
-                                        Colors.orangeAccent,
-                                        Colors.pinkAccent,
-                                      ]
-                                    : [
-                                        Colors.blueAccent,
-                                        Colors.cyanAccent,
-                                        Colors.blueAccent,
-                                      ],
-                              ),
-                            ),
+                              icon: Icons.refresh,
 
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: boardColor,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                              text: "Reset Game",
 
-                              child: Center(
-                                child: Text(
-                                  "Reset Game",
-                                  style: TextStyle(
-                                    color: textColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                              isDark: isDark,
+
+                              borderRadius:
+                              BorderRadius.circular(14),
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(
+                                    alpha: isDark ? 0.4 : 0.15,
                                   ),
+
+                                  offset: const Offset(2, 2),
+
+                                  blurRadius: 6,
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ),
