@@ -863,7 +863,7 @@ class _GameBoardPageState extends State<GameBoardPage>
       negativeText: "CANCEL",
 
       barrierDismissible: true,
-
+      canPop: true,
       onPositive: () async {
 
         resetGame();
@@ -1840,8 +1840,8 @@ class _GameBoardPageState extends State<GameBoardPage>
       positiveText: "EXIT",
       negativeText: "CANCEL",
 
-      barrierDismissible: false,
-
+      barrierDismissible: true,
+      canPop: true,
       onNegative: () {
         // 🔥 nothing needed
       },

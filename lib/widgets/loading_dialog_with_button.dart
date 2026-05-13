@@ -18,6 +18,8 @@ Future<void> showAppDialog({
   bool barrierDismissible = false,
   bool showContentLoading = false, //in dialog loading circle
   bool showLoadingOnPositive = false, // 🔥 ADD
+  bool canPop = false,
+
 }) async {
   bool isLoading = false;
   final prefs = await SharedPreferences.getInstance();
@@ -33,7 +35,7 @@ Future<void> showAppDialog({
       //final isDark = Theme.of(context).brightness == Brightness.dark;
 
       return PopScope(
-        canPop: false,
+        canPop: canPop,
 
         child: StatefulBuilder(
           builder: (context, setState) {

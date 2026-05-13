@@ -596,7 +596,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       negativeText: "CANCEL",
 
       barrierDismissible: true,
-
+      canPop: true,
       onPositive: () async {
 
         resetGame();
@@ -1560,7 +1560,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       positiveText: "EXIT",
       negativeText: "CANCEL",
 
-      barrierDismissible: false,
+      barrierDismissible: true,
+      canPop: true,
 
       onNegative: () {
         // 🔥 nothing needed
