@@ -136,6 +136,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     glowController.dispose();
     lineController.dispose();
     timerController.dispose();
+    stopTickingSound();
     super.dispose();
   }
 
@@ -148,6 +149,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       vibrationOn = prefs.getBool("vibration_on") ?? true;
       timerEnabled = prefs.getBool("timer_enabled") ?? true;
     });
+  }
+
+  void stopTickingSound() {
+
+    clockSoundPlayer.stop();
+
+    lastAlertSecond = -1;
   }
 
   int getTimeLeft() {
@@ -179,7 +187,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   void onTimeUp() {
     if (gameOver) return;
-
+    stopTickingSound(); // 🔥 ADD
     setState(() {
       gameOver = true;
       isTimeUp = true;
@@ -270,7 +278,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         setState(() {
           player1Turn = !player1Turn;
         });
-
+        stopTickingSound();
         if (timerEnabled) {
           startTurnTimer(); // 🔥 RESET TIMER
         }
@@ -526,6 +534,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   }
 
   void checkWinner() {
+
     setState(() {
       isTimeUp = false; // 🔥 reset
     });
@@ -545,6 +554,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       if (board[combo[0]] != "" &&
           board[combo[0]] == board[combo[1]] &&
           board[combo[1]] == board[combo[2]]) {
+        stopTickingSound();
         setState(() {
           winningLine = combo;
           gameOver = true;
@@ -572,6 +582,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     // DRAW
     if (!board.contains("")) {
+      stopTickingSound();
       setState(() {
         gameOver = true;
       });
@@ -612,7 +623,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   void resetGame() {
     playVibration(120);
-
+    stopTickingSound();
     setState(() {
       isTimeUp = false;
       // 🔁 alternate first player
@@ -1751,6 +1762,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
       onPositive: () async {
         playVibration(120);
+        stopTickingSound();
         Navigator.pop(context);
       },
     );
