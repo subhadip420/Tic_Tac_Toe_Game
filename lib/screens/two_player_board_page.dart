@@ -11,7 +11,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
-import '../widgets/build_3d_icon_button.dart';
+import '../widgets/build_circle_icon_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
 import 'two_player_draw_board_page.dart';

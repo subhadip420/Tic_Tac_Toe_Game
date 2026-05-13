@@ -7,7 +7,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
-import '../widgets/build_3d_icon_button.dart';
+import '../widgets/build_circle_icon_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
 
@@ -2024,18 +2024,18 @@ class _GameBoardPageState extends State<GameBoardPage>
 //   bool shouldRepaint(CustomPainter oldDelegate) => true;
 // }
 
-class GameX extends StatelessWidget {
-  const GameX({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: CustomPaint(painter: XPainter()),
-    );
-  }
-}
+// class GameX extends StatelessWidget {
+//   const GameX({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       width: 40,
+//       height: 40,
+//       child: CustomPaint(painter: XPainter()),
+//     );
+//   }
+// }
 
 // Widget build3DIconButton(IconData icon, bool isDark) {
 //   return Container(

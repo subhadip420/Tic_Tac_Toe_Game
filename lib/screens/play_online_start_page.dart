@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/screens/play_online_board_page.dart';
 import '../main.dart';
-import '../widgets/build_3d_icon_button.dart';
+import '../widgets/build_circle_icon_button.dart';
 import 'web_listener_stub.dart'
     if (dart.library.js_interop) 'web_listener.dart';
 import '../../widgets/loading_widget.dart';
