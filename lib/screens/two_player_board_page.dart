@@ -11,6 +11,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
+import '../widgets/build_3d_icon_button.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import 'two_player_draw_board_page.dart';
 
@@ -884,7 +885,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 // playVibration(120);
                 // Navigator.pop(context);
               },
-              child: build3DIconButton(Icons.arrow_back, isDark),
+              child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
             ),
           ),
         ),
@@ -916,7 +917,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     MaterialPageRoute(builder: (context) => DrawBoardPage()),
                   );
                 },
-                child: build3DIconButton(Icons.gesture, isDark),
+                child: build3DIconButton(icon:Icons.gesture,isDark: isDark),
               ),
             ),
           ),
@@ -930,7 +931,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 onTap: () {
                   showSettingsMenu();
                 },
-                child: build3DIconButton(Icons.settings, isDark),
+                child: build3DIconButton(icon:Icons.settings,isDark: isDark),
               ),
             ),
           ),
@@ -1702,59 +1703,116 @@ class GameX extends StatelessWidget {
   }
 }
 
-Widget build3DIconButton(IconData icon, bool isDark) {
-  return Container(
-    width: 44,
-    height: 44,
-    alignment: Alignment.center,
+///old icon button
+// Widget build3DIconButton(IconData icon, bool isDark) {
+//   return Container(
+//     width: 44,
+//     height: 44,
+//     alignment: Alignment.center,
+//
+//     // 🔥 FIX
+//     padding: const EdgeInsets.all(1.5),
+//
+//     // 🔥 border thickness
+//     decoration: BoxDecoration(
+//       shape: BoxShape.circle,
+//
+//       /// 🔥 Gradient Border
+//       gradient: isDark
+//           ? const LinearGradient(colors: [Colors.blueAccent, Colors.cyanAccent])
+//           : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
+//
+//       /// 🔥 Glow
+//       boxShadow: [
+//         BoxShadow(
+//           color: Colors.blueAccent.withValues(alpha:0.4),
+//           blurRadius: 10,
+//           spreadRadius: 1,
+//         ),
+//       ],
+//     ),
+//
+//     child: Container(
+//       alignment: Alignment.center,
+//       decoration: BoxDecoration(
+//         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
+//         shape: BoxShape.circle,
+//
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
+//             offset: const Offset(-3, -3),
+//             blurRadius: 6,
+//           ),
+//           BoxShadow(
+//             color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+//             offset: const Offset(3, 3),
+//             blurRadius: 6,
+//           ),
+//         ],
+//       ),
+//
+//       child: Icon(
+//         icon,
+//         color: isDark ? Colors.cyanAccent : Colors.blue,
+//         size: 20,
+//       ),
+//     ),
+//   );
+// }
 
-    // 🔥 FIX
-    padding: const EdgeInsets.all(1.5),
 
-    // 🔥 border thickness
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-
-      /// 🔥 Gradient Border
-      gradient: isDark
-          ? const LinearGradient(colors: [Colors.blueAccent, Colors.cyanAccent])
-          : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-
-      /// 🔥 Glow
-      boxShadow: [
-        BoxShadow(
-          color: Colors.blueAccent.withValues(alpha:0.4),
-          blurRadius: 10,
-          spreadRadius: 1,
-        ),
-      ],
-    ),
-
-    child: Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-        shape: BoxShape.circle,
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
-            offset: const Offset(-3, -3),
-            blurRadius: 6,
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
-            offset: const Offset(3, 3),
-            blurRadius: 6,
-          ),
-        ],
-      ),
-
-      child: Icon(
-        icon,
-        color: isDark ? Colors.cyanAccent : Colors.blue,
-        size: 20,
-      ),
-    ),
-  );
-}
+///new icon button
+// Widget build3DIconButton({
+//   IconData? icon,
+//   String? text,
+//   required bool isDark,
+// }) {
+//   return SizedBox(
+//     width: 44,
+//     height: 44,
+//
+//     child: Container(
+//       padding: const EdgeInsets.all(1.5),
+//
+//       decoration: BoxDecoration(
+//         shape: BoxShape.circle,
+//         gradient: isDark
+//             ? const LinearGradient(
+//           colors: [Colors.blueAccent, Colors.cyanAccent],
+//         )
+//             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.blueAccent.withValues(alpha:0.4),
+//             blurRadius: 10,
+//             spreadRadius: 1,
+//           ),
+//         ],
+//       ),
+//
+//       child: Container(
+//         alignment: Alignment.center,
+//         decoration: BoxDecoration(
+//           shape: BoxShape.circle,
+//           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
+//         ),
+//
+//         child: icon != null
+//             ? Icon(
+//           icon,
+//           size: 20, // 🔥 fixed icon size
+//           color: isDark ? Colors.cyanAccent : Colors.blue,
+//         )
+//             : Text(
+//           text ?? "",
+//           style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 20, // 🔥 CONTROL TEXT SIZE
+//             color: isDark ? Colors.cyanAccent : Colors.blue,
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }

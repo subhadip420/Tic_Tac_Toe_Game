@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/screens/play_online_board_page.dart';
 import '../main.dart';
+import '../widgets/build_3d_icon_button.dart';
 import 'web_listener_stub.dart'
     if (dart.library.js_interop) 'web_listener.dart';
 import '../../widgets/loading_widget.dart';
@@ -1586,6 +1587,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
   }
 
+
+  ///old build3DIconButton
   // Widget build3DIconButton(IconData icon, bool isDark) {
   //   return Container(
   //     padding: const EdgeInsets.all(10),
@@ -1611,59 +1614,61 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   //   );
   // }
 
-  Widget build3DIconButton({
-    IconData? icon,
-    String? text,
-    required bool isDark,
-  }) {
-    return SizedBox(
-      width: 44,
-      height: 44,
 
-      child: Container(
-        padding: const EdgeInsets.all(1.5),
-
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: isDark
-              ? const LinearGradient(
-                  colors: [Colors.blueAccent, Colors.cyanAccent],
-                )
-              : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withValues(alpha:0.4),
-              blurRadius: 10,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
-
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-          ),
-
-          child: icon != null
-              ? Icon(
-                  icon,
-                  size: 20, // 🔥 fixed icon size
-                  color: isDark ? Colors.cyanAccent : Colors.blue,
-                )
-              : Text(
-                  text ?? "",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20, // 🔥 CONTROL TEXT SIZE
-                    color: isDark ? Colors.cyanAccent : Colors.blue,
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
+  ///new build3DIconButton
+  // Widget build3DIconButton({
+  //   IconData? icon,
+  //   String? text,
+  //   required bool isDark,
+  // }) {
+  //   return SizedBox(
+  //     width: 44,
+  //     height: 44,
+  //
+  //     child: Container(
+  //       padding: const EdgeInsets.all(1.5),
+  //
+  //       decoration: BoxDecoration(
+  //         shape: BoxShape.circle,
+  //         gradient: isDark
+  //             ? const LinearGradient(
+  //                 colors: [Colors.blueAccent, Colors.cyanAccent],
+  //               )
+  //             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.blueAccent.withValues(alpha:0.4),
+  //             blurRadius: 10,
+  //             spreadRadius: 1,
+  //           ),
+  //         ],
+  //       ),
+  //
+  //       child: Container(
+  //         alignment: Alignment.center,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
+  //         ),
+  //
+  //         child: icon != null
+  //             ? Icon(
+  //                 icon,
+  //                 size: 20, // 🔥 fixed icon size
+  //                 color: isDark ? Colors.cyanAccent : Colors.blue,
+  //               )
+  //             : Text(
+  //                 text ?? "",
+  //                 style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 20, // 🔥 CONTROL TEXT SIZE
+  //                   color: isDark ? Colors.cyanAccent : Colors.blue,
+  //                 ),
+  //               ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget build3DButton(
     IconData icon,
