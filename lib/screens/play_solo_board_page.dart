@@ -1003,7 +1003,38 @@ class _GameBoardPageState extends State<GameBoardPage>
         : const Color(0xFFF0F0F0);
     Color textColor = isDark ? Colors.white : Colors.black87;
 
-    return Scaffold(
+    return PopScope(
+
+        canPop: (gameOver ||
+        !board.any((e) => e != "")),
+
+    onPopInvokedWithResult: (
+    didPop,
+    result,
+    ) async {
+
+    if (didPop) return;
+
+    /// 🔥 MATCH RUNNING
+    if (!gameOver &&
+    board.any((e) => e != "")) {
+
+    await showExitDialog();
+
+    } else {
+
+    /// 🔥 DIRECT BACK
+    playVibration(120);
+
+    if (mounted &&
+    Navigator.canPop(context)) {
+
+    Navigator.pop(context);
+    }
+    }
+    },
+
+    child: Scaffold(
       backgroundColor: Colors.transparent,
 
       appBar: AppBar(
@@ -1716,6 +1747,7 @@ class _GameBoardPageState extends State<GameBoardPage>
           ),
         ],
       ),
+    ),
     );
   } // end widget build
 
