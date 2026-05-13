@@ -967,8 +967,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             ],
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+    SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+    child: SingleChildScrollView(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
                 const SizedBox(height: 20),
@@ -1161,8 +1164,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                 const SizedBox(height: 00),
 
-                // GAME BOARD (CENTERED)
-                Expanded(
+                /// GAME BOARD (CENTERED)
+                // Expanded(
+
+    SizedBox(
+    height: 320,
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
@@ -1338,7 +1344,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     ),
                   ),
 
-                const SizedBox(height: 60),
+                const SizedBox(height: 80),
 
                 if (!gameOver)
                   GestureDetector(
@@ -1410,10 +1416,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     ),
                   ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
               ],
             ),
           ),
+          ),
+    ),
+
 
           // CONFETTI (FRONT LAYER)
           IgnorePointer(
