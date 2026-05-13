@@ -827,9 +827,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         /// 🌙 THEME
         SettingsMenuItem(
 
-          icon: isDark
-              ? Icons.dark_mode
-              : Icons.light_mode,
+          affectsTheme: true,
+
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.dark_mode
+
+                : Icons.light_mode;
+          },
 
           title: "Dark Theme",
 
@@ -858,9 +865,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         /// 🔊 SOUND
         SettingsMenuItem(
 
-          icon: soundOn
-              ? Icons.volume_up
-              : Icons.volume_off,
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.volume_up
+
+                : Icons.volume_off;
+          },
 
           title: "Sound",
 
@@ -889,9 +901,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         /// 📳 VIBRATION
         SettingsMenuItem(
 
-          icon: vibrationOn
-              ? Icons.vibration
-              : Icons.phonelink_erase,
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.vibration
+
+                : Icons.phonelink_erase;
+          },
 
           title: "Vibration",
 
@@ -916,17 +933,24 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         ),
 
         /// ⏱ TIMER
+        /// ⏱ TIMER
         SettingsMenuItem(
 
-          icon: timerEnabled
-              ? Icons.timer
-              : Icons.timer_off,
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.timer
+
+                : Icons.timer_off;
+          },
 
           title: "Timer",
 
           value: timerEnabled,
 
-          onChanged: (value) async {
+          /// 🔥 PREVENT CHANGE
+          canChange: (value) {
 
             if (isGameRunning) {
 
@@ -939,8 +963,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 Toast.LENGTH_SHORT,
               );
 
-              return;
+              return false;
             }
+
+            return true;
+          },
+
+          onChanged: (value) async {
 
             SharedPreferences prefs =
             await SharedPreferences

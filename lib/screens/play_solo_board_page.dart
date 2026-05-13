@@ -1896,9 +1896,16 @@ class _GameBoardPageState extends State<GameBoardPage>
         /// 🌙 THEME
         SettingsMenuItem(
 
-          icon: isDark
-              ? Icons.dark_mode
-              : Icons.light_mode,
+          affectsTheme: true,
+
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.dark_mode
+
+                : Icons.light_mode;
+          },
 
           title: "Dark Theme",
 
@@ -1926,9 +1933,14 @@ class _GameBoardPageState extends State<GameBoardPage>
         /// 🔊 SOUND
         SettingsMenuItem(
 
-          icon: soundOn
-              ? Icons.volume_up
-              : Icons.volume_off,
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.volume_up
+
+                : Icons.volume_off;
+          },
 
           title: "Sound",
 
@@ -1956,9 +1968,14 @@ class _GameBoardPageState extends State<GameBoardPage>
         /// 📳 VIBRATION
         SettingsMenuItem(
 
-          icon: vibrationOn
-              ? Icons.vibration
-              : Icons.phonelink_erase,
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.vibration
+
+                : Icons.phonelink_erase;
+          },
 
           title: "Vibration",
 

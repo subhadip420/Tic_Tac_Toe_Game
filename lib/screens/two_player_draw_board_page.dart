@@ -234,9 +234,16 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         /// 🌙 THEME
         SettingsMenuItem(
 
-          icon: isDark
-              ? Icons.dark_mode
-              : Icons.light_mode,
+          affectsTheme: true,
+
+          iconBuilder: (value) {
+
+            return value
+
+                ? Icons.dark_mode
+
+                : Icons.light_mode;
+          },
 
           title: "Dark Theme",
 
@@ -266,7 +273,10 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         /// 🎮 AUTO GRID
         SettingsMenuItem(
 
-          icon: Icons.grid_on,
+          iconBuilder: (value) {
+
+            return Icons.grid_on;
+          },
 
           title: "Auto Grid",
 
@@ -284,7 +294,10 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         // /// 🎯 SNAP TO BOX
         // SettingsMenuItem(
         //
-        //   icon: Icons.crop_square,
+        //   iconBuilder: (value) {
+        //
+        //     return Icons.crop_square;
+        //   },
         //
         //   title: "Snap to Box",
         //
@@ -302,7 +315,10 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         // /// ❌⭕ DETECT XO
         // SettingsMenuItem(
         //
-        //   icon: Icons.gesture,
+        //   iconBuilder: (value) {
+        //
+        //     return Icons.gesture;
+        //   },
         //
         //   title: "Detect X / O",
         //
@@ -320,7 +336,10 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         // /// 🔄 TURN BASED MODE
         // SettingsMenuItem(
         //
-        //   icon: Icons.swap_horiz,
+        //   iconBuilder: (value) {
+        //
+        //     return Icons.swap_horiz;
+        //   },
         //
         //   title: "Turn Based Mode",
         //
