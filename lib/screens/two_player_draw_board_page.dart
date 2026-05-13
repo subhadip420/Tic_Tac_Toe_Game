@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/loading_dialog_with_button.dart';
 
 class DrawBoardPage extends StatefulWidget {
   const DrawBoardPage({super.key});
@@ -217,6 +218,30 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     );
   }
 
+  Future<void> showExitDialog() async {
+    await showAppDialog(
+      context: context,
+
+      title: "EXIT MATCH",
+
+      message: "Exit and end the match?",
+
+      positiveText: "EXIT",
+      negativeText: "CANCEL",
+
+      barrierDismissible: true,
+      canPop: true,
+
+      onNegative: () {
+        // 🔥 nothing needed
+      },
+
+      onPositive: () async {
+        //playVibration(120);
+        Navigator.pop(context);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +272,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             message: "Back",
             child: GestureDetector(
               onTap: () async {
+                await showExitDialog();
                 Navigator.pop(context);
               },
               child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
