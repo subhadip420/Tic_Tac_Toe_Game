@@ -1369,11 +1369,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             margin: const EdgeInsets.only(bottom: 5),
 
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
+                            padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
 
-                              vertical: 5,
-                            ),
 
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
