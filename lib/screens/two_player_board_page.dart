@@ -146,12 +146,17 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   Future loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    int savedSize =
+        prefs.getInt("board_size") ?? 3;
 
     setState(() {
       isDark = prefs.getBool("theme_dark") ?? true;
       soundOn = prefs.getBool("sound_on") ?? true;
       vibrationOn = prefs.getBool("vibration_on") ?? true;
       timerEnabled = prefs.getBool("timer_enabled") ?? true;
+      boardSize = savedSize;
+
+      board = List.filled(boardSize * boardSize, "",);
     });
   }
 
@@ -1362,6 +1367,15 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                             timerController.reset();
 
                             stopTickingSound();
+
+                            SharedPreferences.getInstance()
+                                .then((prefs) {
+
+                              prefs.setInt(
+                                "board_size",
+                                size,
+                              );
+                            });
 
                             setState(() {
                               boardSize = size;
