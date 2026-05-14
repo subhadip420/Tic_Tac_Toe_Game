@@ -65,7 +65,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   bool isTimeUp = false;
   Timer? turnTimer;
   int lastAlertSecond = -1;
-
+  bool hasGameStarted = false;
   bool get isGameRunning {
     return board.any((e) => e != "") && !gameOver;
   }
@@ -128,9 +128,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     player1Turn = true; // first game always Player 1
 
-    if (timerEnabled) {
-      startTurnTimer();
-    }
+    // if (timerEnabled) {
+    //   startTurnTimer();
+    // }
   }
 
   @override
@@ -248,6 +248,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   void handleTap(int index) {
     if (board[index] != "" || gameOver) return;
+
+    /// 🔥 FIRST MOVE
+    if (!hasGameStarted) {
+
+      hasGameStarted = true;
+
+      if (timerEnabled) {
+        startTurnTimer();
+      }
+    }
 
     setState(() {
       pressedIndex = index;
@@ -764,7 +774,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     playVibration(120);
     stopTickingSound();
     setState(() {
+      hasGameStarted = false;
+      timerController.reset();
       isTimeUp = false;
+      currentTime = 30;
       // 🔁 alternate first player
       isPlayer1First = !isPlayer1First;
 
@@ -782,9 +795,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     turnTimer?.cancel();
 
-    if (timerEnabled) {
-      startTurnTimer();
-    }
+    // if (timerEnabled) {
+    //   startTurnTimer();
+    // }
   }
 
   // void showSettingsMenu() {
@@ -1340,6 +1353,15 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         return GestureDetector(
                           onTap: () {
                             playVibration(120);
+
+                            /// 🔥 TIMER RESET
+                            hasGameStarted = false;
+
+                            turnTimer?.cancel();
+
+                            timerController.reset();
+
+                            stopTickingSound();
 
                             setState(() {
                               boardSize = size;
