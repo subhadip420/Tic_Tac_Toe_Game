@@ -225,7 +225,7 @@ Future<void> showGlassSettingsMenu({
   await showMenu(
     context: context,
 
-    position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
+    position: const RelativeRect.fromLTRB(1200, 90, 00, 0),
 
     color: Colors.transparent,
 
@@ -250,9 +250,9 @@ Future<void> showGlassSettingsMenu({
                 child: StatefulBuilder(
                   builder: (context, setStateMenu) {
                     return Container(
-                      width: 240,
+                      width: 220,
 
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(10),
 
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(22),
@@ -264,7 +264,7 @@ Future<void> showGlassSettingsMenu({
                         border: Border.all(
                           color: localIsDark
                               ? Colors.white.withValues(alpha: 0.1)
-                              : Colors.black.withValues(alpha: 0.08),
+                              : Colors.black.withValues(alpha: 0.1),
                         ),
 
                         boxShadow: [
@@ -293,14 +293,49 @@ Future<void> showGlassSettingsMenu({
 
                             child: Row(
                               children: [
-                                Icon(
-                                  item.iconBuilder(localValues[index]),
+                                // Icon(
+                                //   item.iconBuilder(localValues[index]),
+                                //
+                                //   size: 20,
+                                //
+                                //   color: localIsDark
+                                //       ? Color(0xFF67E8F9)
+                                //       : Color(0xFF1308B0),
+                                // ),
 
-                                  size: 20,
+                                Container(
 
-                                  color: localIsDark
-                                      ? Colors.cyanAccent
-                                      : Colors.blue,
+                                  padding: const EdgeInsets.all(6),
+
+                                  decoration: BoxDecoration(
+
+                                    shape: BoxShape.circle,
+
+                                    color: localIsDark
+
+                                        ? Colors.cyanAccent.withValues(
+                                      alpha: 0.12,
+                                    )
+
+                                        : Colors.blue.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                  ),
+
+                                  child: Icon(
+
+                                    item.iconBuilder(
+                                      localValues[index],
+                                    ),
+
+                                    size: 18,
+
+                                    color: localIsDark
+
+                                        ? const Color(0xFF70DCEA)
+
+                                        : Colors.blue.shade700,
+                                  ),
                                 ),
 
                                 const SizedBox(width: 10),
@@ -341,24 +376,19 @@ Future<void> showGlassSettingsMenu({
                                     //   /// 🔥 CALLBACK
                                     //   item.onChanged(value);
                                     // },
-
                                     onChanged: (value) async {
-
                                       /// 🔥 VALIDATION
                                       bool allowed =
-                                          item.canChange?.call(value)
-                                              ?? true;
+                                          item.canChange?.call(value) ?? true;
 
                                       if (!allowed) return;
 
                                       setStateMenu(() {
-
                                         /// 🔥 UPDATE SWITCH
                                         localValues[index] = value;
 
                                         /// 🔥 UPDATE THEME
                                         if (item.affectsTheme) {
-
                                           localIsDark = value;
                                         }
                                       });
