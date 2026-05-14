@@ -1091,13 +1091,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
       //position: const RelativeRect.fromLTRB(0, 90, 10, 0),
       position: RelativeRect.fromLTRB(
-        MediaQuery.of(context).size.width / 2 - 110,
-
-        85,
-
-        MediaQuery.of(context).size.width / 2 - 110,
-
-        0,
+        MediaQuery.of(context).size.width / 2 - 75, 85,
+        MediaQuery.of(context).size.width / 2 - 75, 0,
       ),
       color: Colors.transparent,
 
@@ -1119,9 +1114,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
 
                 child: Container(
-                  width: 220,
+                  width: 150,
 
-                  padding: const EdgeInsets.all(14),
+                  //padding: const EdgeInsets.all(5),
+                  //padding: const EdgeInsets.symmetric(vertical: 5),
 
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
@@ -1162,168 +1158,313 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     ],
                   ),
 
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                  // child: Column(
+                  //   mainAxisSize: MainAxisSize.min,
+                  //
+                  //   children: availableBoardSizes.map((size) {
+                  //     bool selected = boardSize == size;
+                  //
+                  //     return GestureDetector(
+                  //       onTap: () {
+                  //         playVibration(120);
+                  //
+                  //         setState(() {
+                  //           boardSize = size;
+                  //           board = List.filled(size * size, "");
+                  //           player1Turn = true;
+                  //           gameOver = false;
+                  //           winningLine = null;
+                  //           gameMessage = "";
+                  //           lastMove = -1;
+                  //           pressedIndex = -1;
+                  //           isTimeUp = false;
+                  //         });
+                  //
+                  //         Navigator.pop(context);
+                  //       },
+                  //
+                  //       child: AnimatedContainer(
+                  //         duration: const Duration(milliseconds: 180),
+                  //
+                  //         margin: const EdgeInsets.only(bottom: 10),
+                  //
+                  //         padding: const EdgeInsets.symmetric(
+                  //           horizontal: 14,
+                  //           vertical: 14,
+                  //         ),
+                  //
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(18),
+                  //
+                  //           gradient: selected
+                  //               ? const LinearGradient(
+                  //                   colors: [
+                  //                     Colors.blueAccent,
+                  //
+                  //                     Colors.cyanAccent,
+                  //                   ],
+                  //                 )
+                  //               : null,
+                  //
+                  //           color: selected
+                  //               ? null
+                  //               : isDark
+                  //               ? Colors.white.withValues(alpha: 0.05)
+                  //               : Colors.white.withValues(alpha: 0.55),
+                  //
+                  //           border: Border.all(
+                  //             color: selected
+                  //                 ? Colors.transparent
+                  //                 : isDark
+                  //                 ? Colors.white.withValues(alpha: 0.08)
+                  //                 : Colors.black.withValues(alpha: 0.06),
+                  //           ),
+                  //
+                  //           boxShadow: selected
+                  //               ? [
+                  //                   BoxShadow(
+                  //                     color: Colors.blueAccent.withValues(
+                  //                       alpha: 0.45,
+                  //                     ),
+                  //
+                  //                     blurRadius: 18,
+                  //
+                  //                     spreadRadius: 1,
+                  //                   ),
+                  //                 ]
+                  //               : [],
+                  //         ),
+                  //
+                  //         child: Row(
+                  //           children: [
+                  //             Expanded(
+                  //               child: Text(
+                  //                 "${size}x$size",
+                  //
+                  //                 style: TextStyle(
+                  //                   fontSize: 15,
+                  //
+                  //                   fontWeight: FontWeight.bold,
+                  //
+                  //                   color: selected
+                  //                       ? Colors.white
+                  //                       : isDark
+                  //                       ? Colors.white
+                  //                       : Colors.black87,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //
+                  //             AnimatedContainer(
+                  //               duration: const Duration(milliseconds: 180),
+                  //
+                  //               width: 26,
+                  //               height: 26,
+                  //
+                  //               decoration: BoxDecoration(
+                  //                 shape: BoxShape.circle,
+                  //
+                  //                 color: selected
+                  //                     ? Colors.white
+                  //                     : Colors.transparent,
+                  //
+                  //                 border: Border.all(
+                  //                   color: selected
+                  //                       ? Colors.white
+                  //                       : isDark
+                  //                       ? Colors.white54
+                  //                       : Colors.black45,
+                  //
+                  //                   width: 2,
+                  //                 ),
+                  //               ),
+                  //
+                  //               child: selected
+                  //                   ? const Icon(
+                  //                       Icons.check,
+                  //
+                  //                       size: 16,
+                  //
+                  //                       color: Colors.blue,
+                  //                     )
+                  //                   : null,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     );
+                  //   }).toList(),
+                  // ),
+                  child: SizedBox(
+                    height: 210, // 🔥 ONLY 3 ITEMS VISIBLE
 
-                    children: availableBoardSizes.map((size) {
-                      bool selected = boardSize == size;
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 6,
+                      ),
+                      controller: ScrollController(
+                        /// 🔥 SELECTED ITEM CENTER
+                        //initialScrollOffset: ((boardSize - 3) * 72).toDouble(),
+                        initialScrollOffset:
 
-                      return GestureDetector(
-                        onTap: () {
-                          playVibration(120);
+                        (
+                            ((boardSize - 3) * 58) - 58
+                        ).clamp(
+                          0,
+                          double.infinity,
+                        ).toDouble(),
+                      ),
 
-                          // setState(() {
-                          //
-                          //   boardSize = size;
-                          //
-                          //   board =
-                          //       List.filled(
-                          //           size * size,
-                          //           "");
-                          //
-                          //   gameOver = false;
-                          //
-                          //   winningLine = null;
-                          //
-                          //   gameMessage = "";
-                          //
-                          //   lastMove = -1;
-                          // });
+                      physics: const BouncingScrollPhysics(),
 
-                          setState(() {
-                            boardSize = size;
+                      itemCount: availableBoardSizes.length,
 
-                            board = List.filled(size * size, "");
+                      itemBuilder: (context, index) {
+                        int size = availableBoardSizes[index];
 
-                            player1Turn = true;
+                        bool selected = boardSize == size;
 
-                            gameOver = false;
+                        return GestureDetector(
+                          onTap: () {
+                            playVibration(120);
 
-                            winningLine = null;
+                            setState(() {
+                              boardSize = size;
 
-                            gameMessage = "";
+                              board = List.filled(size * size, "");
 
-                            lastMove = -1;
+                              player1Turn = true;
 
-                            pressedIndex = -1;
+                              gameOver = false;
 
-                            isTimeUp = false;
-                          });
+                              winningLine = null;
 
-                          Navigator.pop(context);
-                        },
+                              gameMessage = "";
 
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
+                              lastMove = -1;
 
-                          margin: const EdgeInsets.only(bottom: 10),
+                              pressedIndex = -1;
 
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 14,
-                          ),
+                              isTimeUp = false;
+                            });
 
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
+                            Navigator.pop(context);
+                          },
 
-                            gradient: selected
-                                ? const LinearGradient(
-                                    colors: [
-                                      Colors.blueAccent,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
 
-                                      Colors.cyanAccent,
-                                    ],
-                                  )
-                                : null,
+                            margin: const EdgeInsets.only(bottom: 5),
 
-                            color: selected
-                                ? null
-                                : isDark
-                                ? Colors.white.withValues(alpha: 0.05)
-                                : Colors.white.withValues(alpha: 0.55),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
 
-                            border: Border.all(
-                              color: selected
-                                  ? Colors.transparent
-                                  : isDark
-                                  ? Colors.white.withValues(alpha: 0.08)
-                                  : Colors.black.withValues(alpha: 0.06),
+                              vertical: 5,
                             ),
 
-                            boxShadow: selected
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.blueAccent.withValues(
-                                        alpha: 0.45,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+
+                              gradient: selected
+                                  ? const LinearGradient(
+                                      colors: [
+                                        Colors.blueAccent,
+
+                                        Colors.cyanAccent,
+                                      ],
+                                    )
+                                  : null,
+
+                              color: selected
+                                  ? null
+                                  : isDark
+                                  ? Colors.white.withValues(alpha: 0.05)
+                                  : Colors.white.withValues(alpha: 0.55),
+
+                              border: Border.all(
+                                color: selected
+                                    ? Colors.transparent
+                                    : isDark
+                                    ? Colors.white.withValues(alpha: 0.08)
+                                    : Colors.black.withValues(alpha: 0.06),
+                              ),
+
+                              boxShadow: selected
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.blueAccent.withValues(
+                                          alpha: 0.45,
+                                        ),
+
+                                        blurRadius: 18,
+
+                                        spreadRadius: 1,
                                       ),
+                                    ]
+                                  : [],
+                            ),
 
-                                      blurRadius: 18,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "${size}x$size",
 
-                                      spreadRadius: 1,
+                                    style: TextStyle(
+                                      fontSize: 15,
+
+                                      fontWeight: FontWeight.bold,
+
+                                      color: selected
+                                          ? Colors.white
+                                          : isDark
+                                          ? Colors.white
+                                          : Colors.black87,
                                     ),
-                                  ]
-                                : [],
-                          ),
-
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "${size}x$size",
-
-                                  style: TextStyle(
-                                    fontSize: 15,
-
-                                    fontWeight: FontWeight.bold,
-
-                                    color: selected
-                                        ? Colors.white
-                                        : isDark
-                                        ? Colors.white
-                                        : Colors.black87,
-                                  ),
-                                ),
-                              ),
-
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 180),
-
-                                width: 26,
-                                height: 26,
-
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-
-                                  color: selected
-                                      ? Colors.white
-                                      : Colors.transparent,
-
-                                  border: Border.all(
-                                    color: selected
-                                        ? Colors.white
-                                        : isDark
-                                        ? Colors.white54
-                                        : Colors.black45,
-
-                                    width: 2,
                                   ),
                                 ),
 
-                                child: selected
-                                    ? const Icon(
-                                        Icons.check,
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 180),
 
-                                        size: 16,
+                                  width: 26,
+                                  height: 26,
 
-                                        color: Colors.blue,
-                                      )
-                                    : null,
-                              ),
-                            ],
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+
+                                    color: selected
+                                        ? Colors.white
+                                        : Colors.transparent,
+
+                                    border: Border.all(
+                                      color: selected
+                                          ? Colors.white
+                                          : isDark
+                                          ? Colors.white54
+                                          : Colors.black45,
+
+                                      width: 2,
+                                    ),
+                                  ),
+
+                                  child: selected
+                                      ? const Icon(
+                                          Icons.check,
+
+                                          size: 16,
+
+                                          color: Colors.blue,
+                                        )
+                                      : null,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
