@@ -608,8 +608,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       winLength = 5;
     }
 
-    String currentPlayer = player1Turn ? "X" : "O";
-
+    //String currentPlayer = player1Turn ? "X" : "O";
+    String currentPlayer =
+    player1Turn
+        ? player1Symbol
+        : player2Symbol;
     /// 🔥 CHECK ALL CELLS
     for (int row = 0; row < boardSize; row++) {
       for (int col = 0; col < boardSize; col++) {
@@ -667,6 +670,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   }
 
   bool _checkDirection(
+
     int row,
     int col,
 
@@ -677,6 +681,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     int winLength,
   ) {
+    if (gameOver) return true;
     List<int> matched = [];
 
     for (int i = 0; i < winLength; i++) {
@@ -705,9 +710,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     stopTickingSound();
 
     setState(() {
-      winningLine = matched;
+      //winningLine = matched;
 
       gameOver = true;
+      winningLine = List<int>.from(matched);
     });
 
     /// 🔥 WIN LINE ANIMATION
@@ -1158,6 +1164,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     ],
                   ),
 
+
+                  ///old
                   // child: Column(
                   //   mainAxisSize: MainAxisSize.min,
                   //
@@ -1295,6 +1303,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   //     );
                   //   }).toList(),
                   // ),
+
+
+
+                  ///new
                   child: SizedBox(
                     height: 210, // 🔥 ONLY 3 ITEMS VISIBLE
 
