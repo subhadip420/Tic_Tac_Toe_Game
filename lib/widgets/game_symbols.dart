@@ -11,9 +11,7 @@ class GameX extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: XPainter(),
-      ),
+      child: CustomPaint(painter: XPainter()),
     );
   }
 }
@@ -21,7 +19,6 @@ class GameX extends StatelessWidget {
 class XPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
     final paint = Paint()
@@ -57,9 +54,7 @@ class GameO extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: OPainter(),
-      ),
+      child: CustomPaint(painter: OPainter()),
     );
   }
 }
@@ -67,7 +62,6 @@ class GameO extends StatelessWidget {
 class OPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
     final paint = Paint()
@@ -100,45 +94,105 @@ class OPainter extends CustomPainter {
 }
 
 class WinLinePainter extends CustomPainter {
-
   final List<int> line;
   final double progress;
   final int boardSize; // 🔥 add this
 
   WinLinePainter(this.line, this.progress, this.boardSize);
 
+  //@override
+  // void paint(Canvas canvas, Size size) {
+  //
+  //   double cell = size.width / boardSize; // ✅ dynamic
+  //
+  //   Offset getOffset(int index) {
+  //     int row = index ~/ boardSize;
+  //     int col = index % boardSize;
+  //
+  //     return Offset(
+  //       col * cell + cell / 2,
+  //       row * cell + cell / 2,
+  //     );
+  //   }
+  //
+  //   Offset start = getOffset(line.first);
+  //   Offset end = getOffset(line.last);
+  //
+  //   Offset current = Offset.lerp(start, end, progress)!;
+  //
+  //   final glowPaint = Paint()
+  //     ..color = Colors.greenAccent.withValues(alpha: 0.7)
+  //     ..strokeWidth = cell * 0.3
+  //     ..strokeCap = StrokeCap.round
+  //     ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+  //
+  //   final linePaint = Paint()
+  //     ..color = Colors.greenAccent
+  //     ..strokeWidth = cell * 0.15
+  //     ..strokeCap = StrokeCap.round;
+  //
+  //   canvas.drawLine(start, current, glowPaint);
+  //   canvas.drawLine(start, current, linePaint);
+  // }
+
   @override
   void paint(Canvas canvas, Size size) {
-
-    double cell = size.width / boardSize; // ✅ dynamic
+    /// 🔥 FIXED SAFE CELL SIZE
+    double cell = size.width / boardSize;
 
     Offset getOffset(int index) {
       int row = index ~/ boardSize;
+
       int col = index % boardSize;
 
-      return Offset(
-        col * cell + cell / 2,
-        row * cell + cell / 2,
-      );
+      return Offset(col * cell + cell / 2, row * cell + cell / 2);
     }
 
     Offset start = getOffset(line.first);
+
     Offset end = getOffset(line.last);
 
     Offset current = Offset.lerp(start, end, progress)!;
 
-    final glowPaint = Paint()
-      ..color = Colors.greenAccent.withValues(alpha: 0.7)
-      ..strokeWidth = cell * 0.3
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    /// 🔥 DYNAMIC THICKNESS
+    double glowStroke = boardSize <= 4
+        ? 16
+        : boardSize <= 6
+        ? 10
+        : 7;
 
-    final linePaint = Paint()
-      ..color = Colors.greenAccent
-      ..strokeWidth = cell * 0.15
-      ..strokeCap = StrokeCap.round;
+    double lineStroke = boardSize <= 4
+        ? 8
+        : boardSize <= 6
+        ? 5
+        : 3.5;
 
+    // final glowPaint = Paint()
+    //   ..color = Colors.greenAccent.withValues(alpha: 0.65)
+    //   ..strokeWidth = glowStroke
+    //   ..strokeCap = StrokeCap.round
+    //   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+    //
+    // final linePaint = Paint()
+    //   ..color = Colors.white
+    //   ..strokeWidth = lineStroke
+    //   ..strokeCap = StrokeCap.round;
+
+      final glowPaint = Paint()
+        ..color = Colors.greenAccent.withValues(alpha: 0.7)
+        ..strokeWidth = cell * 0.3
+        ..strokeCap = StrokeCap.round
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+
+      final linePaint = Paint()
+        ..color = Colors.greenAccent
+        ..strokeWidth = cell * 0.15
+        ..strokeCap = StrokeCap.round;
+
+
+    /// 🔥 DRAW
     canvas.drawLine(start, current, glowPaint);
+
     canvas.drawLine(start, current, linePaint);
   }
 
