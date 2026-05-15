@@ -24,7 +24,6 @@ import 'package:http/http.dart' as http;
 import 'web_listener_stub.dart' if (dart.library.html) 'web_listener.dart';
 import 'package:marquee/marquee.dart';
 
-
 class PlayOnlineBoardPage extends StatefulWidget {
   final String roomCode;
 
@@ -195,7 +194,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           // 🔥 Safe Pop: গেম পেজ না কেটে শুধু ইন্টারনেট ডায়ালগটাই কাটবে
           if (mounted && internetDialogCtx != null) {
-
             // if (internetDialogCtx != null &&
             //     Navigator.of(
             //       internetDialogCtx!,
@@ -208,14 +206,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             //   ).pop();
             // }
             /// 🔥 CLOSE INTERNET DIALOG
-            final navigator = Navigator.of(
-              context,
-              rootNavigator: true,
-            );
+            final navigator = Navigator.of(context, rootNavigator: true);
 
-            if (isDialogOpen &&
-                navigator.canPop()) {
-
+            if (isDialogOpen && navigator.canPop()) {
               navigator.pop();
 
               isDialogOpen = false;
@@ -280,11 +273,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                     internetDialogCtx!,
                     rootNavigator: true,
                   ).canPop()) {
-
-                Navigator.of(
-                  internetDialogCtx!,
-                  rootNavigator: true,
-                ).pop();
+                Navigator.of(internetDialogCtx!, rootNavigator: true).pop();
               }
               internetDialogCtx = null;
             }
@@ -343,19 +332,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     nameScrollAnim.addListener(() {
       if (nameScrollController.hasClients) {
         double maxScroll = nameScrollController.position.maxScrollExtent;
-        nameScrollController.jumpTo(
-          maxScroll * nameScrollAnim.value,
-        );
+        nameScrollController.jumpTo(maxScroll * nameScrollAnim.value);
       }
     });
 
     nameScrollAnim.repeat(reverse: true); // 🔥 smooth back-forth
 
-
     timerController.addListener(() {
-
       if (timerController.value >= 1.0 && !gameOver) {
-
         print("⏰ TIME UP TRIGGERED");
 
         setState(() {
@@ -372,7 +356,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     loadSettings();
   }
-
 
   @override
   void dispose() {
@@ -404,17 +387,12 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
   ///new
   void closeGamePage() {
-
     if (!mounted || isGamePageClosed) return;
 
     isGamePageClosed = true;
 
     /// 🔥 CLOSE ALL DIALOGS FIRST
-    Navigator.of(
-      context,
-      rootNavigator: true,
-    ).popUntil((route) {
-
+    Navigator.of(context, rootNavigator: true).popUntil((route) {
       return route is PageRoute;
     });
 
@@ -423,7 +401,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void stopTickingSound() {
-
     clockSoundPlayer.stop();
 
     lastAlertSecond = -1;
@@ -585,8 +562,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       if (scoreUpdate != null) ...scoreUpdate,
     });
   }
-
-
 
   Future loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1005,22 +980,17 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   // }
 
   Future<void> listenToGame() async {
-
     final prefs = await SharedPreferences.getInstance();
 
-    String userId =
-        prefs.getString("nickname") ?? "";
+    String userId = prefs.getString("nickname") ?? "";
 
     roomRef.onValue.listen((event) {
-
       /// 🔥 ROOM DELETED
       if (handleRoomDeleted(event)) {
         return;
       }
 
-      final data = Map<String, dynamic>.from(
-        event.snapshot.value as Map,
-      );
+      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
 
       /// 🔥 TIMER
       handleTimerSync(data);
@@ -1047,9 +1017,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     });
   }
 
-
   bool handleRoomDeleted(DatabaseEvent event) {
-
     if (event.snapshot.exists) {
       return false;
     }
@@ -1058,51 +1026,28 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     heartbeatTimer?.cancel();
 
-    if (mounted &&
-        !isGamePageClosed &&
-        !opponentExitDialogShown) {
-
+    if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
       opponentExitDialogShown = true;
 
       /// 🔥 CLOSE DISCONNECT DIALOG
-      if (isDisconnectDialogOpen &&
-          disconnectDialogCtx != null) {
-
-        if (Navigator.of(
-          disconnectDialogCtx!,
-          rootNavigator: true,
-        ).canPop()) {
-
-          Navigator.of(
-            disconnectDialogCtx!,
-            rootNavigator: true,
-          ).pop();
+      if (isDisconnectDialogOpen && disconnectDialogCtx != null) {
+        if (Navigator.of(disconnectDialogCtx!, rootNavigator: true).canPop()) {
+          Navigator.of(disconnectDialogCtx!, rootNavigator: true).pop();
         }
 
         isDisconnectDialogOpen = false;
       }
 
       /// 🔥 CLOSE INTERNET DIALOG
-      if (isDialogOpen &&
-          internetDialogCtx != null) {
-
-        if (Navigator.of(
-          internetDialogCtx!,
-          rootNavigator: true,
-        ).canPop()) {
-
-          Navigator.of(
-            internetDialogCtx!,
-            rootNavigator: true,
-          ).pop();
+      if (isDialogOpen && internetDialogCtx != null) {
+        if (Navigator.of(internetDialogCtx!, rootNavigator: true).canPop()) {
+          Navigator.of(internetDialogCtx!, rootNavigator: true).pop();
         }
 
         isDialogOpen = false;
       }
 
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) {
-
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           stopTickingSound();
           showOpponentExitDialog();
@@ -1113,19 +1058,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     return true;
   }
 
-
   void handleTimerSync(Map<String, dynamic> data) {
-
     if (data["timerStart"] != null) {
-
       int newStart = data["timerStart"];
 
-      turnDuration =
-          data["turnDuration"] ?? 30;
+      turnDuration = data["turnDuration"] ?? 30;
 
-      if (serverStartTime != newStart ||
-          timerController.value >= 1.0) {
-
+      if (serverStartTime != newStart || timerController.value >= 1.0) {
         serverStartTime = newStart;
 
         lastAlertSecond = -1;
@@ -1135,14 +1074,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
-
-  bool handleZombieRoom(
-      Map<String, dynamic> data,
-      ) {
-
-    if (data["board"] != null &&
-        data["players"] != null) {
-
+  bool handleZombieRoom(Map<String, dynamic> data) {
+    if (data["board"] != null && data["players"] != null) {
       return false;
     }
 
@@ -1152,15 +1085,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     heartbeatTimer?.cancel();
 
-    if (mounted &&
-        !isGamePageClosed &&
-        !opponentExitDialogShown) {
-
+    if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
       opponentExitDialogShown = true;
 
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) {
-
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           showOpponentExitDialog();
         }
@@ -1170,14 +1098,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     return true;
   }
 
-
-  void updateGameState(
-      Map<String, dynamic> data,
-      String userId,
-      ) {
-
+  void updateGameState(Map<String, dynamic> data, String userId) {
     setState(() {
-
       updateBoardData(data);
 
       updateBoardSound(data);
@@ -1211,64 +1133,42 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   // }
 
   ///new updateBoardData
-  void updateBoardData(
-      Map<String, dynamic> data,
-      ) {
-
+  void updateBoardData(Map<String, dynamic> data) {
     isTimeUp = data["timeUp"] ?? false;
 
     boardSize = data["boardSize"] ?? 3;
 
-    board = List<String>.from(
-      data["board"],
-    );
+    board = List<String>.from(data["board"]);
 
     /// 🔥 SAVE OLD TURN
     String oldTurn = currentTurn;
 
-    currentTurn =
-        data["currentTurn"] ?? "";
+    currentTurn = data["currentTurn"] ?? "";
 
     /// 🔥 TURN CHANGED
     if (oldTurn != currentTurn) {
-
       stopTickingSound();
     }
 
-    lastMove =
-        data["lastMove"] ?? -1;
+    lastMove = data["lastMove"] ?? -1;
   }
 
-  void updateBoardSound(
-      Map<String, dynamic> data,
-      ) {
-
-    List<String> newBoard =
-    List<String>.from(data["board"]);
+  void updateBoardSound(Map<String, dynamic> data) {
+    List<String> newBoard = List<String>.from(data["board"]);
 
     if (previousBoard.isEmpty) {
-
-      previousBoard =
-          List.from(newBoard);
+      previousBoard = List.from(newBoard);
 
       return;
     }
 
-    for (int i = 0;
-    i < newBoard.length;
-    i++) {
-
-      if (previousBoard[i] !=
-          newBoard[i]) {
-
+    for (int i = 0; i < newBoard.length; i++) {
+      if (previousBoard[i] != newBoard[i]) {
         if (newBoard[i] == "X") {
-
           playXSound();
 
           playVibration(120);
-
         } else if (newBoard[i] == "O") {
-
           playOSound();
 
           playVibration(120);
@@ -1278,67 +1178,37 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       }
     }
 
-    previousBoard =
-        List.from(newBoard);
+    previousBoard = List.from(newBoard);
   }
 
+  void updatePlayerData(Map<String, dynamic> data, String userId) {
+    final playersData = data["players"];
 
-  void updatePlayerData(
-      Map<String, dynamic> data,
-      String userId,
-      ) {
+    final p1 = playersData != null ? playersData["player1"] : null;
 
-    final playersData =
-    data["players"];
-
-    final p1 =
-    playersData != null
-        ? playersData["player1"]
-        : null;
-
-    final p2 =
-    playersData != null
-        ? playersData["player2"]
-        : null;
+    final p2 = playersData != null ? playersData["player2"] : null;
 
     myId = userId;
 
-    if (p1 != null &&
-        p1["uid"] == userId) {
+    if (p1 != null && p1["uid"] == userId) {
+      mySymbol = p1["symbol"] ?? "";
 
-      mySymbol =
-          p1["symbol"] ?? "";
+      opponentId = p2?["uid"] ?? "Waiting...";
 
-      opponentId =
-          p2?["uid"] ??
-              "Waiting...";
+      player1Symbol = p1["symbol"] ?? "";
 
-      player1Symbol =
-          p1["symbol"] ?? "";
+      player2Symbol = p2?["symbol"] ?? "";
+    } else if (p2 != null && p2["uid"] == userId) {
+      mySymbol = p2["symbol"] ?? "";
 
-      player2Symbol =
-          p2?["symbol"] ?? "";
+      opponentId = p1?["uid"] ?? "Waiting...";
 
-    } else if (p2 != null &&
-        p2["uid"] == userId) {
+      player1Symbol = p1?["symbol"] ?? "";
 
-      mySymbol =
-          p2["symbol"] ?? "";
-
-      opponentId =
-          p1?["uid"] ??
-              "Waiting...";
-
-      player1Symbol =
-          p1?["symbol"] ?? "";
-
-      player2Symbol =
-          p2["symbol"] ?? "";
+      player2Symbol = p2["symbol"] ?? "";
     }
 
-    if (!disconnectSetupDone &&
-        mySymbol.isNotEmpty) {
-
+    if (!disconnectSetupDone && mySymbol.isNotEmpty) {
       disconnectSetupDone = true;
 
       setupPresence();
@@ -1347,78 +1217,50 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
-
-  void updateWinningLine(
-      Map<String, dynamic> data,
-      ) {
-
-    List<int>? newLine =
-    data["winningLine"] != null
-        ? List<int>.from(
-        data["winningLine"])
+  void updateWinningLine(Map<String, dynamic> data) {
+    List<int>? newLine = data["winningLine"] != null
+        ? List<int>.from(data["winningLine"])
         : null;
 
-    if (newLine != null &&
-        newLine.isNotEmpty) {
-
+    if (newLine != null && newLine.isNotEmpty) {
       if (winningLine == null) {
-
         winningLine = newLine;
 
         lineController.reset();
 
         lineController.forward();
       }
-
     } else {
-
       winningLine = null;
     }
   }
 
+  void updateWinnerState(Map<String, dynamic> data) {
+    String firebaseWinner = data["winner"] ?? "";
 
-  void updateWinnerState(
-      Map<String, dynamic> data,
-      ) {
+    gameOver = firebaseWinner.isNotEmpty;
 
-    String firebaseWinner =
-        data["winner"] ?? "";
-
-    gameOver =
-        firebaseWinner.isNotEmpty;
-
-    if (firebaseWinner.isNotEmpty &&
-        !hasShownResult) {
-
+    if (firebaseWinner.isNotEmpty && !hasShownResult) {
       stopTickingSound();
 
       hasShownResult = true;
 
       if (firebaseWinner == "draw") {
-
         gameMessage = " DRAW ";
 
         playDrawSound();
-
-      } else if (
-      firebaseWinner == mySymbol) {
-
+      } else if (firebaseWinner == mySymbol) {
         gameMessage = " YOU WIN ";
 
         confettiController.play();
 
         playWinSound();
-
       } else {
-
         gameMessage = " YOU LOSE ";
 
         playLoseSound();
       }
-
-    } else if (
-    firebaseWinner.isEmpty) {
-
+    } else if (firebaseWinner.isEmpty) {
       hasShownResult = false;
 
       gameMessage = "";
@@ -1553,37 +1395,27 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   // }
 
   ///new handleRematch
-  void handleRematch(
-      Map<String, dynamic> data,
-      ) {
-
+  void handleRematch(Map<String, dynamic> data) {
     final rematch = data["rematch"];
 
     if (rematch == null) return;
 
-    String requestedBy =
-        rematch["requestedBy"] ?? "";
+    String requestedBy = rematch["requestedBy"] ?? "";
 
-    String status =
-        rematch["status"] ?? "";
+    String status = rematch["status"] ?? "";
 
-    String cancelledBy =
-        rematch["cancelledBy"] ?? "";
+    String cancelledBy = rematch["cancelledBy"] ?? "";
 
     /// 🔥 UNIQUE ACTION KEY
-    String actionKey =
-        "$status-$requestedBy-$cancelledBy";
+    String actionKey = "$status-$requestedBy-$cancelledBy";
 
     /// ✅ ACCEPTED
-    if (requestedBy == myId &&
-        status == "accepted") {
-
+    if (requestedBy == myId && status == "accepted") {
       closeDialogSafe();
 
       lastRematchAction = "";
 
       if (!isRestarting) {
-
         isRestarting = true;
 
         timerController.stop();
@@ -1592,9 +1424,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         stopTickingSound();
 
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) {
-
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           restartGame();
         });
       }
@@ -1602,66 +1432,48 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     /// ❌ REJECTED
     if (status == "rejected") {
-
       closeDialogSafe();
       stopTickingSound();
+
       /// 🔥 PREVENT MULTIPLE TOAST
       if (lastRematchAction != actionKey) {
-
         lastRematchAction = actionKey;
 
         /// 🔥 SENDER SIDE
         if (cancelledBy != myId) {
-
-          showToast(
-            "Opponent rejected ❌",
-          );
+          showToast("Opponent rejected ❌");
         }
       }
     }
 
     /// ❌ CANCELLED
-    if (status == "" &&
-        requestedBy == "" &&
-        cancelledBy.isNotEmpty) {
-
+    if (status == "" && requestedBy == "" && cancelledBy.isNotEmpty) {
       closeDialogSafe();
       stopTickingSound();
 
       /// 🔥 PREVENT MULTIPLE TOAST
       if (lastRematchAction != actionKey) {
-
         lastRematchAction = actionKey;
 
         /// 🔥 OPPONENT SIDE
         if (cancelledBy != myId) {
-
-          showToast(
-            "Opponent cancelled ❌",
-          );
+          showToast("Opponent cancelled ❌");
         }
       }
 
       /// 🔥 CLEANUP
-      roomRef
-          .child("rematch/cancelledBy")
-          .remove();
+      roomRef.child("rematch/cancelledBy").remove();
     }
 
     /// 🔥 RESET ACTION
-    if (status == "" &&
-        requestedBy == "" &&
-        cancelledBy == "") {
-
+    if (status == "" && requestedBy == "" && cancelledBy == "") {
       lastRematchAction = "";
     }
 
     /// 🔥 AUTO DELETE ROOM
     final players = data["players"];
 
-    if (players == null ||
-        players.isEmpty) {
-
+    if (players == null || players.isEmpty) {
       roomRef.remove();
     }
 
@@ -1670,177 +1482,104 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         requestedBy.isNotEmpty &&
         requestedBy != myId &&
         !dialogOpen) {
-
       dialogOpen = true;
 
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) {
-
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         showRematchDialog();
       });
     }
 
     /// 🔥 CLOSE DIALOG
-    if ((status == "" ||
-        status == "rejected") &&
-        dialogOpen) {
-
+    if ((status == "" || status == "rejected") && dialogOpen) {
       closeDialogSafe();
     }
   }
 
   /// 🔥 SCORE
-  void updateScore(
-      Map<String, dynamic> data,
-      ) {
-
+  void updateScore(Map<String, dynamic> data) {
     final score = data["score"];
 
     if (score == null) return;
 
-    player1Score =
-        score["player1"] ?? 0;
+    player1Score = score["player1"] ?? 0;
 
-    player2Score =
-        score["player2"] ?? 0;
+    player2Score = score["player2"] ?? 0;
   }
 
-
   /// 🔥 HEARTBEAT
-  void handleHeartbeat(
-      Map<String, dynamic> data,
-      ) {
-
+  void handleHeartbeat(Map<String, dynamic> data) {
     final pings = data["pings"];
 
-    if (pings == null ||
-        opponentId == "Waiting...") {
-
+    if (pings == null || opponentId == "Waiting...") {
       return;
     }
 
-    String oppKey =
-    mySymbol == player1Symbol
-        ? "player2"
-        : "player1";
+    String oppKey = mySymbol == player1Symbol ? "player2" : "player1";
 
-    int oppPing =
-        pings[oppKey] ?? -1;
+    int oppPing = pings[oppKey] ?? -1;
 
     /// 🔥 NEW PING
-    if (oppPing != -1 &&
-        oppPing !=
-            lastOpponentPingValue) {
+    if (oppPing != -1 && oppPing != lastOpponentPingValue) {
+      lastOpponentPingValue = oppPing;
 
-      lastOpponentPingValue =
-          oppPing;
-
-      lastPingReceivedLocalTime =
-          DateTime.now()
-              .millisecondsSinceEpoch;
+      lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
 
       /// 🔥 RECONNECTED
       if (isDisconnectDialogOpen) {
-
         isDisconnectDialogOpen = false;
 
-        if (disconnectDialogCtx != null &&
-            mounted) {
-
+        if (disconnectDialogCtx != null && mounted) {
           if (Navigator.of(
             disconnectDialogCtx!,
             rootNavigator: true,
           ).canPop()) {
-
-            Navigator.of(
-              disconnectDialogCtx!,
-              rootNavigator: true,
-            ).pop();
+            Navigator.of(disconnectDialogCtx!, rootNavigator: true).pop();
           }
 
           disconnectDialogCtx = null;
 
-          showToast(
-            "Opponent reconnected! 🎮",
-          );
+          showToast("Opponent reconnected! 🎮");
         }
       }
     }
   }
 
   /// 🔥 EXIT STATUS
-  void handleExitStatus(
-      Map<String, dynamic> data,
-      ) {
-
-    final exitStatus =
-    data["exitStatus"];
+  void handleExitStatus(Map<String, dynamic> data) {
+    final exitStatus = data["exitStatus"];
 
     if (exitStatus == null) return;
 
-    String p1Status =
-        exitStatus["player1"]
-            ?.toString() ??
-            "online";
+    String p1Status = exitStatus["player1"]?.toString() ?? "online";
 
-    String p2Status =
-        exitStatus["player2"]
-            ?.toString() ??
-            "online";
+    String p2Status = exitStatus["player2"]?.toString() ?? "online";
 
-    String myKey =
-    mySymbol == player1Symbol
-        ? "player1"
-        : "player2";
+    String myKey = mySymbol == player1Symbol ? "player1" : "player2";
 
-    String opponentStatus =
-
-    myKey == "player1"
-        ? p2Status
-        : p1Status;
+    String opponentStatus = myKey == "player1" ? p2Status : p1Status;
 
     /// 🔥 OPPONENT EXITED
-    if (opponentStatus == "exited" &&
-        !opponentExitDialogShown) {
-
+    if (opponentStatus == "exited" && !opponentExitDialogShown) {
       opponentExitDialogShown = true;
 
       /// 🔥 CLOSE DISCONNECT DIALOG
-      if (isDisconnectDialogOpen &&
-          disconnectDialogCtx != null &&
-          mounted) {
-
+      if (isDisconnectDialogOpen && disconnectDialogCtx != null && mounted) {
         isDisconnectDialogOpen = false;
 
-        if (Navigator.of(
-          disconnectDialogCtx!,
-          rootNavigator: true,
-        ).canPop()) {
-
-          Navigator.of(
-            disconnectDialogCtx!,
-            rootNavigator: true,
-          ).pop();
+        if (Navigator.of(disconnectDialogCtx!, rootNavigator: true).canPop()) {
+          Navigator.of(disconnectDialogCtx!, rootNavigator: true).pop();
         }
 
         disconnectDialogCtx = null;
       }
 
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) {
-
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-
           /// 🔥 CLOSE OLD EXIT DIALOG
           if (isExitDialogOpen) {
-
-            final navigator = Navigator.of(
-              context,
-              rootNavigator: true,
-            );
+            final navigator = Navigator.of(context, rootNavigator: true);
 
             if (navigator.canPop()) {
-
               navigator.pop();
             }
 
@@ -1855,9 +1594,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
-
   void syncTimer() {
-
     if (gameOver) {
       timerController.stop();
       return;
@@ -1881,16 +1618,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     if (!timerController.isAnimating && progress < 1.0) {
       timerController.animateTo(
         1.0,
-        duration: Duration(
-          milliseconds: ((1 - progress) * durationMs).toInt(),
-        ),
+        duration: Duration(milliseconds: ((1 - progress) * durationMs).toInt()),
         curve: Curves.linear,
       );
     }
 
     /// 🔥 TIME UP CHECK (SAFE)
     if (progress >= 1.0 && !gameOver && !isTimeUp) {
-
       print("⏰ TIME UP SYNC TRIGGER");
 
       isTimeUp = true;
@@ -1904,7 +1638,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   Future<void> onTimeUpOnline() async {
-
     if (!isTimeUp || gameOver == false) return;
 
     String winner = currentTurn == "X" ? "O" : "X";
@@ -1933,9 +1666,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     });
   }
 
-
   int getTimeLeft() {
-    return (turnDuration * (1 - timerController.value)).clamp(0, turnDuration).toInt();
+    return (turnDuration * (1 - timerController.value))
+        .clamp(0, turnDuration)
+        .toInt();
   }
 
   void showToast(String msg) {
@@ -1994,7 +1728,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                   playVibration(120);
                   showExitDialog();
                 },
-                child: build3DIconButton(icon:Icons.arrow_back, isDark:isDark),
+                child: build3DIconButton(
+                  icon: Icons.arrow_back,
+                  isDark: isDark,
+                ),
               ),
             ),
           ),
@@ -2004,14 +1741,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               mainAxisSize: MainAxisSize.min,
 
               children: [
-
                 Text(
                   "Online Match",
 
                   style: TextStyle(
-                    color: isDark
-                        ? Colors.cyanAccent
-                        : Colors.blue,
+                    color: isDark ? Colors.cyanAccent : Colors.blue,
 
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -2024,9 +1758,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                   "Board Size : ${boardSize} x $boardSize",
 
                   style: TextStyle(
-                    color: isDark
-                        ? Colors.white70
-                        : Colors.black87,
+                    color: isDark ? Colors.white70 : Colors.black87,
 
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -2057,7 +1789,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                   onTap: () {
                     showSettingsMenu();
                   },
-                  child: build3DIconButton(icon:Icons.settings,isDark: isDark),
+                  child: build3DIconButton(
+                    icon: Icons.settings,
+                    isDark: isDark,
+                  ),
                 ),
               ),
             ),
@@ -2165,17 +1900,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                     //     ),
                     //   ],
                     // ),
-
                     Row(
                       children: [
-
                         /// 👈 LEFT
-                        scoreBox(
-                          "You",
-                          mySymbol,
-                          boardColor,
-                          textColor,
-                        ),
+                        scoreBox("You", mySymbol, boardColor, textColor),
 
                         const SizedBox(width: 10),
 
@@ -2235,7 +1963,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           );
                         },
                       ),
-
 
                     if (isTimeUp)
                       const Padding(
@@ -2403,7 +2130,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.blueAccent.withValues(alpha:0.5),
+                              color: Colors.blueAccent.withValues(alpha: 0.5),
                               blurRadius: 20,
                             ),
                             const BoxShadow(
@@ -2436,11 +2163,19 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                                     ),
 
                                 itemBuilder: (context, index) {
+                                  // double symbolSize = boardSize <= 3
+                                  //     ? 40
+                                  //     : boardSize <= 5
+                                  //     ? 28
+                                  //     : 20;
+
                                   double symbolSize = boardSize <= 3
                                       ? 40
                                       : boardSize <= 5
                                       ? 28
-                                      : 20;
+                                      : boardSize <= 7
+                                      ? 18
+                                      : 13;
 
                                   bool highlight = index == lastMove;
                                   bool win =
@@ -2459,16 +2194,29 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                                       ),
 
                                       child: Container(
+                                        // margin: EdgeInsets.all(
+                                        //   boardSize == 3 ? 6 : 3,
+                                        // ),
                                         margin: EdgeInsets.all(
-                                          boardSize == 3 ? 6 : 3,
+                                          boardSize <= 3
+                                              ? 6
+                                              : boardSize <= 5
+                                              ? 3
+                                              : boardSize <= 7
+                                              ? 1.5
+                                              : 0.8,
                                         ),
 
                                         decoration: BoxDecoration(
                                           color: cellColor,
+                                          //borderRadius: BorderRadius.circular(12,),
                                           borderRadius: BorderRadius.circular(
-                                            12,
+                                            boardSize <= 5
+                                                ? 12
+                                                : boardSize <= 7
+                                                ? 8
+                                                : 5,
                                           ),
-
                                           // 🔥 border if filled
                                           border:
                                               (board.length > index &&
@@ -2587,9 +2335,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     );
   }
 
-
   Future<void> handleReplayRequest() async {
-
     if (isSendingReplay) return;
 
     isSendingReplay = true;
@@ -2611,12 +2357,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     } catch (e) {
       print("Replay Error: $e");
       showToast("Something went wrong ❌");
-    }finally {
-
+    } finally {
       isSendingReplay = false;
     }
   }
-
 
   ///old
   // void showRematchWaitingDialog() {
@@ -2672,9 +2416,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   );
   // }
 
-///new
+  ///new
   Future<void> showRematchWaitingDialog() async {
-
     dialogOpen = true;
 
     await showAppDialog(
@@ -2682,8 +2425,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       title: "REMATCH REQUEST",
 
-      message:
-      "Waiting for opponent response...\nPlease stay connected.",
+      message: "Waiting for opponent response...\nPlease stay connected.",
 
       positiveText: "",
       negativeText: "CANCEL",
@@ -2693,7 +2435,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       showContentLoading: true,
 
       onNegative: () async {
-
         dialogOpen = false;
 
         // /// 🔥 CANCEL REQUEST
@@ -2702,18 +2443,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         //   "status": "",
         // });
 
-        LoadingDialog.show(
-          context,
-          message: "Cancelling Request...",
-        );
+        LoadingDialog.show(context, message: "Cancelling Request...");
 
         try {
-
           /// 🔥 CANCEL REQUEST
-          await roomRef
-              .child("rematch")
-              .set({
-
+          await roomRef.child("rematch").set({
             "requestedBy": "",
 
             "status": "",
@@ -2722,13 +2456,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           });
 
           showToast("Request cancelled ❌");
-
         } catch (e) {
-
           print("Rematch cancel error: $e");
-
         } finally {
-
           LoadingDialog.hide(context);
         }
 
@@ -2770,7 +2500,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //     },
   //   );
   // }
-
 
   ///old
   // void showRematchDialog() {
@@ -2815,9 +2544,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   );
   // }
 
-///new
+  ///new
   Future<void> showRematchDialog() async {
-
     dialogOpen = true;
 
     await showAppDialog(
@@ -2826,7 +2554,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       title: "REMATCH REQUEST",
 
       message:
-      "Your opponent wants another battle.\nDo you want to play again?",
+          "Your opponent wants another battle.\nDo you want to play again?",
 
       positiveText: "PLAY",
       negativeText: "DECLINE",
@@ -2835,69 +2563,43 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       /// ❌ DECLINE
       onNegative: () async {
-
         dialogOpen = false;
 
         // await roomRef.child("rematch").update({
         //   "status": "rejected",
         // });
 
-        LoadingDialog.show(
-          context,
-          message: "Declining Request...",
-        );
+        LoadingDialog.show(context, message: "Declining Request...");
 
         try {
-
-          await roomRef
-              .child("rematch")
-              .update({
-
+          await roomRef.child("rematch").update({
             "status": "rejected",
             "cancelledBy": myId,
           });
 
           /// 🔥 SELF TOAST
           showToast("Replay rejected ❌");
-
         } catch (e) {
-
           print("Rematch reject error: $e");
-
         } finally {
-
           LoadingDialog.hide(context);
         }
       },
 
       /// ✅ PLAY AGAIN
       onPositive: () async {
-
         dialogOpen = false;
 
         // await roomRef.child("rematch").update({
         //   "status": "accepted",
         // });
-        LoadingDialog.show(
-          context,
-          message: "Starting Rematch...",
-        );
+        LoadingDialog.show(context, message: "Starting Rematch...");
 
         try {
-
-          await roomRef
-              .child("rematch")
-              .update({
-
-            "status": "accepted",
-          });
-
+          await roomRef.child("rematch").update({"status": "accepted"});
         } catch (e) {
-
           print("Rematch accept error: $e");
-
         } finally {
-
           LoadingDialog.hide(context);
         }
       },
@@ -2943,7 +2645,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
   // 🟠 শুধু ইন্টারনেট ডিসকানেক্ট হলে এই ডায়ালগ আসবে
 
-
   ///old
   // void showDisconnectDialog() {
   //   showDialog(
@@ -2983,10 +2684,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   });
   // }
 
-
   ///new
   Future<void> showOpponentDisconnectDialog() async {
-
     isDisconnectDialogOpen = true;
 
     await showAppDialog(
@@ -2999,8 +2698,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       title: "CONNECTION LOST",
 
-      message:
-      "Opponent disconnected.\nWaiting for reconnection...",
+      message: "Opponent disconnected.\nWaiting for reconnection...",
 
       positiveText: "",
       negativeText: "LEAVE GAME",
@@ -3010,37 +2708,28 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       showContentLoading: true,
 
       onNegative: () async {
-
         isDisconnectDialogOpen = false;
 
         disconnectDialogCtx = null;
 
         /// 🔥 CLOSE DIALOG FIRST
-        final navigator = Navigator.of(
-          context,
-          rootNavigator: true,
-        );
+        final navigator = Navigator.of(context, rootNavigator: true);
 
         if (navigator.canPop()) {
-
           navigator.pop();
         }
 
         /// 🔥 SMALL DELAY
-        await Future.delayed(
-          const Duration(milliseconds: 100),
-        );
+        await Future.delayed(const Duration(milliseconds: 100));
 
         /// 🔥 SAFE EXIT
         await exitFromGame();
       },
     ).then((_) {
-
       disconnectDialogCtx = null;
       isDisconnectDialogOpen = false;
     });
   }
-
 
   ///old
   // void showExitDialog() {
@@ -3073,7 +2762,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   );
   // }
 
-
   //new
 
   ///new
@@ -3084,8 +2772,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       title: "EXIT ROOM",
 
-      message:
-      "Exit and end the match?",
+      message: "Exit and end the match?",
 
       positiveText: "EXIT",
       negativeText: "CANCEL",
@@ -3102,6 +2789,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         await exitFromGame();
       },
     );
+
     /// 🔥 SAFETY
     isExitDialogOpen = false;
   }
@@ -3110,72 +2798,43 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     stopTickingSound();
     heartbeatTimer?.cancel();
 
-    String playerKey =
-    mySymbol == player1Symbol
-        ? "player1"
-        : "player2";
+    String playerKey = mySymbol == player1Symbol ? "player1" : "player2";
 
     /// 🔥 MARK EXIT
-    await roomRef.child("exitStatus/$playerKey")
-        .set("exited");
+    await roomRef.child("exitStatus/$playerKey").set("exited");
 
     /// 🔥 RESET REMATCH
-    await roomRef.child("rematch").set({
-      "requestedBy": "",
-      "status": "",
-    });
+    await roomRef.child("rematch").set({"requestedBy": "", "status": ""});
 
     /// 🔥 GET EXIT STATUS
-    final snapshot =
-    await roomRef.child("exitStatus").get();
+    final snapshot = await roomRef.child("exitStatus").get();
 
-    String p1Status =
-        snapshot.child("player1")
-            .value
-            ?.toString() ??
-            "online";
+    String p1Status = snapshot.child("player1").value?.toString() ?? "online";
 
-    String p2Status =
-        snapshot.child("player2")
-            .value
-            ?.toString() ??
-            "online";
+    String p2Status = snapshot.child("player2").value?.toString() ?? "online";
 
     /// 🔥 HEARTBEAT CHECK
     bool isOpponentDead = false;
 
     if (lastPingReceivedLocalTime > 0) {
+      int now = DateTime.now().millisecondsSinceEpoch;
 
-      int now =
-          DateTime.now().millisecondsSinceEpoch;
-
-      if (now - lastPingReceivedLocalTime >
-          12000) {
-
+      if (now - lastPingReceivedLocalTime > 12000) {
         isOpponentDead = true;
       }
     }
 
     /// 🔥 REMOVE ROOM
-    if ((p1Status == "exited" &&
-        p2Status == "exited") ||
-        isOpponentDead) {
-
+    if ((p1Status == "exited" && p2Status == "exited") || isOpponentDead) {
       await roomRef.remove();
-
     } else {
-
       /// 🔥 NOTIFY OPPONENT
-      await roomRef.update({
-        "roomStatus": "ended",
-        "exitBy": myId,
-      });
+      await roomRef.update({"roomStatus": "ended", "exitBy": myId});
     }
 
     /// 🔥 CLOSE PAGE
     closeGamePage();
   }
-
 
   ///old OpponentExitDialog
   // void showOpponentExitDialog() {
@@ -3205,21 +2864,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   );
   // }
 
-
   //new
 
   //new
 
   ///new OpponentExitDialog
   Future<void> showOpponentExitDialog() async {
-
     await showAppDialog(
       context: context,
 
       title: "OPPONENT LEFT",
 
-      message:
-      "Your opponent has left the match.\nThe room will be closed.",
+      message: "Your opponent has left the match.\nThe room will be closed.",
 
       positiveText: "EXIT",
       negativeText: "",
@@ -3227,7 +2883,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       barrierDismissible: false,
 
       onPositive: () async {
-
         heartbeatTimer?.cancel();
 
         /// 🔥 REMOVE ROOM
@@ -3336,22 +2991,16 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   // }
 
   void closeDialogSafe() {
-
     if (!mounted) return;
 
-    final navigator = Navigator.of(
-      context,
-      rootNavigator: true,
-    );
+    final navigator = Navigator.of(context, rootNavigator: true);
 
     if (dialogOpen && navigator.canPop()) {
-
       navigator.pop();
 
       dialogOpen = false;
     }
   }
-
 
   ///old restart game
   // Future<void> restartGame() async {
@@ -3488,23 +3137,15 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   isReplayResetting = false;
   // }
 
-
   ///new restart game 2
   Future<void> restartGame() async {
-
     if (isReplayResetting) return;
 
-    LoadingDialog.show(
-      context,
-      message: "Restarting Match...\n Please Wait",
-    );
+    LoadingDialog.show(context, message: "Restarting Match...\n Please Wait");
 
     isReplayResetting = true;
 
-    String nextStart =
-    Random().nextBool()
-        ? "X"
-        : "O";
+    String nextStart = Random().nextBool() ? "X" : "O";
 
     /// 🔥 HARD RESET TIMER
     timerController.stop();
@@ -3517,9 +3158,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     /// 🔥 LOCAL RESET
     if (mounted) {
-
       setState(() {
-
         winningLine = null;
 
         gameMessage = "";
@@ -3535,14 +3174,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
 
     try {
-
       /// 🔥 FIREBASE RESET
       await roomRef.update({
-
-        "board": List.filled(
-          boardSize * boardSize,
-          "",
-        ),
+        "board": List.filled(boardSize * boardSize, ""),
 
         "winner": "",
 
@@ -3553,26 +3187,16 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         "lastMove": -1,
 
         /// 🔥 IMPORTANT
-        "timerStart":
-        ServerValue.timestamp,
+        "timerStart": ServerValue.timestamp,
 
         "turnDuration": 30,
 
         "timeUp": false,
       });
 
-      await Future.delayed(
-        const Duration(milliseconds: 300),
-      );
+      await Future.delayed(const Duration(milliseconds: 300));
 
-      await roomRef
-          .child("rematch")
-          .set({
-
-        "requestedBy": "",
-
-        "status": ""
-      });
+      await roomRef.child("rematch").set({"requestedBy": "", "status": ""});
 
       confettiController.stop();
 
@@ -3581,13 +3205,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       isRestarting = false;
 
       isReplayResetting = false;
-
     } catch (e) {
-
       print("Restart error: $e");
-
     } finally {
-
       LoadingDialog.hide(context);
     }
   }
@@ -3632,7 +3252,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //     internetDialogCtx = null;
   //   });
   // }
-
 
   ///new showInternetDialog()1
   // Future<void> showInternetDialog() async {
@@ -3697,10 +3316,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //   });
   // }
 
-
   ///new noInternetDialog()2
   Future<void> noInternetDialog() async {
-
     if (isDialogOpen) return;
 
     isDialogOpen = true;
@@ -3715,8 +3332,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       title: "NO INTERNET",
 
-      message:
-      "Connection lost.\nWaiting for internet connection...",
+      message: "Connection lost.\nWaiting for internet connection...",
 
       positiveText: "",
       negativeText: "EXIT",
@@ -3727,7 +3343,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       /// 🔥 EXIT GAME
       onNegative: () async {
-
         isDialogOpen = false;
 
         internetDialogCtx = null;
@@ -3738,7 +3353,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         closeGamePage();
       },
     ).then((_) {
-
       isDialogOpen = false;
 
       internetDialogCtx = null;
@@ -3817,7 +3431,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   //     ),
   //   );
   // }
-
 
   ///old
   // void showSettingsMenu() {
@@ -3949,27 +3562,18 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
   ///new
   void showSettingsMenu() {
-
     showGlassSettingsMenu(
-
       context: context,
 
       isDark: isDark,
 
       items: [
-
         /// 🌙 THEME
         SettingsMenuItem(
-
           affectsTheme: true,
 
           iconBuilder: (value) {
-
-            return value
-
-                ? Icons.dark_mode
-
-                : Icons.light_mode;
+            return value ? Icons.dark_mode : Icons.light_mode;
           },
 
           title: "Dark Theme",
@@ -3977,35 +3581,22 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           value: isDark,
 
           onChanged: (value) async {
-
-            SharedPreferences prefs =
-            await SharedPreferences
-                .getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
 
             playVibration(130);
 
             setState(() {
-
               isDark = value;
             });
 
-            await prefs.setBool(
-              "theme_dark",
-              isDark,
-            );
+            await prefs.setBool("theme_dark", isDark);
           },
         ),
 
         /// 🔊 SOUND
         SettingsMenuItem(
-
           iconBuilder: (value) {
-
-            return value
-
-                ? Icons.volume_up
-
-                : Icons.volume_off;
+            return value ? Icons.volume_up : Icons.volume_off;
           },
 
           title: "Sound",
@@ -4013,35 +3604,22 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           value: soundOn,
 
           onChanged: (value) async {
-
-            SharedPreferences prefs =
-            await SharedPreferences
-                .getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
 
             playVibration(130);
 
             setState(() {
-
               soundOn = value;
             });
 
-            await prefs.setBool(
-              "sound_on",
-              soundOn,
-            );
+            await prefs.setBool("sound_on", soundOn);
           },
         ),
 
         /// 📳 VIBRATION
         SettingsMenuItem(
-
           iconBuilder: (value) {
-
-            return value
-
-                ? Icons.vibration
-
-                : Icons.phonelink_erase;
+            return value ? Icons.vibration : Icons.phonelink_erase;
           },
 
           title: "Vibration",
@@ -4049,20 +3627,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           value: vibrationOn,
 
           onChanged: (value) async {
-
-            SharedPreferences prefs =
-            await SharedPreferences
-                .getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
 
             setState(() {
-
               vibrationOn = value;
             });
 
-            await prefs.setBool(
-              "vibration_on",
-              vibrationOn,
-            );
+            await prefs.setBool("vibration_on", vibrationOn);
           },
         ),
       ],
@@ -4209,7 +3780,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         return Stack(
           children: [
-
             /// 🔥 MAIN BOX (UNCHANGED)
             Container(
               width: 100,
@@ -4219,12 +3789,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: isActive
                     ? [
-                  BoxShadow(
-                    color: gradientColors.first.withValues(alpha: glowValue),
-                    blurRadius: 16 * glowValue,
-                    spreadRadius: 1,
-                  ),
-                ]
+                        BoxShadow(
+                          color: gradientColors.first.withValues(
+                            alpha: glowValue,
+                          ),
+                          blurRadius: 16 * glowValue,
+                          spreadRadius: 1,
+                        ),
+                      ]
                     : [],
               ),
 
@@ -4232,7 +3804,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
                   /// 🔥 SYMBOL
                   ShaderMask(
                     shaderCallback: (rect) {
@@ -4315,7 +3886,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 child: AnimatedBuilder(
                   animation: timerController,
                   builder: (context, child) {
-
                     int timeLeft = getTimeLeft();
 
                     /// 🔥 LAST 5 SEC ALERT
@@ -4359,8 +3929,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       },
     );
   }
-
-
 } //////////////////////////////////////////////////////end main class
 
 int getWinLength(int size) {
@@ -4511,7 +4079,6 @@ Map<String, dynamic> checkWinnerDynamic(List<String> b, int size) {
 //   );
 // }
 
-
 class TimerBorderPainter extends CustomPainter {
   final double progress;
   final Color color;
@@ -4542,4 +4109,5 @@ class TimerBorderPainter extends CustomPainter {
     return oldDelegate.progress != progress || oldDelegate.color != color;
   }
 }
+
 ///////////////////////////////////////
