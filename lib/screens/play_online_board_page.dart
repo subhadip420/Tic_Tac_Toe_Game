@@ -125,237 +125,603 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   bool isExitDialogOpen = false;
   String lastRematchAction = "";
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   dbRef = FirebaseDatabase.instanceFor(
+  //     app: FirebaseDatabase.instance.app,
+  //     databaseURL:
+  //         "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  //   ).ref();
+  //
+  //   roomRef = dbRef.child("rooms/${widget.roomCode}");
+  //
+  //   listenToGame();
+  //   startHeartbeat();
+  //
+  //   timerController = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(seconds: 30),
+  //   );
+  //
+  //   lineController = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(milliseconds: 600),
+  //   );
+  //
+  //   lineAnimation = CurvedAnimation(
+  //     parent: lineController,
+  //     curve: Curves.easeInOut,
+  //   );
+  //
+  //   confettiController = ConfettiController(
+  //     duration: const Duration(seconds: 3),
+  //   );
+  //
+  //   glowController = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(seconds: 2),
+  //   )..repeat(reverse: true);
+  //
+  //   glowAnimation = Tween<double>(
+  //     begin: 0.4,
+  //     end: 1,
+  //   ).animate(CurvedAnimation(parent: glowController, curve: Curves.easeInOut));
+  //
+  //   connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+  //     _,
+  //   ) async {
+  //     // ❌ WEB skip karo
+  //     if (kIsWeb) return;
+  //
+  //     bool hasInternet = await checkInternet();
+  //
+  //     // 🔴 OFFLINE
+  //     if (!hasInternet) {
+  //       if (!isOfflineDialogShown) {
+  //         isOfflineDialogShown = true;
+  //
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           noInternetDialog();
+  //         });
+  //       }
+  //     }
+  //     // 🟢 ONLINE BACK
+  //     else {
+  //       if (isOfflineDialogShown) {
+  //         isOfflineDialogShown = false;
+  //
+  //         // 🔥 Safe Pop: গেম পেজ না কেটে শুধু ইন্টারনেট ডায়ালগটাই কাটবে
+  //         if (mounted && internetDialogCtx != null) {
+  //
+  //           /// 🔥 CLOSE INTERNET DIALOG
+  //           final navigator = Navigator.of(context, rootNavigator: true);
+  //
+  //           if (isDialogOpen && navigator.canPop()) {
+  //             navigator.pop();
+  //
+  //             isDialogOpen = false;
+  //
+  //             internetDialogCtx = null;
+  //           }
+  //           internetDialogCtx = null;
+  //         }
+  //
+  //         showToast("Reconnected ✅");
+  //
+  //         // 💥 সার্ভারে কোনো ডেটা পাঠানোর আগে চেক করো রুমটা বেঁচে আছে কিনা!
+  //         final snapshot = await roomRef.get();
+  //         if (!snapshot.exists) {
+  //           // রুম আগেই ডিলিট হয়ে গেছে, তাই চুপচাপ বেরিয়ে যাও
+  //           heartbeatTimer?.cancel();
+  //           // 💥 THE FIX: অটো-ব্যাক না করে ডায়ালগ দেখাও
+  //           if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
+  //             opponentExitDialogShown = true;
+  //             WidgetsBinding.instance.addPostFrameCallback((_) {
+  //               if (mounted) showOpponentExitDialog();
+  //             });
+  //           }
+  //           return;
+  //         }
+  //
+  //         // 💥 THE FIX: অনলাইনে ফেরার সাথে সাথে ঘড়ি রিসেট করে দিলাম!
+  //         lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
+  //
+  //         if (mySymbol.isNotEmpty) {
+  //           String playerKey = mySymbol == player1Symbol
+  //               ? "player1"
+  //               : "player2";
+  //           roomRef.child("exitStatus/$playerKey").set("online");
+  //           roomRef.child("players/$playerKey").update({
+  //             "uid": myId,
+  //             "symbol": mySymbol,
+  //           });
+  //           registerPresence();
+  //         }
+  //       }
+  //     }
+  //   });
+  //
+  //   if (kIsWeb) {
+  //     setupWebListeners(
+  //       onOffline: () {
+  //         if (!isOfflineDialogShown) {
+  //           isOfflineDialogShown = true;
+  //           noInternetDialog();
+  //         }
+  //       },
+  //       onOnline: () async {
+  //         if (isOfflineDialogShown) {
+  //           isOfflineDialogShown = false;
+  //
+  //           // 🔥 Safe Pop Web
+  //           if (mounted && internetDialogCtx != null) {
+  //             //Navigator.pop(internetDialogCtx!);
+  //             if (internetDialogCtx != null &&
+  //                 Navigator.of(
+  //                   internetDialogCtx!,
+  //                   rootNavigator: true,
+  //                 ).canPop()) {
+  //               Navigator.of(internetDialogCtx!, rootNavigator: true).pop();
+  //             }
+  //             internetDialogCtx = null;
+  //           }
+  //
+  //           showToast("Reconnected ✅");
+  //         }
+  //
+  //         // 🔥 FIX: Update karne se pehle check karo room exist karta hai ya nahi
+  //         final snapshot = await roomRef.get();
+  //         if (!snapshot.exists) {
+  //           heartbeatTimer?.cancel();
+  //
+  //           // 💥 THE FIX: ডায়ালগ দেখাও
+  //           if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
+  //             opponentExitDialogShown = true;
+  //             WidgetsBinding.instance.addPostFrameCallback((_) {
+  //               if (mounted) showOpponentExitDialog();
+  //             });
+  //           }
+  //
+  //           return;
+  //         }
+  //
+  //         // 💥 THE FIX: এখানেও অনলাইনে ফেরার সাথে সাথে ঘড়ি রিসেট করে দিলাম!
+  //         lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
+  //
+  //         if (mySymbol.isNotEmpty) {
+  //           String playerKey = mySymbol == player1Symbol
+  //               ? "player1"
+  //               : "player2";
+  //           roomRef.child("exitStatus/$playerKey").set("online");
+  //           roomRef.child("players/$playerKey").update({
+  //             "uid": myId,
+  //             "symbol": mySymbol,
+  //           });
+  //           registerPresence();
+  //         }
+  //       },
+  //     );
+  //   }
+  //
+  //
+  //   nameScrollAnim = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(seconds: 6),
+  //   );
+  //
+  //   nameScrollAnim.addListener(() {
+  //     if (nameScrollController.hasClients) {
+  //       double maxScroll = nameScrollController.position.maxScrollExtent;
+  //       nameScrollController.jumpTo(maxScroll * nameScrollAnim.value);
+  //     }
+  //   });
+  //
+  //   nameScrollAnim.repeat(reverse: true); // 🔥 smooth back-forth
+  //
+  //   timerController.addListener(() {
+  //     if (timerController.value >= 1.0 && !gameOver) {
+  //       print("⏰ TIME UP TRIGGERED");
+  //
+  //       setState(() {
+  //         isTimeUp = true;
+  //         gameOver = true;
+  //       });
+  //
+  //       stopTickingSound();
+  //       timerController.stop();
+  //
+  //       onTimeUpOnline();
+  //     }
+  //   });
+  //
+  //   loadSettings();
+  // }
+
   @override
   void initState() {
+
     super.initState();
 
+    initializeFirebase();
+
+    initializeGame();
+
+    initializeAnimations();
+
+    initializeConnectivity();
+
+    initializeWebListeners();
+
+    initializeNameScroll();
+
+    initializeTimerListener();
+
+    loadSettings();
+  }
+
+  void initializeFirebase() {
+
     dbRef = FirebaseDatabase.instanceFor(
+
       app: FirebaseDatabase.instance.app,
+
       databaseURL:
-          "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
     ).ref();
 
-    roomRef = dbRef.child("rooms/${widget.roomCode}");
+    roomRef =
+        dbRef.child(
+          "rooms/${widget.roomCode}",
+        );
+  }
+
+
+  void initializeGame() {
 
     listenToGame();
+
     startHeartbeat();
+  }
 
-    timerController = AnimationController(
+  void initializeAnimations() {
+
+    timerController =
+        AnimationController(
+
+          vsync: this,
+
+          duration:
+          const Duration(
+            seconds: 30,
+          ),
+        );
+
+    lineController =
+        AnimationController(
+
+          vsync: this,
+
+          duration:
+          const Duration(
+            milliseconds: 600,
+          ),
+        );
+
+    lineAnimation =
+        CurvedAnimation(
+
+          parent: lineController,
+
+          curve: Curves.easeInOut,
+        );
+
+    confettiController =
+        ConfettiController(
+
+          duration:
+          const Duration(
+            seconds: 3,
+          ),
+        );
+
+    glowController =
+    AnimationController(
+
       vsync: this,
-      duration: const Duration(seconds: 30),
-    );
 
-    lineController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
+      duration:
+      const Duration(
+        seconds: 2,
+      ),
+    )
 
-    lineAnimation = CurvedAnimation(
-      parent: lineController,
-      curve: Curves.easeInOut,
-    );
+      ..repeat(
+        reverse: true,
+      );
 
-    confettiController = ConfettiController(
-      duration: const Duration(seconds: 3),
-    );
+    glowAnimation =
+        Tween<double>(
 
-    glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+          begin: 0.4,
 
-    glowAnimation = Tween<double>(
-      begin: 0.4,
-      end: 1,
-    ).animate(CurvedAnimation(parent: glowController, curve: Curves.easeInOut));
+          end: 1,
+        ).animate(
 
-    connectivitySubscription = Connectivity().onConnectivityChanged.listen((
-      _,
-    ) async {
-      // ❌ WEB skip karo
-      if (kIsWeb) return;
+          CurvedAnimation(
 
-      bool hasInternet = await checkInternet();
+            parent: glowController,
 
-      // 🔴 OFFLINE
-      if (!hasInternet) {
+            curve: Curves.easeInOut,
+          ),
+        );
+  }
+
+
+  void initializeConnectivity() {
+
+    connectivitySubscription =
+        Connectivity()
+            .onConnectivityChanged
+            .listen((_) async {
+
+          if (kIsWeb) return;
+
+          bool hasInternet =
+          await checkInternet();
+
+          if (!hasInternet) {
+
+            handleOffline();
+
+          } else {
+
+            await handleOnline();
+          }
+        });
+  }
+
+
+  void initializeWebListeners() {
+
+    if (!kIsWeb) return;
+
+    setupWebListeners(
+
+      onOffline: () {
+
         if (!isOfflineDialogShown) {
+
           isOfflineDialogShown = true;
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            noInternetDialog();
-          });
+          noInternetDialog();
         }
-      }
-      // 🟢 ONLINE BACK
-      else {
-        if (isOfflineDialogShown) {
-          isOfflineDialogShown = false;
+      },
 
-          // 🔥 Safe Pop: গেম পেজ না কেটে শুধু ইন্টারনেট ডায়ালগটাই কাটবে
-          if (mounted && internetDialogCtx != null) {
-            // if (internetDialogCtx != null &&
-            //     Navigator.of(
-            //       internetDialogCtx!,
-            //       rootNavigator: true,
-            //     ).canPop()) {
-            //
-            //   Navigator.of(
-            //     internetDialogCtx!,
-            //     rootNavigator: true,
-            //   ).pop();
-            // }
-            /// 🔥 CLOSE INTERNET DIALOG
-            final navigator = Navigator.of(context, rootNavigator: true);
+      onOnline: () async {
 
-            if (isDialogOpen && navigator.canPop()) {
-              navigator.pop();
-
-              isDialogOpen = false;
-
-              internetDialogCtx = null;
-            }
-            internetDialogCtx = null;
-          }
-
-          showToast("Reconnected ✅");
-
-          // 💥 সার্ভারে কোনো ডেটা পাঠানোর আগে চেক করো রুমটা বেঁচে আছে কিনা!
-          final snapshot = await roomRef.get();
-          if (!snapshot.exists) {
-            // রুম আগেই ডিলিট হয়ে গেছে, তাই চুপচাপ বেরিয়ে যাও
-            heartbeatTimer?.cancel();
-            // 💥 THE FIX: অটো-ব্যাক না করে ডায়ালগ দেখাও
-            if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
-              opponentExitDialogShown = true;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) showOpponentExitDialog();
-              });
-            }
-            return;
-          }
-
-          // 💥 THE FIX: অনলাইনে ফেরার সাথে সাথে ঘড়ি রিসেট করে দিলাম!
-          lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
-
-          if (mySymbol.isNotEmpty) {
-            String playerKey = mySymbol == player1Symbol
-                ? "player1"
-                : "player2";
-            roomRef.child("exitStatus/$playerKey").set("online");
-            roomRef.child("players/$playerKey").update({
-              "uid": myId,
-              "symbol": mySymbol,
-            });
-            registerPresence();
-          }
-        }
-      }
-    });
-
-    if (kIsWeb) {
-      setupWebListeners(
-        onOffline: () {
-          if (!isOfflineDialogShown) {
-            isOfflineDialogShown = true;
-            noInternetDialog();
-          }
-        },
-        onOnline: () async {
-          if (isOfflineDialogShown) {
-            isOfflineDialogShown = false;
-
-            // 🔥 Safe Pop Web
-            if (mounted && internetDialogCtx != null) {
-              //Navigator.pop(internetDialogCtx!);
-              if (internetDialogCtx != null &&
-                  Navigator.of(
-                    internetDialogCtx!,
-                    rootNavigator: true,
-                  ).canPop()) {
-                Navigator.of(internetDialogCtx!, rootNavigator: true).pop();
-              }
-              internetDialogCtx = null;
-            }
-
-            showToast("Reconnected ✅");
-          }
-
-          // 🔥 FIX: Update karne se pehle check karo room exist karta hai ya nahi
-          final snapshot = await roomRef.get();
-          if (!snapshot.exists) {
-            heartbeatTimer?.cancel();
-
-            // 💥 THE FIX: ডায়ালগ দেখাও
-            if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
-              opponentExitDialogShown = true;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) showOpponentExitDialog();
-              });
-            }
-
-            return;
-          }
-
-          // 💥 THE FIX: এখানেও অনলাইনে ফেরার সাথে সাথে ঘড়ি রিসেট করে দিলাম!
-          lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
-
-          if (mySymbol.isNotEmpty) {
-            String playerKey = mySymbol == player1Symbol
-                ? "player1"
-                : "player2";
-            roomRef.child("exitStatus/$playerKey").set("online");
-            roomRef.child("players/$playerKey").update({
-              "uid": myId,
-              "symbol": mySymbol,
-            });
-            registerPresence();
-          }
-        },
-      );
-    }
-
-    // Future.delayed(Duration.zero, () async {
-    //   bool hasInternet = await checkInternet();
-    //
-    //   if (!hasInternet && !isOfflineDialogShown) {
-    //     isOfflineDialogShown = true;
-    //     showInternetDialog();
-    //   }
-    // });
-
-    nameScrollAnim = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
+        await handleWebReconnect();
+      },
     );
+  }
+
+
+  void initializeNameScroll() {
+
+    nameScrollAnim =
+        AnimationController(
+
+          vsync: this,
+
+          duration:
+          const Duration(
+            seconds: 6,
+          ),
+        );
 
     nameScrollAnim.addListener(() {
-      if (nameScrollController.hasClients) {
-        double maxScroll = nameScrollController.position.maxScrollExtent;
-        nameScrollController.jumpTo(maxScroll * nameScrollAnim.value);
+
+      if (nameScrollController
+          .hasClients) {
+
+        double maxScroll =
+            nameScrollController
+                .position
+                .maxScrollExtent;
+
+        nameScrollController.jumpTo(
+          maxScroll *
+              nameScrollAnim.value,
+        );
       }
     });
 
-    nameScrollAnim.repeat(reverse: true); // 🔥 smooth back-forth
+    nameScrollAnim.repeat(
+      reverse: true,
+    );
+  }
+
+
+  void initializeTimerListener() {
 
     timerController.addListener(() {
-      if (timerController.value >= 1.0 && !gameOver) {
+
+      if (timerController.value >= 1.0 &&
+          !gameOver) {
+
         print("⏰ TIME UP TRIGGERED");
 
         setState(() {
+
           isTimeUp = true;
+
           gameOver = true;
         });
 
         stopTickingSound();
+
         timerController.stop();
 
         onTimeUpOnline();
       }
     });
-
-    loadSettings();
   }
+
+  void handleOffline() {
+
+    if (isOfflineDialogShown) return;
+
+    isOfflineDialogShown = true;
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) {
+
+      noInternetDialog();
+    });
+  }
+
+
+  Future<void> handleOnline() async {
+
+    if (!isOfflineDialogShown) return;
+
+    isOfflineDialogShown = false;
+
+    closeInternetDialog();
+
+    showToast("Reconnected ✅");
+
+    final snapshot =
+    await roomRef.get();
+
+    if (!snapshot.exists) {
+
+      heartbeatTimer?.cancel();
+
+      if (mounted &&
+          !isGamePageClosed &&
+          !opponentExitDialogShown) {
+
+        opponentExitDialogShown = true;
+
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) {
+
+          if (mounted) {
+            showOpponentExitDialog();
+          }
+        });
+      }
+
+      return;
+    }
+
+    lastPingReceivedLocalTime =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    await restorePresence();
+  }
+
+
+  Future<void> handleWebReconnect() async {
+
+    if (isOfflineDialogShown) {
+
+      isOfflineDialogShown = false;
+
+      closeInternetDialog();
+
+      showToast("Reconnected ✅");
+    }
+
+    final snapshot =
+    await roomRef.get();
+
+    if (!snapshot.exists) {
+
+      heartbeatTimer?.cancel();
+
+      if (mounted &&
+          !isGamePageClosed &&
+          !opponentExitDialogShown) {
+
+        opponentExitDialogShown = true;
+
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) {
+
+          if (mounted) {
+            showOpponentExitDialog();
+          }
+        });
+      }
+
+      return;
+    }
+
+    lastPingReceivedLocalTime =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    await restorePresence();
+  }
+
+
+  Future<void> restorePresence() async {
+
+    if (mySymbol.isEmpty) return;
+
+    String playerKey =
+    mySymbol == player1Symbol
+        ? "player1"
+        : "player2";
+
+    await roomRef
+        .child("exitStatus/$playerKey")
+        .set("online");
+
+    await roomRef
+        .child("players/$playerKey")
+        .update({
+
+      "uid": myId,
+
+      "symbol": mySymbol,
+    });
+
+    registerPresence();
+  }
+
+
+  void closeInternetDialog() {
+
+    if (!mounted ||
+        internetDialogCtx == null) {
+      return;
+    }
+
+    final navigator =
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    );
+
+    if (isDialogOpen &&
+        navigator.canPop()) {
+
+      navigator.pop();
+
+      isDialogOpen = false;
+
+      internetDialogCtx = null;
+    }
+
+    internetDialogCtx = null;
+  }
+
+
 
   @override
   void dispose() {
