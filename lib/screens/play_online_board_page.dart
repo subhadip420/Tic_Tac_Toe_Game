@@ -113,7 +113,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   BuildContext? internetDialogCtx;
   bool isRoomActive = true;
   bool isGamePageClosed = false;
-
+  bool hasFirstMove = false;
   late AnimationController timerController;
 
   int turnDuration = 30;
@@ -519,6 +519,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       });
     });
 
+    // /// 🔥 FIRST MOVE START
+    // if (!hasFirstMove) {
+    //   hasFirstMove = true;
+    // }
+
     List<String> newBoard = List.from(board);
     newBoard[index] = mySymbol;
 
@@ -555,9 +560,17 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       "winningLine": result["line"], // 🔥 important
       "lastMove": index,
 
+      /// 🔥 GLOBAL MATCH START
+      "matchStarted": true,
+
       /// 🔥 ADD THIS
       "timerStart": ServerValue.timestamp,
       "turnDuration": 30,
+
+      // if (hasFirstMove) ...{
+      //   "timerStart": ServerValue.timestamp,
+      //   "turnDuration": 30,
+      // },
 
       if (scoreUpdate != null) ...scoreUpdate,
     });
@@ -1059,6 +1072,21 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void handleTimerSync(Map<String, dynamic> data) {
+
+    bool matchStarted =
+        data["matchStarted"] ?? false;
+
+    if (!matchStarted) {
+
+      timerController.stop();
+
+      timerController.reset();
+
+      serverStartTime = 0;
+
+      return;
+    }
+
     if (data["timerStart"] != null) {
       int newStart = data["timerStart"];
 
@@ -1594,43 +1622,117 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
+
+  ///old syncTimer
+  // void syncTimer() {
+  //
+  //
+  //   if (gameOver) {
+  //     timerController.stop();
+  //     return;
+  //   }
+  //
+  //   if (serverStartTime == 0 || turnDuration <= 0) return;
+  //
+  //   int now = DateTime.now().millisecondsSinceEpoch;
+  //
+  //   double elapsedMs = (now - serverStartTime).toDouble();
+  //   double durationMs = turnDuration * 1000;
+  //
+  //   double progress = (elapsedMs / durationMs).clamp(0.0, 1.0);
+  //
+  //   /// 🔥 ONLY SET VALUE FIRST TIME OR BIG DIFF
+  //   if ((timerController.value - progress).abs() > 0.05) {
+  //     timerController.value = progress;
+  //   }
+  //
+  //   /// 🔥 CONTINUE ONLY IF NOT RUNNING
+  //   if (!timerController.isAnimating && progress < 1.0) {
+  //     timerController.animateTo(
+  //       1.0,
+  //       duration: Duration(milliseconds: ((1 - progress) * durationMs).toInt()),
+  //       curve: Curves.linear,
+  //     );
+  //   }
+  //
+  //   /// 🔥 TIME UP CHECK (SAFE)
+  //   if (progress >= 1.0 && !gameOver && !isTimeUp) {
+  //     print("⏰ TIME UP SYNC TRIGGER");
+  //
+  //     isTimeUp = true;
+  //     gameOver = true;
+  //
+  //     stopTickingSound();
+  //     timerController.stop();
+  //
+  //     onTimeUpOnline();
+  //   }
+  // }
+
+  ///new syncTimer
   void syncTimer() {
+
     if (gameOver) {
+
       timerController.stop();
+
       return;
     }
 
-    if (serverStartTime == 0 || turnDuration <= 0) return;
+    /// 🔥 WAIT FOR FIRST MOVE
+    if (serverStartTime == 0) {
 
-    int now = DateTime.now().millisecondsSinceEpoch;
+      timerController.stop();
 
-    double elapsedMs = (now - serverStartTime).toDouble();
-    double durationMs = turnDuration * 1000;
+      timerController.reset();
 
-    double progress = (elapsedMs / durationMs).clamp(0.0, 1.0);
-
-    /// 🔥 ONLY SET VALUE FIRST TIME OR BIG DIFF
-    if ((timerController.value - progress).abs() > 0.05) {
-      timerController.value = progress;
+      return;
     }
 
-    /// 🔥 CONTINUE ONLY IF NOT RUNNING
-    if (!timerController.isAnimating && progress < 1.0) {
+    int now =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    double elapsedMs =
+    (now - serverStartTime)
+        .toDouble();
+
+    double durationMs =
+        turnDuration * 1000;
+
+    double progress =
+    (elapsedMs / durationMs)
+        .clamp(0.0, 1.0);
+
+    timerController.value = progress;
+
+    if (!timerController.isAnimating &&
+        progress < 1.0) {
+
       timerController.animateTo(
         1.0,
-        duration: Duration(milliseconds: ((1 - progress) * durationMs).toInt()),
+
+        duration: Duration(
+          milliseconds:
+          ((1 - progress) * durationMs)
+              .toInt(),
+        ),
+
         curve: Curves.linear,
       );
     }
 
-    /// 🔥 TIME UP CHECK (SAFE)
-    if (progress >= 1.0 && !gameOver && !isTimeUp) {
-      print("⏰ TIME UP SYNC TRIGGER");
+    /// 🔥 TIME UP
+    if (progress >= 1.0 &&
+        !gameOver &&
+        !isTimeUp) {
 
       isTimeUp = true;
+
       gameOver = true;
 
       stopTickingSound();
+
       timerController.stop();
 
       onTimeUpOnline();
@@ -3155,6 +3257,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     stopTickingSound();
 
     serverStartTime = 0;
+    hasFirstMove = false;
 
     /// 🔥 LOCAL RESET
     if (mounted) {
@@ -3187,8 +3290,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         "lastMove": -1,
 
         /// 🔥 IMPORTANT
-        "timerStart": ServerValue.timestamp,
-
+        //"timerStart": ServerValue.timestamp,
+        "timerStart": 0,
+        "matchStarted": false,
         "turnDuration": 30,
 
         "timeUp": false,

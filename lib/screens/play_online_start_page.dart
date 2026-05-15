@@ -2476,6 +2476,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           .child("rooms/$newCode")
           .set({
 
+        "matchStarted": false,
+
         "roomCode": newCode,
 
         "creatorId": userId,
@@ -2570,7 +2572,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         "creatorId": userId,
         "createdAt": DateTime.now().millisecondsSinceEpoch,
         "status": "waiting",
-
+        "matchStarted": false,
         "roomType": "private",
 
         "boardSize": selectedBoardSize,
