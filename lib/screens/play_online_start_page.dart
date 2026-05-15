@@ -979,36 +979,46 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       ),
 
                       /// 🔥 PROGRESS BORDER
+                      // Positioned.fill(
+                      //   child: borderController == null
+                      //       ? const SizedBox() // safety
+                      //       : AnimatedBuilder(
+                      //           animation: borderController!,
+                      //           builder: (context, child) {
+                      //             double progressValue =
+                      //                 1 - borderController!.value;
+                      //
+                      //             /// 🔥 COLOR LOGIC (optional but pro)
+                      //             Color borderColor;
+                      //             borderColor = Colors.red;
+                      //
+                      //             // if (progressValue > 0.5) {
+                      //             //   borderColor = Colors.green;
+                      //             // } else if (progressValue > 0.2) {
+                      //             //   borderColor = Colors.orange;
+                      //             // } else {
+                      //             //   borderColor = Colors.red;
+                      //             // }
+                      //
+                      //             return CustomPaint(
+                      //               painter: BorderProgressPainter(
+                      //                 progressValue,
+                      //                 borderColor, // 🔥 dynamic color
+                      //                 20, // 🔥 SAME radius as container
+                      //               ),
+                      //             );
+                      //           },
+                      //         ),
+                      // ),
+                      /// 🔥 PROGRESS BORDER
                       Positioned.fill(
-                        child: borderController == null
-                            ? const SizedBox() // safety
-                            : AnimatedBuilder(
-                                animation: borderController!,
-                                builder: (context, child) {
-                                  double progressValue =
-                                      1 - borderController!.value;
-
-                                  /// 🔥 COLOR LOGIC (optional but pro)
-                                  Color borderColor;
-                                  borderColor = Colors.red;
-
-                                  // if (progressValue > 0.5) {
-                                  //   borderColor = Colors.green;
-                                  // } else if (progressValue > 0.2) {
-                                  //   borderColor = Colors.orange;
-                                  // } else {
-                                  //   borderColor = Colors.red;
-                                  // }
-
-                                  return CustomPaint(
-                                    painter: BorderProgressPainter(
-                                      progressValue,
-                                      borderColor, // 🔥 dynamic color
-                                      20, // 🔥 SAME radius as container
-                                    ),
-                                  );
-                                },
-                              ),
+                        child: CustomPaint(
+                          painter: BorderProgressPainter(
+                            countdown / 300,
+                            Colors.red,
+                            20,
+                          ),
+                        ),
                       ),
                     ],
                   ),
