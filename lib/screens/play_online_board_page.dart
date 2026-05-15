@@ -11,6 +11,7 @@ import 'dart:ui';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
+import '../widgets/custom_toast.dart';
 import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
@@ -590,7 +591,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     closeInternetDialog();
 
-    showToast("Reconnected ✅");
+    //showToast("Reconnected ✅");
+    CustomToast.show(
+      context: context,
+      message: "Reconnected.",
+      isDark: isDark,
+      icon: Icons.wifi_rounded,
+      color: Colors.green,
+    );
 
     final snapshot =
     await roomRef.get();
@@ -633,7 +641,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       closeInternetDialog();
 
-      showToast("Reconnected ✅");
+      //showToast("Reconnected ✅");
+      CustomToast.show(
+        context: context,
+        message: "Reconnected.",
+        isDark: isDark,
+        icon: Icons.wifi_rounded,
+        color: Colors.green,
+      );
     }
 
     final snapshot =
@@ -1835,7 +1850,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         /// 🔥 SENDER SIDE
         if (cancelledBy != myId) {
-          showToast("Opponent rejected ❌");
+          //showToast("Opponent rejected ❌");
+          CustomToast.show(
+            context: context,
+            message: "Opponent rejected!",
+            isDark: isDark,
+            icon: Icons.cancel_outlined,
+            color: Colors.redAccent,
+          );
         }
       }
     }
@@ -1851,7 +1873,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         /// 🔥 OPPONENT SIDE
         if (cancelledBy != myId) {
-          showToast("Opponent cancelled ❌");
+          //showToast("Opponent cancelled ❌");
+          CustomToast.show(
+            context: context,
+            message: "Opponent cancelled!",
+            isDark: isDark,
+            icon: Icons.cancel_outlined,
+            color: Colors.redAccent,
+          );
         }
       }
 
@@ -1932,7 +1961,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           disconnectDialogCtx = null;
 
-          showToast("Opponent reconnected! 🎮");
+          //showToast("Opponent reconnected!");
+          CustomToast.show(
+            context: context,
+            message: "Opponent Reconnected!",
+            isDark: isDark,
+            icon: Icons.wifi_find_rounded,
+            color: Colors.green,
+          );
         }
       }
     }
@@ -2140,11 +2176,201 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         .toInt();
   }
 
-  void showToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
-    );
-  }
+  // void showToast(String msg) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
+  //   );
+  // }
+
+  // void showToast(
+  //
+  //     String msg, {
+  //
+  //       IconData? icon,
+  //
+  //       Color? color,
+  //
+  //       Duration duration =
+  //       const Duration(
+  //         seconds: 2,
+  //       ),
+  //     }) {
+  //
+  //   final isDarkTheme = isDark;
+  //
+  //   ScaffoldMessenger.of(context)
+  //       .hideCurrentSnackBar();
+  //
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(
+  //
+  //     SnackBar(
+  //
+  //       duration: duration,
+  //
+  //       behavior:
+  //       SnackBarBehavior.floating,
+  //
+  //       backgroundColor:
+  //       Colors.transparent,
+  //
+  //       elevation: 0,
+  //
+  //       margin:
+  //       const EdgeInsets.symmetric(
+  //
+  //         horizontal: 20,
+  //
+  //         vertical: 14,
+  //       ),
+  //
+  //       content: Container(
+  //
+  //         padding:
+  //         const EdgeInsets.symmetric(
+  //
+  //           horizontal: 16,
+  //
+  //           vertical: 14,
+  //         ),
+  //
+  //         decoration: BoxDecoration(
+  //
+  //           borderRadius:
+  //           BorderRadius.circular(18),
+  //
+  //           gradient: LinearGradient(
+  //
+  //             colors: isDarkTheme
+  //
+  //                 ? [
+  //
+  //               const Color(
+  //                 0xFF1E293B,
+  //               ),
+  //
+  //               const Color(
+  //                 0xFF334155,
+  //               ),
+  //             ]
+  //
+  //                 : [
+  //
+  //               Colors.white,
+  //
+  //               const Color(
+  //                 0xFFF3F6FB,
+  //               ),
+  //             ],
+  //           ),
+  //
+  //           border: Border.all(
+  //
+  //             color: isDarkTheme
+  //
+  //                 ? Colors.cyanAccent
+  //                 .withValues(
+  //               alpha: 0.25,
+  //             )
+  //
+  //                 : Colors.blueAccent
+  //                 .withValues(
+  //               alpha: 0.25,
+  //             ),
+  //           ),
+  //
+  //           boxShadow: [
+  //
+  //             BoxShadow(
+  //
+  //               color:
+  //               (color ??
+  //                   Colors
+  //                       .blueAccent)
+  //                   .withValues(
+  //                 alpha: 0.25,
+  //               ),
+  //
+  //               blurRadius: 14,
+  //
+  //               spreadRadius: 1,
+  //
+  //               offset:
+  //               const Offset(0, 4),
+  //             ),
+  //           ],
+  //         ),
+  //
+  //         child: Row(
+  //
+  //           children: [
+  //
+  //             Container(
+  //
+  //               width: 34,
+  //               height: 34,
+  //
+  //               decoration: BoxDecoration(
+  //
+  //                 shape:
+  //                 BoxShape.circle,
+  //
+  //                 gradient:
+  //                 LinearGradient(
+  //
+  //                   colors: [
+  //
+  //                     (color ??
+  //                         Colors
+  //                             .blueAccent),
+  //
+  //                     (color ??
+  //                         Colors
+  //                             .cyanAccent),
+  //                   ],
+  //                 ),
+  //               ),
+  //
+  //               child: Icon(
+  //
+  //                 icon ??
+  //                     Icons.info_rounded,
+  //
+  //                 color: Colors.white,
+  //
+  //                 size: 18,
+  //               ),
+  //             ),
+  //
+  //             const SizedBox(width: 12),
+  //
+  //             Expanded(
+  //
+  //               child: Text(
+  //
+  //                 msg,
+  //
+  //                 style: TextStyle(
+  //
+  //                   color: isDarkTheme
+  //
+  //                       ? Colors.white
+  //
+  //                       : Colors.black87,
+  //
+  //                   fontSize: 14,
+  //
+  //                   fontWeight:
+  //                   FontWeight.w600,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -2825,7 +3051,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       //startResendCooldown();
     } catch (e) {
       print("Replay Error: $e");
-      showToast("Something went wrong ❌");
+      //showToast("Something went wrong ❌");
+      CustomToast.show(
+        context: context,
+        message: "Something went wrong!",
+        isDark: isDark,
+        icon: Icons.error_outline_rounded,
+        color: Colors.redAccent,
+      );
     } finally {
       isSendingReplay = false;
     }
@@ -2924,7 +3157,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             "cancelledBy": myId,
           });
 
-          showToast("Request cancelled ❌");
+          //showToast("Request cancelled ❌");
+          CustomToast.show(
+            context: context,
+            message: "Request cancelled!",
+            isDark: isDark,
+            icon: Icons.cancel_outlined,
+            color: Colors.redAccent,
+          );
         } catch (e) {
           print("Rematch cancel error: $e");
         } finally {
@@ -3047,7 +3287,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           });
 
           /// 🔥 SELF TOAST
-          showToast("Replay rejected ❌");
+          //showToast("Replay rejected ❌");
+          CustomToast.show(
+            context: context,
+            message: "Replay rejected!",
+            isDark: isDark,
+            icon: Icons.cancel_outlined,
+            color: Colors.redAccent,
+          );
         } catch (e) {
           print("Rematch reject error: $e");
         } finally {
