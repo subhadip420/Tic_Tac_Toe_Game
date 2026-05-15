@@ -495,7 +495,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         if (!isOfflineDialogShown) {
 
           isOfflineDialogShown = true;
-
+          if (vibrationOn) {HapticFeedback.mediumImpact();}
           noInternetDialog();
         }
       },
@@ -578,6 +578,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
 
+      if (vibrationOn) {HapticFeedback.mediumImpact();}
       noInternetDialog();
     });
   }
@@ -871,7 +872,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               !isOfflineDialogShown) {
             isDisconnectDialogOpen = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) showOpponentDisconnectDialog();
+              if (mounted) {
+                if (vibrationOn) {HapticFeedback.mediumImpact();}
+                showOpponentDisconnectDialog();
+              }
             });
           }
         }
@@ -1010,6 +1014,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     }
   }
 
+
+  ///old
   // void listenToGame() async {
   //   String winner = "";
   //   final prefs = await SharedPreferences.getInstance();
@@ -1576,11 +1582,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         if (newBoard[i] == "X") {
           playXSound();
 
-          playVibration(120);
+          //playVibration(120);
+          if (vibrationOn) {HapticFeedback.lightImpact();}
         } else if (newBoard[i] == "O") {
           playOSound();
 
-          playVibration(120);
+          //playVibration(120);
+          if (vibrationOn) {HapticFeedback.lightImpact();}
         }
 
         break;
@@ -1656,18 +1664,28 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       if (firebaseWinner == "draw") {
         gameMessage = " DRAW ";
-
         playDrawSound();
+        if (vibrationOn) {
+          //HapticFeedback.mediumImpact();
+          playVibration(120);
+        }
+
       } else if (firebaseWinner == mySymbol) {
         gameMessage = " YOU WIN ";
-
         confettiController.play();
-
         playWinSound();
+        if (vibrationOn) {
+          playVibration(120);
+          //HapticFeedback.vibrate();
+          }
+
       } else {
         gameMessage = " YOU LOSE ";
-
         playLoseSound();
+        if (vibrationOn) {
+          //HapticFeedback.vibrate();
+          playVibration(120);
+        }
       }
     } else if (firebaseWinner.isEmpty) {
       hasShownResult = false;
@@ -1850,6 +1868,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         /// 🔥 SENDER SIDE
         if (cancelledBy != myId) {
+          if (vibrationOn) {HapticFeedback.mediumImpact();}
           //showToast("Opponent rejected ❌");
           CustomToast.show(
             context: context,
@@ -1858,6 +1877,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             icon: Icons.cancel_outlined,
             color: Colors.redAccent,
           );
+
         }
       }
     }
@@ -1873,6 +1893,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         /// 🔥 OPPONENT SIDE
         if (cancelledBy != myId) {
+          if (vibrationOn) {HapticFeedback.mediumImpact();}
           //showToast("Opponent cancelled ❌");
           CustomToast.show(
             context: context,
@@ -1909,6 +1930,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showRematchDialog();
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
       });
     }
 
@@ -2018,6 +2040,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
           stopTickingSound();
 
+          if (vibrationOn) {HapticFeedback.mediumImpact();}
           showOpponentExitDialog();
         }
       });
@@ -2419,7 +2442,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
               child: GestureDetector(
                 onTap: () async {
                   //await handleBackPress();
-                  playVibration(120);
+                  //playVibration(120);
+                  if (vibrationOn) {HapticFeedback.lightImpact();}
                   showExitDialog();
                 },
                 child: build3DIconButton(
@@ -2481,6 +2505,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 message: "Settings",
                 child: GestureDetector(
                   onTap: () {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     showSettingsMenu();
                   },
                   child: build3DIconButton(
@@ -2993,7 +3018,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                               text: "Exit",
                               icon: Icons.exit_to_app,
                               onTap: () {
-                                playVibration(120);
+                                //playVibration(120);
+                                if (vibrationOn) {HapticFeedback.mediumImpact();}
                                 showExitDialog();
                               },
 
@@ -3035,7 +3061,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     isSendingReplay = true;
 
-    playVibration(120);
+    //playVibration(120);
+    if (vibrationOn) {HapticFeedback.mediumImpact();}
 
     try {
       // 🔥 send request
@@ -3052,6 +3079,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     } catch (e) {
       print("Replay Error: $e");
       //showToast("Something went wrong ❌");
+      if (vibrationOn) {HapticFeedback.mediumImpact();}
       CustomToast.show(
         context: context,
         message: "Something went wrong!",
@@ -3138,7 +3166,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       onNegative: () async {
         dialogOpen = false;
-
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         // /// 🔥 CANCEL REQUEST
         // await roomRef.child("rematch").set({
         //   "requestedBy": "",
@@ -3273,7 +3301,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       /// ❌ DECLINE
       onNegative: () async {
         dialogOpen = false;
-
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         // await roomRef.child("rematch").update({
         //   "status": "rejected",
         // });
@@ -3305,7 +3333,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       /// ✅ PLAY AGAIN
       onPositive: () async {
         dialogOpen = false;
-
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         // await roomRef.child("rematch").update({
         //   "status": "accepted",
         // });
@@ -3427,7 +3455,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         isDisconnectDialogOpen = false;
 
         disconnectDialogCtx = null;
-
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         /// 🔥 CLOSE DIALOG FIRST
         final navigator = Navigator.of(context, rootNavigator: true);
 
@@ -3496,6 +3524,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       barrierDismissible: false,
 
       onNegative: () {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         isExitDialogOpen = false;
         // 🔥 nothing needed
       },
@@ -3503,6 +3532,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       onPositive: () async {
         isExitDialogOpen = false;
         await exitFromGame();
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
       },
     );
 
@@ -3600,7 +3630,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       onPositive: () async {
         heartbeatTimer?.cancel();
-
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         /// 🔥 REMOVE ROOM
         await roomRef.remove();
 
@@ -4301,7 +4331,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.selectionClick();}
 
             setState(() {
               isDark = value;
@@ -4324,7 +4355,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.mediumImpact();}
 
             setState(() {
               soundOn = value;
