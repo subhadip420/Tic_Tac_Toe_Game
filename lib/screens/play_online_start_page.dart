@@ -1453,39 +1453,48 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         ),
 
                         /// 🔥 TIMER BORDER
+                        // Positioned.fill(
+                        //   child: TweenAnimationBuilder<double>(
+                        //     tween: Tween<double>(
+                        //       begin: remainingProgress.toDouble(),
+                        //       end: 0.0,
+                        //     ),
+                        //     duration: Duration(
+                        //       milliseconds: (remainingProgress * 300000)
+                        //           .toInt(),
+                        //     ),
+                        //     builder: (context, value, child) {
+                        //       double progressValue = value; // ✅ no cast needed
+                        //
+                        //       /// 🔥 DYNAMIC COLOR
+                        //       Color borderColor;
+                        //       borderColor = Colors.cyanAccent;
+                        //
+                        //       // if (progressValue > 0.5) {
+                        //       //   borderColor = Colors.green;
+                        //       // } else if (progressValue > 0.2) {
+                        //       //   borderColor = Colors.orange;
+                        //       // } else {
+                        //       //   borderColor = Colors.red;
+                        //       // }
+                        //
+                        //       return CustomPaint(
+                        //         painter: BorderProgressPainter(
+                        //           progressValue,
+                        //           borderColor, // 🔥 dynamic color
+                        //           12, // 🔥 radius (same as button)
+                        //         ),
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
                         Positioned.fill(
-                          child: TweenAnimationBuilder<double>(
-                            tween: Tween<double>(
-                              begin: remainingProgress.toDouble(),
-                              end: 0.0,
+                          child: CustomPaint(
+                            painter: BorderProgressPainter(
+                              remainingProgress,
+                              Colors.cyanAccent,
+                              12,
                             ),
-                            duration: Duration(
-                              milliseconds: (remainingProgress * 300000)
-                                  .toInt(),
-                            ),
-                            builder: (context, value, child) {
-                              double progressValue = value; // ✅ no cast needed
-
-                              /// 🔥 DYNAMIC COLOR
-                              Color borderColor;
-                              borderColor = Colors.cyanAccent;
-
-                              // if (progressValue > 0.5) {
-                              //   borderColor = Colors.green;
-                              // } else if (progressValue > 0.2) {
-                              //   borderColor = Colors.orange;
-                              // } else {
-                              //   borderColor = Colors.red;
-                              // }
-
-                              return CustomPaint(
-                                painter: BorderProgressPainter(
-                                  progressValue,
-                                  borderColor, // 🔥 dynamic color
-                                  12, // 🔥 radius (same as button)
-                                ),
-                              );
-                            },
                           ),
                         ),
                       ],
