@@ -103,7 +103,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     loadUser();
     loadSettings();
     cleanUpDeadRooms();
-    startPublicRoomRefresh();
+    //startPublicRoomRefresh();
     Future.delayed(Duration.zero, () {
       checkUser(); // 🔥 ADD THIS
     });
@@ -1192,7 +1192,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     itemCount: publicRooms.length,
                     itemBuilder: (context, index) {
                       final room = publicRooms[index];
-                      return buildRoomItem(room);
+                      //return buildRoomItem(room);
+                      return KeyedSubtree(
+                        key: ValueKey(room["code"]),
+                        child: buildRoomItem(room),
+                      );
                     },
                   ),
                 ),
@@ -1907,54 +1911,54 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
   }
 
-  void startPublicRoomRefresh() {
+  // void startPublicRoomRefresh() {
+  //
+  //   publicRoomRefreshTimer?.cancel();
+  //
+  //   publicRoomRefreshTimer =
+  //       Timer.periodic(
+  //         const Duration(seconds: 3),
+  //             (_) {
+  //
+  //           if (!mounted) return;
+  //
+  //           updatePublicRoomsFromCache();
+  //         },
+  //       );
+  // }
 
-    publicRoomRefreshTimer?.cancel();
-
-    publicRoomRefreshTimer =
-        Timer.periodic(
-          const Duration(seconds: 3),
-              (_) {
-
-            if (!mounted) return;
-
-            updatePublicRoomsFromCache();
-          },
-        );
-  }
-
-  void updatePublicRoomsFromCache() {
-
-    List<Map> temp = [];
-
-    int currentTime =
-        DateTime.now()
-            .millisecondsSinceEpoch;
-
-    for (var room in publicRooms) {
-
-      int heartbeat =
-          room["heartbeat"] ?? 0;
-
-      if (heartbeat > 0) {
-
-        bool isAlive =
-            (currentTime - heartbeat)
-                <= 15000;
-
-        if (!isAlive) continue;
-      }
-
-      temp.add(room);
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-
-      publicRooms = temp;
-    });
-  }
+  // void updatePublicRoomsFromCache() {
+  //
+  //   List<Map> temp = [];
+  //
+  //   int currentTime =
+  //       DateTime.now()
+  //           .millisecondsSinceEpoch;
+  //
+  //   for (var room in publicRooms) {
+  //
+  //     int heartbeat =
+  //         room["heartbeat"] ?? 0;
+  //
+  //     if (heartbeat > 0) {
+  //
+  //       bool isAlive =
+  //           (currentTime - heartbeat)
+  //               <= 15000;
+  //
+  //       if (!isAlive) continue;
+  //     }
+  //
+  //     temp.add(room);
+  //   }
+  //
+  //   if (!mounted) return;
+  //
+  //   setState(() {
+  //
+  //     publicRooms = temp;
+  //   });
+  // }
 
   void updatePublicRooms(dynamic data) {
 
@@ -2000,7 +2004,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
           bool isAlive =
               (currentTime - heartbeat)
-                  <= 15000;
+                  <= 30000;
 
           if (!isAlive) return;
         }
@@ -2102,6 +2106,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           );
         });
   }
+
+
+
   /////////////////////////////////////////////
   // void addCharacter(String char) {
   //   if (enteredCode.length >= 6) return;
