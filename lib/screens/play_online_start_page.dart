@@ -18,6 +18,7 @@ import 'package:tic_tac_toe/screens/play_online_board_page.dart';
 import '../main.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
+import '../widgets/custom_toast.dart';
 import 'web_listener_stub.dart'
     if (dart.library.js_interop) 'web_listener.dart';
 import '../../widgets/loading_widget.dart';
@@ -750,7 +751,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     bool isConnected = await checkInternet();
 
                     if (!isConnected) {
-                      showToast("No Internet Connection ⚠️");
+                      //showToast("No Internet Connection ⚠️");
+                      CustomToast.show(
+                        context: context,
+                        message: "No Internet Connection",
+                        isDark: isDark,
+                        icon: Icons.portable_wifi_off_rounded,
+                        color: Colors.orange,
+                      );
                       return;
                     }
 
@@ -2253,11 +2261,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   // }
   ///////////////////////////////////////////////////
 
-  void showToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
-    );
-  }
+  // void showToast(String msg) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
+  //   );
+  // }
 
   Future<bool> checkInternet() async {
     // 🌐 WEB-এর জন্য (handled by events)
@@ -2347,7 +2355,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         noInternetDialogCtx = null;
         isOfflineDialogShowing = false;
 
-        showToast("Internet Restored ✅");
+        //showToast("Internet Restored ✅");
+        CustomToast.show(
+          context: context,
+          message: "Internet Restored.",
+          isDark: isDark,
+          icon: Icons.wifi_rounded,
+          color: Colors.green,
+        );
       }
     }
   }
@@ -2506,7 +2521,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     // 🔥 already room check
     if (isCodeGenerated) {
 
-      showToast("Room already created!");
+      //showToast("Room already created!");
+      CustomToast.show(
+        context: context,
+        message: "Room Already Created!",
+        isDark: isDark,
+        //icon: Icons.meeting_room_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -2515,8 +2537,15 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (!isConnected) {
 
-      showToast(
-        "No Internet Connection ⚠️",
+      // showToast(
+      //   "No Internet Connection ⚠️",
+      // );
+      CustomToast.show(
+        context: context,
+        message: "No Internet Connection",
+        isDark: isDark,
+        icon: Icons.wifi_off_rounded,
+        color: Colors.orange,
       );
 
       return;
@@ -2643,10 +2672,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       listenForOpponent(newCode);
 
-      showToast(
-        "Finding opponent...",
+      // showToast(
+      //   "Finding opponent...",
+      // );
+      CustomToast.show(
+        context: context,
+        message: "Finding Opponent...",
+        isDark: isDark,
+        icon: Icons.search_rounded,
+        color: Colors.blueAccent,
       );
-
     } catch (e) {
 
       print(
@@ -2765,7 +2800,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           isButtonDisabled = false;
         });
 
-        showToast("Room expired!!!");
+        // showToast("Room expired!!!");
+        CustomToast.show(
+          context: context,
+          message: "Room Expired!",
+          isDark: isDark,
+          icon: Icons.timer_off_rounded,
+          color: Colors.redAccent,
+        );
       } else {
         setState(() {
           countdown--;
@@ -2790,20 +2832,51 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   Future<void> handleCopyRoomCode() async {
     if (roomCode.isEmpty || roomCode == "XXXXXX") {
-      showToast("No room code available ❌");
+      //showToast("No room code available ❌");
+      CustomToast.show(
+
+        context: context,
+
+        message: "No Room Code Available ❌",
+
+        isDark: isDark,
+
+        icon: Icons.error_outline_rounded,
+
+        color: Colors.redAccent,
+      );
       return;
     }
 
     await Clipboard.setData(ClipboardData(text: roomCode));
 
-    showToast("Room code copied ✅");
+    //showToast("Room code copied ✅");
+    CustomToast.show(
+
+      context: context,
+
+      message: "Room Code Copied.",
+
+      isDark: isDark,
+
+      icon: Icons.copy_rounded,
+
+      color: Colors.green,
+    );
   }
 
   Future<void> handlePasteRoomCode() async {
     final data = await Clipboard.getData('text/plain');
 
     if (data?.text == null || data!.text!.isEmpty) {
-      showToast("Clipboard empty!");
+      //showToast("Clipboard empty!");
+      CustomToast.show(
+        context: context,
+        message: "Clipboard Empty!",
+        isDark: isDark,
+        icon: Icons.content_paste_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -2821,14 +2894,28 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       hiddenController.text = pasted;
     });
 
-    showToast("Code pasted ✅");
+    //showToast("Code pasted ✅");
+    CustomToast.show(
+      context: context,
+      message: "Code Pasted!",
+      isDark: isDark,
+      icon: Icons.content_paste_rounded,
+      color: Colors.green,
+    );
   }
 
   ////////////////////////////////////////////////////////////////////////
 
   Future<void> handleShareRoomCode() async {
     if (roomCode.isEmpty || roomCode == "XXXXXX") {
-      showToast("No room code to share!");
+      //showToast("No room code to share!");
+      CustomToast.show(
+        context: context,
+        message: "No Room Code to Share!",
+        isDark: isDark,
+        //icon: Icons.share_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -3737,10 +3824,17 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     Navigator.pop(context);
 
     /// 🔥 SUCCESS
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Profile updated"),
-      ),
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     content: Text("Profile updated"),
+    //   ),
+    // );
+    CustomToast.show(
+      context: context,
+      message: "Profile Updated!",
+      isDark: isDark,
+      icon: Icons.check_circle_rounded,
+      color: Colors.green,
     );
   }
 
@@ -3751,7 +3845,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     bool isConnected = await checkInternet();
 
     if (!isConnected) {
-      showToast("No Internet Connection ⚠️");
+      //showToast("No Internet Connection ⚠️");
+      CustomToast.show(
+        context: context,
+        message: "No Internet Connection",
+        isDark: isDark,
+        icon: Icons.wifi_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -3787,11 +3888,25 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         });
       }
 
-      showToast("Room closed!");
+      //showToast("Room closed!");
+      CustomToast.show(
+        context: context,
+        message: "Room Closed!",
+        isDark: isDark,
+        icon: Icons.cancel_presentation_rounded,
+        color: Colors.redAccent,
+      );
     } catch (e) {
 
       print("🔥 Firebase Error: $e");
-      showToast("Failed to close room!");
+      // showToast("Failed to close room!");
+      CustomToast.show(
+        context: context,
+        message: "Failed to Close Room!",
+        isDark: isDark,
+        icon: Icons.error_outline_rounded,
+        color: Colors.redAccent,
+      );
     }finally {
 
       LoadingDialog.hide(context);
@@ -3921,7 +4036,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           opponentJoined = false;
         });
 
-        showToast("Opponent cancelled!");
+        //showToast("Opponent cancelled!");
+        CustomToast.show(
+          context: context,
+          message: "Opponent Cancelled!",
+          isDark: isDark,
+          icon: Icons.cancel_outlined,
+          color: Colors.redAccent,
+        );
 
         /// 🔥 REMOVE FIREBASE FLAG
         dbRef.child("rooms/$code/cancelledBy").remove();
@@ -3937,8 +4059,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     await internetSubscription?.cancel();
     /// 🔥 PAGE NO LONGER ACTIVE
     isPageActive = false;
-    showToast("Match Started!");
-
+    //showToast("Match Started!");
+    CustomToast.show(
+      context: context,
+      message: "Match Started!",
+      isDark: isDark,
+      icon: Icons.sports_esports_rounded,
+      color: Colors.green,
+    );
     // 🔥 Navigate to game screen
     Navigator.push(
       context,
@@ -3960,12 +4088,31 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Future<void> validateRoomCode() async {
     // 🔹 Input check
     if (enteredCode.isEmpty) {
-      showToast("Please enter room code!");
+      //showToast("Please enter room code!");
+      CustomToast.show(
+        context: context,
+        message: "Please Enter Room Code!",
+        isDark: isDark,
+        icon: Icons.keyboard_alt_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
     if (enteredCode.length < 6) {
-      showToast("Enter valid 6-digit code!");
+      //showToast("Enter valid 6-digit code!");
+      CustomToast.show(
+
+        context: context,
+
+        message: "Enter Valid 6-Digit Code!",
+
+        isDark: isDark,
+
+        icon: Icons.pin_outlined,
+
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -3973,7 +4120,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     bool isConnected = await checkInternet();
 
     if (!isConnected) {
-      showToast("No Internet Connection ⚠️");
+      //showToast("No Internet Connection ⚠️");
+      CustomToast.show(
+        context: context,
+        message: "No Internet Connection",
+        isDark: isDark,
+        icon: Icons.wifi_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -4112,14 +4266,28 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     hasCancelled = false;
 
     if (code.isEmpty) {
-      showToast("Invalid room!");
+      //showToast("Invalid room!");
+      CustomToast.show(
+        context: context,
+        message: "Invalid Room!",
+        isDark: isDark,
+        icon: Icons.cancel_outlined,
+        color: Colors.redAccent,
+      );
       return;
     }
 
     // 🔥 Internet check
     bool isConnected = await checkInternet();
     if (!isConnected) {
-      showToast("No Internet Connection ⚠️");
+      //showToast("No Internet Connection ⚠️");
+      CustomToast.show(
+        context: context,
+        message: "No Internet Connection ⚠️",
+        isDark: isDark,
+        icon: Icons.wifi_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -4158,7 +4326,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       await _joinRoomInternal(code);
     } catch (e) {
       print("❌ Smart join error: $e");
-      showToast("Failed to join room!");
+      //showToast("Failed to join room!");
+      CustomToast.show(
+        context: context,
+        message: "Failed to Join Room!",
+        isDark: isDark,
+        icon: Icons.error_outline_rounded,
+        color: Colors.redAccent,
+      );
     }
 
   }
@@ -4168,14 +4343,28 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (!snapshot.exists) {
       triggerError();
-      showToast("Room not found!");
+      //showToast("Room not found!");
+      CustomToast.show(
+        context: context,
+        message: "Room Not Found!",
+        isDark: isDark,
+        icon: Icons.cancel_outlined,
+        color: Colors.redAccent,
+      );
       return;
     }
 
     final data = snapshot.value as Map?;
 
     if (data == null) {
-      showToast("Invalid room!");
+      //showToast("Invalid room!");
+      CustomToast.show(
+        context: context,
+        message: "Invalid Room!",
+        isDark: isDark,
+        icon: Icons.cancel_outlined,
+        color: Colors.redAccent,
+      );
       return;
     }
 
@@ -4183,7 +4372,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     final player1 = players?["player1"] as Map?;
 
     if (player1 == null) {
-      showToast("Invalid room data!");
+      //showToast("Invalid room data!");
+      CustomToast.show(
+        context: context,
+        message: "Invalid room data!",
+        isDark: isDark,
+        icon: Icons.cancel_outlined,
+        color: Colors.redAccent,
+      );
       return;
     }
 
@@ -4194,19 +4390,40 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     // ❌ self join
     if (creatorId == userId) {
-      showToast("You can't join your own room!");
+      //showToast("You can't join your own room!");
+      CustomToast.show(
+        context: context,
+        message: "You can't join your own room!",
+        isDark: isDark,
+        icon: Icons.cancel_outlined,
+        color: Colors.redAccent,
+      );
       return;
     }
 
     // ❌ already playing
     if (data["status"] == "playing") {
-      showToast("Match already started!");
+      //showToast("Match already started!");
+      CustomToast.show(
+        context: context,
+        message: "Match already started!",
+        isDark: isDark,
+        icon: Icons.sports_esports_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
     // ❌ room full
     if (players?["player2"] != null) {
-      showToast("Room already full!");
+      //showToast("Room already full!");
+      CustomToast.show(
+        context: context,
+        message: "Room already full!",
+        isDark: isDark,
+        icon: Icons.person_off_rounded,
+        color: Colors.orange,
+      );
       return;
     }
 
@@ -4249,7 +4466,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           navigator.pop();
         }
 
-        showToast("Room deleted!");
+        //showToast("Room deleted!");
+        CustomToast.show(
+          context: context,
+          message: "Room Deleted!",
+          isDark: isDark,
+          icon: Icons.delete_forever_rounded,
+          color: Colors.redAccent,
+        );
         roomListener?.cancel();
         return;
       }
@@ -4286,7 +4510,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           //FocusManager.instance.primaryFocus?.unfocus(); // 🔥 ADD HERE
         });
 
-        showToast("Opponent rejected request ❌");
+        //showToast("Opponent rejected request ❌");
+        CustomToast.show(
+          context: context,
+          message: "Opponent Rejected Request!",
+          isDark: isDark,
+          icon: Icons.cancel_outlined,
+          color: Colors.redAccent,
+        );
 
         // 🔥 cleanup
         dbRef.child("rooms/$code/rejectedBy").remove();
@@ -4301,7 +4532,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           Navigator.pop(context);
         }
 
-        showToast("Match Started!");
+        //showToast("Match Started!");
+        CustomToast.show(
+          context: context,
+          message: "Match Started!",
+          isDark: isDark,
+          icon: Icons.sports_esports_rounded,
+          color: Colors.green,
+        );
 
         setState(() {
           hiddenController.text = "";
@@ -4564,7 +4802,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           LoadingDialog.hide(context);
         }
 
-        showToast("Cancelled ❌");
+        //showToast("Cancelled ❌");
+        CustomToast.show(
+          context: context,
+          message: "Request Cancelled!",
+          isDark: isDark,
+          icon: Icons.close_rounded,
+          color: Colors.redAccent,
+        );
       },
     );
   }
@@ -4699,7 +4944,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           opponentJoined = false;
         });
 
-        showToast("Request rejected ❌");
+        //showToast("Request rejected ❌");
+        CustomToast.show(
+          context: context,
+          message: "Request rejected!",
+          isDark: isDark,
+          icon: Icons.close_rounded,
+          color: Colors.redAccent,
+        );
       },
 
       /// ✅ START MATCH
