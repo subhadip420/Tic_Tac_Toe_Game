@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:app_links/app_links.dart';
 import 'package:lottie/lottie.dart';
+import 'package:marquee/marquee.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -1328,17 +1329,128 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     child: Row(
                       children: [
                         // 🔹 SCROLLING NAME
+                        // Expanded(
+                        //   child: SingleChildScrollView(
+                        //     scrollDirection: Axis.horizontal,
+                        //     child: Text(
+                        //       name,
+                        //       style: TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 14,
+                        //         color: isDark ? Colors.white : Colors.black,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+
                         Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: isDark ? Colors.white : Colors.black,
-                              ),
-                            ),
+                          child: LayoutBuilder(
+
+                            builder: (context, constraints) {
+
+                              final textPainter = TextPainter(
+
+                                text: TextSpan(
+
+                                  text: name,
+
+                                  style: TextStyle(
+
+                                    fontWeight: FontWeight.bold,
+
+                                    fontSize: 14,
+
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+
+                                maxLines: 1,
+
+                                textDirection: TextDirection.ltr,
+                              )..layout();
+
+                              bool shouldScroll =
+                                  textPainter.width >
+                                      constraints.maxWidth;
+
+                              /// 🔥 AUTO MARQUEE ONLY IF OVERFLOW
+                              if (shouldScroll) {
+
+                                return SizedBox(
+
+                                  height: 20,
+
+                                  child: Marquee(
+
+                                    text: name,
+
+                                    style: TextStyle(
+
+                                      fontWeight: FontWeight.bold,
+
+                                      fontSize: 14,
+
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+
+                                    scrollAxis:
+                                    Axis.horizontal,
+
+                                    blankSpace: 40,
+
+                                    velocity: 25,
+
+                                    pauseAfterRound:
+                                    const Duration(
+                                      seconds: 1,
+                                    ),
+
+                                    startPadding: 10,
+
+                                    accelerationDuration:
+                                    const Duration(
+                                      milliseconds: 800,
+                                    ),
+
+                                    accelerationCurve:
+                                    Curves.linear,
+
+                                    decelerationDuration:
+                                    const Duration(
+                                      milliseconds: 500,
+                                    ),
+
+                                    decelerationCurve:
+                                    Curves.easeOut,
+                                  ),
+                                );
+                              }
+
+                              /// 🔥 NORMAL TEXT
+                              return Text(
+
+                                name,
+
+                                overflow: TextOverflow.ellipsis,
+
+                                maxLines: 1,
+
+                                style: TextStyle(
+
+                                  fontWeight: FontWeight.bold,
+
+                                  fontSize: 14,
+
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              );
+                            },
                           ),
                         ),
 
