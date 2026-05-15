@@ -13,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
+import '../widgets/custom_toast.dart';
 import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
@@ -1072,10 +1073,18 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           /// 🔥 PREVENT CHANGE
           canChange: (value) {
             if (isGameRunning) {
-              Fluttertoast.showToast(
-                msg: "Can't change during game",
+              // Fluttertoast.showToast(
+              //   msg: "Can't change during game",
+              //
+              //   toastLength: Toast.LENGTH_SHORT,
+              // );
 
-                toastLength: Toast.LENGTH_SHORT,
+              CustomToast.show(
+                context: context,
+                message: "Can't change during game.",
+                isDark: isDark,
+                icon: Icons.block_rounded,
+                color: Colors.orange,
               );
 
               return false;
@@ -1101,10 +1110,18 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   void showBoardSizeMenu() {
     /// 🔥 BLOCK DURING MATCH
     if (isGameRunning) {
-      Fluttertoast.showToast(
-        msg: "Can't change during match",
+      // Fluttertoast.showToast(
+      //   msg: "Can't change during match",
+      //
+      //   toastLength: Toast.LENGTH_SHORT,
+      // );
 
-        toastLength: Toast.LENGTH_SHORT,
+      CustomToast.show(
+        context: context,
+        message: "Can't change during match.",
+        isDark: isDark,
+        icon: Icons.block_rounded,
+        color: Colors.orange,
       );
 
       return;

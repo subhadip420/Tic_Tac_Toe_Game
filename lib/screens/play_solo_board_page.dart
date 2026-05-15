@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
+import '../widgets/custom_toast.dart';
 import '../widgets/glass_settings_menu.dart';
 import '../widgets/loading_dialog_with_button.dart';
 import '../widgets/neon_glowing_button.dart';
@@ -729,19 +730,19 @@ class _GameBoardPageState extends State<GameBoardPage>
     }
   }
 
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 2,
-
-      backgroundColor: isDark ? const Color(0xFF2B3A5A) : Colors.black87,
-
-      textColor: Colors.white,
-      fontSize: 14,
-    );
-  }
+  // void showToast(String message) {
+  //   Fluttertoast.showToast(
+  //     msg: message,
+  //     toastLength: Toast.LENGTH_LONG,
+  //     gravity: ToastGravity.CENTER,
+  //     timeInSecForIosWeb: 2,
+  //
+  //     backgroundColor: isDark ? const Color(0xFF2B3A5A) : Colors.black87,
+  //
+  //     textColor: Colors.white,
+  //     fontSize: 14,
+  //   );
+  // }
 
   void aiMove() {
     if (gameOver) return;
@@ -1078,7 +1079,14 @@ class _GameBoardPageState extends State<GameBoardPage>
           title: GestureDetector(
             onTap: () {
               if (gameStarted && !gameOver) {
-                showToast("Finish the match before changing difficulty.");
+                //showToast("Finish the match before changing difficulty.");
+                CustomToast.show(
+                  context: context,
+                  message: "Finish Match First",
+                  isDark: isDark,
+                  //icon: Icons.lock_clock_rounded,
+                  color: Colors.orange,
+                );
                 playVibration(150);
                 return;
               }
