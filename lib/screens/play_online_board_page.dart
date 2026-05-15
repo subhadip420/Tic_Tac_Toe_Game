@@ -1939,8 +1939,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
