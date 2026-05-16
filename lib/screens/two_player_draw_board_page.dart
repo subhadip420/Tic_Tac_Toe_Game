@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
@@ -254,7 +255,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             SharedPreferences prefs =
             await SharedPreferences
                 .getInstance();
-
+            HapticFeedback.lightImpact();
             setState(() {
 
               isDark = value;
@@ -283,7 +284,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           value: autoGrid,
 
           onChanged: (value) {
-
+            HapticFeedback.lightImpact();
             setState(() {
 
               autoGrid = value;
@@ -357,8 +358,42 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     );
   }
 
-  Future<void> showExitDialog() async {
+
+  ///old
+  // Future<void> showExitDialog() async {
+  //   await showAppDialog(
+  //     context: context,
+  //
+  //     title: "EXIT MATCH",
+  //
+  //     message: "Exit and end the match?",
+  //
+  //     positiveText: "EXIT",
+  //     negativeText: "CANCEL",
+  //
+  //     barrierDismissible: true,
+  //     canPop: true,
+  //
+  //     onNegative: () {
+  //       HapticFeedback.lightImpact();
+  //       // 🔥 nothing needed
+  //     },
+  //
+  //     onPositive: () async {
+  //       //playVibration(120);
+  //       HapticFeedback.mediumImpact();
+  //       //Navigator.pop(context);
+  //     },
+  //   );
+  // }
+
+  ///new
+  Future<bool> showExitDialog() async {
+
+    bool shouldExit = false;
+
     await showAppDialog(
+
       context: context,
 
       title: "EXIT MATCH",
@@ -366,20 +401,29 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
       message: "Exit and end the match?",
 
       positiveText: "EXIT",
+
       negativeText: "CANCEL",
 
       barrierDismissible: true,
+
       canPop: true,
 
       onNegative: () {
-        // 🔥 nothing needed
+
+        HapticFeedback.lightImpact();
+
+        shouldExit = false;
       },
 
       onPositive: () async {
-        //playVibration(120);
-        Navigator.pop(context);
+
+        HapticFeedback.mediumImpact();
+
+        shouldExit = true;
       },
     );
+
+    return shouldExit;
   }
 
   @override
@@ -411,8 +455,13 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             message: "Back",
             child: GestureDetector(
               onTap: () async {
-                await showExitDialog();
-                Navigator.pop(context);
+                HapticFeedback.lightImpact();
+                // await showExitDialog();
+                // Navigator.pop(context);
+                bool exit = await showExitDialog();
+                if (exit) {
+                  Navigator.pop(context);
+                }
               },
               child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
             ),
@@ -435,6 +484,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
               message: "Settings",
               child: GestureDetector(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   showSettingsMenu();
                 },
                 child: build3DIconButton(icon:Icons.settings,isDark: isDark),
@@ -550,6 +600,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.edit,
                       isSelected: !isEraser,
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         setState(() {
                           isEraser = false;
                         });
@@ -560,6 +611,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.cleaning_services,
                       isSelected: isEraser,
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         setState(() {
                           isEraser = true;
                         });
@@ -570,6 +622,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.delete,
                       isSelected: false,
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         setState(() {
                           strokes.clear();
                         });
@@ -599,6 +652,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                   min: 2,
                   max: 12,
                   onChanged: (value) {
+                    HapticFeedback.lightImpact();
                     setState(() {
                       strokeWidth = value;
                     });
@@ -644,6 +698,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
         setState(() {
           selectedColor = color;
           isEraser = false;
