@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
@@ -218,8 +219,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                           // X BUTTON
                           GestureDetector(
                             onTap: () {
-                              playVibration(120);
-
+                              //playVibration(120);
+                              if (vibrationOn) {HapticFeedback.mediumImpact();}
                               setState(() {
                                 playerSymbol = "X";
                                 botSymbol = "O";
@@ -260,8 +261,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                           // O BUTTON
                           GestureDetector(
                             onTap: () {
-                              playVibration(120);
-
+                              //playVibration(120);
+                              if (vibrationOn) {HapticFeedback.mediumImpact();}
                               setState(() {
                                 playerSymbol = "O";
                                 botSymbol = "X";
@@ -673,10 +674,12 @@ class _GameBoardPageState extends State<GameBoardPage>
       // PLAYER SOUND
       if (playerSymbol == "X") {
         playXSound();
-        playVibration(110);
+        //playVibration(110);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
       } else {
         playOSound();
-        playVibration(110);
+        //playVibration(110);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
       }
 
       checkWinner();
@@ -769,10 +772,12 @@ class _GameBoardPageState extends State<GameBoardPage>
 
     if (botSymbol == "X") {
       playXSound();
-      playVibration(110);
+      //playVibration(110);
+      if (vibrationOn) {HapticFeedback.lightImpact();}
     } else {
       playOSound();
-      playVibration(110);
+      //playVibration(110);
+      if (vibrationOn) {HapticFeedback.lightImpact();}
     }
 
     checkWinner();
@@ -865,17 +870,19 @@ class _GameBoardPageState extends State<GameBoardPage>
       barrierDismissible: true,
       canPop: true,
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         resetGame();
       },
 
       onNegative: () {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         // dialog auto close
       },
     );
   }
 
   void resetGame() {
-    playVibration(120);
+    //playVibration(120);
     setState(() {
       board = List.filled(9, "");
       winningLine = null;
@@ -1009,10 +1016,13 @@ class _GameBoardPageState extends State<GameBoardPage>
 
         /// 🔥 MATCH RUNNING
         if (!gameOver && board.any((e) => e != "")) {
+          if (vibrationOn) {HapticFeedback.lightImpact();}
           await showExitDialog();
+
         } else {
           /// 🔥 DIRECT BACK
-          playVibration(120);
+          //playVibration(120);
+          if (vibrationOn) {HapticFeedback.lightImpact();}
 
           if (mounted && Navigator.canPop(context)) {
             Navigator.pop(context);
@@ -1060,11 +1070,13 @@ class _GameBoardPageState extends State<GameBoardPage>
                 onTap: () async {
                   /// 🔥 MATCH RUNNING
                   if (!gameOver && board.any((e) => e != "")) {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     await showExitDialog();
+
                   } else {
                     /// 🔥 DIRECT BACK
-                    playVibration(120);
-
+                    //playVibration(120);
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     Navigator.pop(context);
                   }
                 },
@@ -1087,12 +1099,14 @@ class _GameBoardPageState extends State<GameBoardPage>
                   //icon: Icons.lock_clock_rounded,
                   color: Colors.orange,
                 );
-                playVibration(150);
+                //playVibration(150);
+                if (vibrationOn) {HapticFeedback.mediumImpact();}
                 return;
               }
 
               showDifficultyMenu();
-              playVibration(130);
+              if (vibrationOn) {HapticFeedback.mediumImpact();}
+              //playVibration(130);
             },
 
             child: Container(
@@ -1169,6 +1183,7 @@ class _GameBoardPageState extends State<GameBoardPage>
                 message: "Settings",
                 child: GestureDetector(
                   onTap: () {
+                    if (vibrationOn) {HapticFeedback.mediumImpact();}
                     showSettingsMenu();
                   },
                   child: build3DIconButton(
@@ -1564,7 +1579,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                                 text: "Home",
                                 icon: Icons.home,
                                 onTap: () {
-                                  playVibration(120);
+                                  //playVibration(120);
+                                  if (vibrationOn) {HapticFeedback.heavyImpact();}
                                   Navigator.pop(context);
                                 },
                                 isDark: isDark,
@@ -1579,7 +1595,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                                 icon: Icons.refresh,
                                 onTap: () {
                                   //playXSound();   // replay sound
-                                  playVibration(120);
+                                  //playVibration(120);
+                                  if (vibrationOn) {HapticFeedback.mediumImpact();}
                                   resetGame();
                                 },
 
@@ -1678,6 +1695,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
                             //resetGame();
                             showResetGameDialog();
+                            if (vibrationOn) {HapticFeedback.lightImpact();}
                           },
 
                           onTapCancel: () {
@@ -1898,8 +1916,8 @@ class _GameBoardPageState extends State<GameBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
-
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               isDark = value;
             });
@@ -1921,8 +1939,8 @@ class _GameBoardPageState extends State<GameBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
-
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               soundOn = value;
             });
@@ -1969,11 +1987,13 @@ class _GameBoardPageState extends State<GameBoardPage>
       barrierDismissible: true,
       canPop: true,
       onNegative: () {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         // 🔥 nothing needed
       },
 
       onPositive: () async {
-        playVibration(120);
+        //playVibration(120);
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         Navigator.pop(context);
       },
     );
@@ -2192,7 +2212,8 @@ class _GameBoardPageState extends State<GameBoardPage>
         setState(() {
           difficulty = level;
         });
-        playVibration(130);
+        //playVibration(130);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         Navigator.pop(context);
       },
     );
@@ -2319,8 +2340,8 @@ class _GameBoardPageState extends State<GameBoardPage>
           difficulty = level;
         });
 
-        playVibration(130);
-
+        //playVibration(130);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         Navigator.pop(context);
       },
 
