@@ -111,3 +111,5 @@ flutter:
     - assets/lottie/sandy_loading.json
     - assets/lottie/material_wave_loading.json
     - assets/lottie/loading_animation_blue.json
+    - assets/lottie/tic_tac_toe_light.json
+    - assets/lottie/tic_tac_toe_dark.json

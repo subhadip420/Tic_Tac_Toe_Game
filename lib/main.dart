@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:tic_tac_toe/screens/terms_condition_page.dart';
 import 'screens/how_to_play_page.dart';
 import 'screens/play_solo_board_page.dart';
 import 'package:vibration/vibration.dart';
@@ -147,61 +149,139 @@ class _HomePageState extends State<HomePage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Animated XO Logo
-                    AnimatedBuilder(
-                      animation: controller,
-                      builder: (context, child) {
-                        final glow = (controller.value * 12) + 6;
+                    // AnimatedBuilder(
+                    //   animation: controller,
+                    //   builder: (context, child) {
+                    //     final glow = (controller.value * 12) + 6;
+                    //
+                    //     return Container(
+                    //       height: 100,
+                    //       width: 100,
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(24),
+                    //         color: Colors.white.withValues(alpha: 0.08),
+                    //         boxShadow: [
+                    //           // BLUE GLOW
+                    //           BoxShadow(
+                    //             color: Colors.blue.withValues(alpha: 0.7),
+                    //             blurRadius: glow,
+                    //             spreadRadius: 3,
+                    //           ),
+                    //
+                    //           // PINK GLOW
+                    //           BoxShadow(
+                    //             color: Colors.pink.withValues(alpha: 0.6),
+                    //             blurRadius: glow,
+                    //             spreadRadius: 1,
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       child: const Center(
+                    //         child: Text(
+                    //           "XO",
+                    //           style: TextStyle(
+                    //             fontSize: 38,
+                    //             fontWeight: FontWeight.bold,
+                    //             letterSpacing: 2,
+                    //             color: Colors.white,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
 
-                        return Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            color: Colors.white.withValues(alpha: 0.08),
-                            boxShadow: [
-                              // BLUE GLOW
-                              BoxShadow(
-                                color: Colors.blue.withValues(alpha: 0.7),
-                                blurRadius: glow,
-                                spreadRadius: 3,
-                              ),
 
-                              // PINK GLOW
-                              BoxShadow(
-                                color: Colors.pink.withValues(alpha: 0.6),
-                                blurRadius: glow,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "XO",
-                              style: TextStyle(
-                                fontSize: 38,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
 
-                    const SizedBox(height: 14),
+                    SizedBox(
+                      height: 150,
+                      width: 150,
 
-                    // TITLE
-                    Text(
-                      "Tic - Tac - Toe",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
+                      child: Lottie.asset(
+
+                        isDark
+                            ? "assets/lottie/tic_tac_toe_dark.json"
+                            : "assets/lottie/tic_tac_toe_light.json",
+
+                        height: 150,
+
+                        width: 150,
+
+                        fit: BoxFit.contain,
+
+                        repeat: true,
                       ),
                     ),
 
-                    const SizedBox(height: 45),
+                    const SizedBox(height: 20),
+
+                    // TITLE
+                    // Text(
+                    //   "Tic - Tac - Toe",
+                    //   style: TextStyle(
+                    //     fontSize: 26,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: isDark ? Colors.white : Colors.black87,
+                    //   ),
+                    // ),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+
+                        boxShadow: [
+
+                          /// 🔥 BACK GLOW
+                          BoxShadow(
+                            color: (isDark
+                                ? Colors.blue
+                                : Colors.cyanAccent)
+                                .withValues(alpha: 0.5),
+
+                            blurRadius: 15,
+
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+
+                      child: Text(
+                        "Tic - Tac - Toe",
+
+                        style: TextStyle(
+                          fontSize: 28,
+
+                          fontWeight: FontWeight.bold,
+
+                          letterSpacing: 1,
+
+                          color: isDark
+                              ? Colors.white
+                              : Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+
+// SUBTITLE
+                    Text(
+                      "Powered by SP Tech Studios",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1,
+                        color: isDark
+                            ? Colors.white60
+                            : Colors.black54,
+                      ),
+                    ),
+
+                    const SizedBox(height: 35),
 
                     // PLAY SOLO
                     buildButton(
@@ -237,27 +317,100 @@ class _HomePageState extends State<HomePage>
                     //   },
                     //   child: const Text("Test Vibration"),
                     // ),/// vibration test
+                    // const SizedBox(height: 30),
+                    //
+                    // // HOW TO PLAY
+                    // TextButton(
+                    //   onPressed: () {
+                    //     //Vibration.vibrate(duration: 150);
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => const HowToPlayPage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Text(
+                    //     "How to Play ?",
+                    //     style: TextStyle(
+                    //       fontSize: 16,
+                    //       color: isDark ? Colors.white70 : Colors.blue,
+                    //     ),
+                    //   ),
+                    // ),
+
                     const SizedBox(height: 30),
 
-                    // HOW TO PLAY
-                    TextButton(
-                      onPressed: () {
-                        //Vibration.vibrate(duration: 150);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HowToPlayPage(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+
+                        /// 🔹 HOW TO PLAY
+                        TextButton(
+                          onPressed: () {
+
+                            Navigator.push(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const HowToPlayPage(),
+                              ),
+                            );
+                          },
+
+                          child: Text(
+                            "How to Play?",
+
+                            style: TextStyle(
+                              fontSize: 16,
+
+                              color: isDark
+                                  ? Colors.white70
+                                  : Colors.blue,
+                            ),
                           ),
-                        );
-                      },
-                      child: Text(
-                        "How to Play ?",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isDark ? Colors.white70 : Colors.blue,
                         ),
-                      ),
-                    ),
+
+                        /// 🔥 DIVIDER
+                        Container(
+                          width: 1,
+                          height: 18,
+
+                          color: isDark
+                              ? Colors.white24
+                              : Colors.black26,
+                        ),
+
+                        /// 🔹 TERMS & CONDITIONS
+                        TextButton(
+                          onPressed: () {
+
+                            Navigator.push(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const TermsConditionPage(),
+                              ),
+                            );
+                          },
+
+                          child: Text(
+                            "Terms & Conditions",
+
+                            style: TextStyle(
+                              fontSize: 16,
+
+                              color: isDark
+                                  ? Colors.white70
+                                  : Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
