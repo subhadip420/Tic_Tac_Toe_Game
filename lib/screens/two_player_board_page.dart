@@ -285,10 +285,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       // SOUND
       if (board[index] == "X") {
         playXSound();
-        playVibration(110);
+        //playVibration(110);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
       } else {
         playOSound();
-        playVibration(110);
+        //playVibration(110);
+        if (vibrationOn) {HapticFeedback.lightImpact();}
       }
 
       checkWinner();
@@ -423,8 +425,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           // X BUTTON
                           GestureDetector(
                             onTap: () {
-                              playVibration(120);
-
+                              //playVibration(120);
+                              if (vibrationOn) {HapticFeedback.lightImpact();}
                               setState(() {
                                 player1Symbol = "X";
                                 player2Symbol = "O"; // ⭐ important
@@ -465,8 +467,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           // O BUTTON
                           GestureDetector(
                             onTap: () {
-                              playVibration(120);
-
+                              //playVibration(120);
+                              if (vibrationOn) {HapticFeedback.lightImpact();}
                               setState(() {
                                 player1Symbol = "O";
                                 player2Symbol = "X"; // ⭐ important
@@ -767,17 +769,19 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       barrierDismissible: true,
       canPop: true,
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.heavyImpact();}
         resetGame();
       },
 
       onNegative: () {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         // dialog auto close
       },
     );
   }
 
   void resetGame() {
-    playVibration(120);
+    //playVibration(120);
     stopTickingSound();
     setState(() {
       hasGameStarted = false;
@@ -1005,8 +1009,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
-
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               isDark = value;
             });
@@ -1028,8 +1032,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            playVibration(130);
-
+            //playVibration(130);
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               soundOn = value;
             });
@@ -1050,7 +1054,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-
+            if (!vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               vibrationOn = value;
             });
@@ -1095,7 +1099,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               timerEnabled = value;
             });
@@ -1343,7 +1347,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                   ///new
                   child: SizedBox(
-                    height: 210, // 🔥 ONLY 3 ITEMS VISIBLE
+                    height: 210,
 
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(
@@ -1374,8 +1378,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                         return GestureDetector(
                           onTap: () {
-                            playVibration(120);
-
+                            //playVibration(120);
+                            if (vibrationOn) {HapticFeedback.lightImpact();}
                             /// 🔥 TIMER RESET
                             hasGameStarted = false;
 
@@ -1566,11 +1570,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
         /// 🔥 MATCH RUNNING
         if (!gameOver && board.any((e) => e != "")) {
+          if (vibrationOn) {HapticFeedback.lightImpact();}
           await showExitDialog();
         } else {
           /// 🔥 DIRECT BACK
-          playVibration(120);
-
+          //playVibration(120);
+          if (vibrationOn) {HapticFeedback.lightImpact();}
           if (mounted && Navigator.canPop(context)) {
             Navigator.pop(context);
           }
@@ -1619,10 +1624,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 onTap: () async {
                   /// 🔥 MATCH RUNNING
                   if (!gameOver && board.any((e) => e != "")) {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     await showExitDialog();
                   } else {
                     /// 🔥 DIRECT BACK
-                    playVibration(120);
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    //playVibration(120);
 
                     Navigator.pop(context);
                   }
@@ -1757,8 +1764,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               // }
 
               showBoardSizeMenu();
-
-              playVibration(130);
+              if (vibrationOn) {HapticFeedback.mediumImpact();}
+              //playVibration(130);
             },
 
             child: Container(
@@ -1844,6 +1851,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 message: "Draw Board", // 🔥 long press tooltip
                 child: GestureDetector(
                   onTap: () {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DrawBoardPage()),
@@ -1861,6 +1869,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 message: "Settings", // 🔥 tooltip
                 child: GestureDetector(
                   onTap: () {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     showSettingsMenu();
                   },
                   child: build3DIconButton(
@@ -2362,7 +2371,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 text: "Home",
                                 icon: Icons.home,
                                 onTap: () {
-                                  playVibration(120);
+                                  //playVibration(120);
+                                  if (vibrationOn) {HapticFeedback.mediumImpact();}
                                   Navigator.pop(context);
                                 },
                                 isDark: isDark,
@@ -2377,7 +2387,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 icon: Icons.refresh,
                                 onTap: () {
                                   //playXSound();   // replay sound
-                                  playVibration(120);
+                                  //playVibration(120);
+                                  if (vibrationOn) {HapticFeedback.mediumImpact();}
                                   resetGame();
                                 },
                                 isDark: isDark,
@@ -2476,6 +2487,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             //resetGame();
                             showResetGameDialog();
+                            if (vibrationOn) {HapticFeedback.lightImpact();}
                           },
 
                           onTapCancel: () {
@@ -2560,11 +2572,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       canPop: true,
 
       onNegative: () {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         // 🔥 nothing needed
       },
 
       onPositive: () async {
-        playVibration(120);
+        //playVibration(120);
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
         stopTickingSound();
         Navigator.pop(context);
       },
