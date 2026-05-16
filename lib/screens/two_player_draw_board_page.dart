@@ -36,7 +36,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
   bool isEraser = false;
   bool showTools = false;
   bool isDark = true;
-
+  bool vibrationOn = true;
   bool autoGrid = false;
   bool snapToBox = false;
   bool detectXO = false;
@@ -255,7 +255,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             SharedPreferences prefs =
             await SharedPreferences
                 .getInstance();
-            HapticFeedback.lightImpact();
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
 
               isDark = value;
@@ -268,6 +268,28 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
               "theme_dark",
               isDark,
             );
+          },
+        ),
+
+
+        /// 📳 VIBRATION
+        SettingsMenuItem(
+          iconBuilder: (value) {
+            return value ? Icons.vibration : Icons.phonelink_erase;
+          },
+
+          title: "Vibration",
+
+          value: vibrationOn,
+
+          onChanged: (value) async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (!vibrationOn) {HapticFeedback.lightImpact();}
+            setState(() {
+              vibrationOn = value;
+            });
+
+            await prefs.setBool("vibration_on", vibrationOn);
           },
         ),
 
@@ -284,7 +306,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           value: autoGrid,
 
           onChanged: (value) {
-            HapticFeedback.lightImpact();
+            if (vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
 
               autoGrid = value;
@@ -410,14 +432,14 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
       onNegative: () {
 
-        HapticFeedback.lightImpact();
+        if (vibrationOn) {HapticFeedback.lightImpact();}
 
         shouldExit = false;
       },
 
       onPositive: () async {
 
-        HapticFeedback.mediumImpact();
+        if (vibrationOn) {HapticFeedback.mediumImpact();}
 
         shouldExit = true;
       },
@@ -455,7 +477,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             message: "Back",
             child: GestureDetector(
               onTap: () async {
-                HapticFeedback.lightImpact();
+                if (vibrationOn) {HapticFeedback.lightImpact();}
                 // await showExitDialog();
                 // Navigator.pop(context);
                 bool exit = await showExitDialog();
@@ -484,7 +506,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
               message: "Settings",
               child: GestureDetector(
                 onTap: () {
-                  HapticFeedback.lightImpact();
+                  if (vibrationOn) {HapticFeedback.lightImpact();}
                   showSettingsMenu();
                 },
                 child: build3DIconButton(icon:Icons.settings,isDark: isDark),
@@ -600,7 +622,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.edit,
                       isSelected: !isEraser,
                       onTap: () {
-                        HapticFeedback.lightImpact();
+                        if (vibrationOn) {HapticFeedback.selectionClick();}
                         setState(() {
                           isEraser = false;
                         });
@@ -611,7 +633,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.cleaning_services,
                       isSelected: isEraser,
                       onTap: () {
-                        HapticFeedback.lightImpact();
+                        if (vibrationOn) {HapticFeedback.selectionClick();}
                         setState(() {
                           isEraser = true;
                         });
@@ -622,7 +644,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.delete,
                       isSelected: false,
                       onTap: () {
-                        HapticFeedback.lightImpact();
+                        if (vibrationOn) {HapticFeedback.selectionClick();}
                         setState(() {
                           strokes.clear();
                         });
@@ -652,7 +674,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                   min: 2,
                   max: 12,
                   onChanged: (value) {
-                    HapticFeedback.lightImpact();
+                    if (vibrationOn) {HapticFeedback.selectionClick();}
                     setState(() {
                       strokeWidth = value;
                     });
@@ -698,7 +720,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        if (vibrationOn) {HapticFeedback.selectionClick();}
         setState(() {
           selectedColor = color;
           isEraser = false;
