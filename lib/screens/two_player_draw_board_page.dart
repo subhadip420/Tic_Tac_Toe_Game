@@ -57,6 +57,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
     setState(() {
       isDark = prefs.getBool("theme_dark") ?? true;
+      vibrationOn = prefs.getBool("vibration_on") ?? true;
     });
   }
 
