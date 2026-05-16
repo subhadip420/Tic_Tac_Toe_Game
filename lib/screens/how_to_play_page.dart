@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widgets/build_circle_icon_button.dart';
 
 bool isDark = true;
 
@@ -30,13 +34,14 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       // backgroundColor: const Color(0xFF1F2A44),
       backgroundColor: isDark
           ? const Color(0xFF0F172A)
           : const Color(0xFFF5F7FB),
 
       appBar: AppBar(
-        /// 🔥 FIX STATUS BAR ICON COLOR
+        scrolledUnderElevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
           statusBarIconBrightness: isDark
@@ -47,24 +52,78 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
               : Brightness.light, // iOS
         ),
 
-        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black,
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: isDark
+                ? Colors.white24
+                : Colors.black12,
           ),
-          onPressed: () => Navigator.pop(context),
+        ),
+
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 10,
+              sigmaY: 10,
+            ),
+
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.2)
+                    : Colors.white.withValues(alpha: 0.2),
+              ),
+            ),
+          ),
+        ),
+
+        title: Text(
+          "How To Play",
+
+          style: TextStyle(
+            color: isDark
+                ? Colors.cyanAccent
+                : Colors.blue,
+
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Tooltip(
+            message: "Back",
+            child: GestureDetector(
+              onTap: () async {
+                Navigator.pop(context);
+              },
+              child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
+            ),
+          ),
         ),
       ),
 
       /// 🔥 SCROLLABLE BODY
-      body: SingleChildScrollView(
+      //body: SingleChildScrollView(
+        body: SafeArea(
+        top: false,
+    child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
 
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-
+          //padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
+            bottom: 00,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -79,7 +138,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                     Text(
                       "Game Rules",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : Colors.blue,
                       ),
@@ -134,7 +193,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                     Text(
                       "Win Conditions",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : Colors.blue,
                       ),
@@ -218,6 +277,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           ),
         ),
       ),
+        ),
     );
   }
 
@@ -241,7 +301,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : Colors.blue,
                 ),
@@ -283,20 +343,87 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     return miniBoard(["X", "O", "X", "O", "X", "O", "O", "X", "O"]);
   }
 
+  // Widget miniBoard(List<String> values) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(6),
+  //
+  //     decoration: BoxDecoration(
+  //       color: isDark ? const Color(0xFF1E293B) : Colors.white,
+  //
+  //       borderRadius: BorderRadius.circular(6),
+  //
+  //       border: Border.all(color: isDark ? Colors.white24 : Colors.black12),
+  //
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withValues(alpha:0.15),
+  //           blurRadius: 8,
+  //           offset: const Offset(2, 4),
+  //         ),
+  //       ],
+  //     ),
+  //
+  //     child: SizedBox(
+  //       width: 70,
+  //       height: 70,
+  //
+  //       child: GridView.builder(
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: 9,
+  //
+  //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //           crossAxisCount: 3,
+  //         ),
+  //
+  //         itemBuilder: (context, index) {
+  //           String value = values[index];
+  //
+  //           Color textColor;
+  //
+  //           if (value == "X") {
+  //             textColor = Colors.blueAccent;
+  //           } else if (value == "O") {
+  //             textColor = Colors.orangeAccent;
+  //           } else {
+  //             textColor = Colors.transparent;
+  //           }
+  //
+  //           return Container(
+  //             alignment: Alignment.center,
+  //
+  //             decoration: BoxDecoration(
+  //               border: Border.all(
+  //                 color: isDark ? Colors.white24 : Colors.black45,
+  //               ),
+  //             ),
+  //
+  //             child: Text(
+  //               value,
+  //
+  //               style: TextStyle(
+  //                 color: textColor,
+  //                 fontWeight: FontWeight.bold,
+  //                 fontSize: 18,
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget miniBoard(List<String> values) {
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(4), // Reduced padding to give the grid more space
 
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-
         borderRadius: BorderRadius.circular(6),
-
         border: Border.all(color: isDark ? Colors.white24 : Colors.black12),
-
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 8,
             offset: const Offset(2, 4),
           ),
@@ -304,20 +431,22 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
       ),
 
       child: SizedBox(
-        width: 70,
-        height: 70,
+        width: 72,  // Slightly increased size to properly fit the 3x3 grid
+        height: 72,
 
         child: GridView.builder(
+          padding: EdgeInsets.zero, // 🔥 CRITICAL FIX: Removes default GridView padding that was hiding the grid
           physics: const NeverScrollableScrollPhysics(),
           itemCount: 9,
 
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
+            mainAxisSpacing: 1,  // Adds subtle spacing between rows
+            crossAxisSpacing: 1, // Adds subtle spacing between columns
           ),
 
           itemBuilder: (context, index) {
             String value = values[index];
-
             Color textColor;
 
             if (value == "X") {
@@ -330,20 +459,19 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
             return Container(
               alignment: Alignment.center,
-
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: isDark ? Colors.white24 : Colors.black45,
+                  color: isDark ? Colors.white12 : Colors.black12,
+                  width: 0.5, // Thinner border so it doesn't clutter the small grid cells
                 ),
               ),
 
               child: Text(
                 value,
-
                 style: TextStyle(
                   color: textColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 14, // Decreased font size from 18 to 14 so text fits inside the small cells
                 ),
               ),
             );
