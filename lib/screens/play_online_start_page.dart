@@ -53,6 +53,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Timer? timer;
   late double progress = countdown / 300;
   bool isDark = true; // default dark
+  bool vibrationOn = true;
   String? profileImagePath;
   BuildContext? startDialogContext;
   StreamSubscription? roomListener;
@@ -194,7 +195,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       canPop: !isCodeGenerated, // 🔥 block back when code active
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         await handleBackPress();
       },
       child: Scaffold(
@@ -261,6 +262,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               message: "Back",
               child: GestureDetector(
                 onTap: () async {
+                  if (vibrationOn) {HapticFeedback.lightImpact();}
                   await handleBackPress();
                 },
                 child: build3DIconButton(
@@ -278,6 +280,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 message: "Profile",
                 child: GestureDetector(
                   onTap: () {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     /// 🔥 IF ROOM ACTIVE
                     if (isCodeGenerated) {
 
@@ -367,6 +370,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          if (vibrationOn) {HapticFeedback.lightImpact();}
                           setState(() => isCreateSelected = true);
                         },
                         child: AnimatedContainer(
@@ -410,6 +414,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          if (vibrationOn) {HapticFeedback.lightImpact();}
                           setState(() => isCreateSelected = false);
                         },
                         child: AnimatedContainer(
@@ -541,7 +546,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                               int newValue = value.toInt();
 
                               if (newValue != selectedBoardSize) {
-                                HapticFeedback.lightImpact();
+                                if (vibrationOn) {HapticFeedback.selectionClick();}
                               }
 
                               setState(() {
@@ -745,7 +750,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               if (isCreateSelected && !isCodeGenerated)
                 Pressable3DButton(
                   onTap: () async {
-                    HapticFeedback.lightImpact();
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     if (isButtonDisabled) return;
 
                     bool isConnected = await checkInternet();
@@ -794,7 +799,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
-                          HapticFeedback.lightImpact();
+                          if (vibrationOn) {HapticFeedback.lightImpact();}
                           handleCopyRoomCode();
                         }, // call function
                         child: BuildIconTextButton(
@@ -863,7 +868,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
-                          HapticFeedback.lightImpact();
+                          if (vibrationOn) {HapticFeedback.lightImpact();}
                           handlePasteRoomCode();
                         }, // function call
                         child: BuildIconTextButton(
@@ -903,7 +908,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                           // 🔥 STEP 1: FORCE HIDE KEYBOARD
                           FocusManager.instance.primaryFocus?.unfocus();
-                          HapticFeedback.lightImpact();
+                          if (vibrationOn) {HapticFeedback.lightImpact();}
                           await Future.delayed(
                             const Duration(milliseconds: 100),
                           );
@@ -941,6 +946,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 const SizedBox(height: 10),
                 Pressable3DButton(
                   onTap: () async {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     FocusScope.of(context).unfocus();
                     await showCloseRoomDialog();
                   },
@@ -1061,6 +1067,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               if (isCreateSelected && !isCodeGenerated) ...[
                 Pressable3DButton(
                   onTap: () async {
+                    if (vibrationOn) {HapticFeedback.lightImpact();}
                     FocusScope.of(context).unfocus();
 
                     await createPublicRoomInFirebase(); // 🔥 main logic
@@ -1957,6 +1964,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     setState(() {
       isDark = prefs.getBool("theme_dark") ?? true;
+      vibrationOn = prefs.getBool("vibration_on") ?? true;
     });
   }
 
@@ -2000,7 +2008,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         Navigator.of(context, rootNavigator: true).pop();
         return;
       }
-
+      if (vibrationOn) {HapticFeedback.selectionClick();}
       await showCloseRoomBeforeExitDialog();
     } finally {
       isExiting = false;
@@ -2339,7 +2347,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         isOfflineDialogShowing = true;
 
         Future.delayed(Duration.zero, () {
-          if (mounted) showNoInternetDialog();
+          if (mounted) {
+            if (vibrationOn) {HapticFeedback.vibrate();}
+            showNoInternetDialog();
+          }
         });
       }
     } else {
@@ -2354,6 +2365,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
         noInternetDialogCtx = null;
         isOfflineDialogShowing = false;
+
+        if (vibrationOn) {HapticFeedback.selectionClick();}
 
         //showToast("Internet Restored ✅");
         CustomToast.show(
@@ -3656,6 +3669,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         Expanded(
                                           child: GestureDetector(
                                             onTap: () {
+                                              if (vibrationOn) {HapticFeedback.lightImpact();}
                                               Navigator.pop(context);
                                             },
 
@@ -3683,7 +3697,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         Expanded(
                                           child: GestureDetector(
                                             onTap: () async {
-
+                                              if (vibrationOn) {HapticFeedback.lightImpact();}
                                               await updateProfile(
                                                 context: context,
                                                 prefs: prefs,
@@ -4007,7 +4021,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
           hasHandledMatchAction = false;
           startDialogContext = null;
-
+          if (vibrationOn) {HapticFeedback.lightImpact();}
           showStartMatchDialog(code);
         }
       }
@@ -4293,6 +4307,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     // 🔴 IMPORTANT: stop here if already has room
     if (isCodeGenerated && roomCode.isNotEmpty) {
+      if (vibrationOn) {HapticFeedback.selectionClick();}
       await showCloseRoomBeforeJoinDialog();
       return; // 🔥 STOP — no auto join
     }
@@ -4344,6 +4359,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     if (!snapshot.exists) {
       triggerError();
       //showToast("Room not found!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "Room Not Found!",
@@ -4358,6 +4374,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (data == null) {
       //showToast("Invalid room!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "Invalid Room!",
@@ -4373,6 +4390,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (player1 == null) {
       //showToast("Invalid room data!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "Invalid room data!",
@@ -4391,6 +4409,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     // ❌ self join
     if (creatorId == userId) {
       //showToast("You can't join your own room!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "You can't join your own room!",
@@ -4404,6 +4423,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     // ❌ already playing
     if (data["status"] == "playing") {
       //showToast("Match already started!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "Match already started!",
@@ -4417,6 +4437,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     // ❌ room full
     if (players?["player2"] != null) {
       //showToast("Room already full!");
+      if (vibrationOn) {HapticFeedback.lightImpact();}
       CustomToast.show(
         context: context,
         message: "Room already full!",
@@ -4445,6 +4466,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     LoadingDialog.hide(context);
     // 🔥 WAIT UI
     Future.delayed(Duration.zero, () {
+      if (vibrationOn) {HapticFeedback.selectionClick();}
       showWaitingDialog(code);
     });
 
@@ -4467,6 +4489,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         }
 
         //showToast("Room deleted!");
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         CustomToast.show(
           context: context,
           message: "Room Deleted!",
@@ -4511,6 +4534,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         });
 
         //showToast("Opponent rejected request ❌");
+        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         CustomToast.show(
           context: context,
           message: "Opponent Rejected Request!",
@@ -4531,8 +4556,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         if (mounted && Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         //showToast("Match Started!");
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         CustomToast.show(
           context: context,
           message: "Match Started!",
@@ -4572,7 +4598,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       //showContentLoading: false,
       showLoadingOnPositive: true,
+
+      onNegative: () {
+        if (vibrationOn) {HapticFeedback.selectionClick();}
+      },
+
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         await deleteRoom(roomCode);
         //if (mounted) Navigator.pop(context);
       },
@@ -4594,10 +4626,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       // 🔥 loader
       //showContentLoading: false,
+      onNegative: () {
+        if (vibrationOn) {HapticFeedback.selectionClick();}
+      },
       onPositive: () async {
         await deleteRoom(roomCode); // 🔥 full logic
 
         if (mounted) {
+          if (vibrationOn) {HapticFeedback.lightImpact();}
           Navigator.pop(context); // 🔥 exit page
         }
       },
@@ -4619,7 +4655,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       // 🔥 loader
       //showContentLoading: false,
+      onNegative: () {
+        if (vibrationOn) {HapticFeedback.selectionClick();}
+      },
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         await deleteRoom(roomCode); // 🔥 full logic
 
         // if (mounted) {
@@ -4644,7 +4684,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       showLoadingOnPositive: true,
 
       // 🔥 loader button me
+      onNegative: () {
+        if (vibrationOn) {HapticFeedback.selectionClick();}
+      },
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         await deleteRoom(roomCode);
       },
     );
@@ -4772,7 +4816,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       showContentLoading: true,
 
       onNegative: () async {
-
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         LoadingDialog.show(context, message: "Cancelling Request...",);
 
         try {
@@ -4916,7 +4960,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       /// 🔴 REJECT
       onNegative: () async {
-
+        if (vibrationOn) {HapticFeedback.lightImpact();}
         startDialogContext = null;
         LoadingDialog.show(
           context,
@@ -4956,6 +5000,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       /// ✅ START MATCH
       onPositive: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
 
         startDialogContext = null;
 
@@ -5117,6 +5162,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       /// 🔴 EXIT
       onNegative: () async {
+        if (vibrationOn) {HapticFeedback.lightImpact();}
 
         await _exitFromNoInternet();
       },
