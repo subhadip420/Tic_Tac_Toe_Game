@@ -1961,7 +1961,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-
+            if (!vibrationOn) {HapticFeedback.lightImpact();}
             setState(() {
               vibrationOn = value;
             });
