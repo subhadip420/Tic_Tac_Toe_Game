@@ -147,7 +147,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                     const SizedBox(height: 5),
 
                     Container(
-                      width: 145,
+                      width: 110,
                       height: 2,
                       color: isDark ? Colors.cyanAccent : Colors.blueAccent,
                     ),
@@ -202,7 +202,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                     const SizedBox(height: 5),
 
                     Container(
-                      width: 170,
+                      width: 140,
                       height: 2,
                       color: isDark ? Colors.cyanAccent : Colors.blueAccent,
                     ),
@@ -268,6 +268,45 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                         ],
                       ),
                     ),
+
+                    const SizedBox(height: 40),
+
+                    Text(
+                      "Others Conditions",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.blue,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Container(
+                      width: 165,
+                      height: 2,
+                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Text(
+                      "• A created room remains available for up to 5 minutes if no opponent joins.\n\n"
+                          "• If the opponent exits or disconnects, you should also exit and create or join a new room.\n\n"
+                          "• Players can continue playing in the same room for up to 1 hour.\n\n"
+                          "• Inactive or empty rooms may be removed automatically for better multiplayer performance.\n\n"
+                          "• Slow internet connections may cause delays, sync issues, or temporary gameplay interruption.\n\n"
+                          "• Do not spam room creation or intentionally disturb online gameplay.\n\n"
+                          "• Closing the app during an online match may end the current game session.\n\n"
+                          "• Match progress depends on real-time synchronization between both players.",
+
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
+
 
                     const SizedBox(height: 40),
                   ],
