@@ -182,46 +182,77 @@ class _TermsConditionPageState
                 buildSection(
                   isDark,
                   "1. Fair Play",
-                  "Players must play fairly and avoid cheating or exploiting bugs during gameplay.",
+                  "Players must play fairly and should not use cheats, hacks, bugs, or modified versions of the game.",
                 ),
 
                 buildSection(
                   isDark,
                   "2. Online Match Rules",
-                  "Disconnecting intentionally or disturbing gameplay may result in restrictions.",
+                  "Intentionally disconnecting, disturbing gameplay, spamming rooms, or ruining the multiplayer experience may result in temporary restrictions.",
                 ),
 
                 buildSection(
                   isDark,
                   "3. User Responsibility",
-                  "You are responsible for your nickname, room codes, and gameplay activity.",
+                  "You are responsible for your nickname, room codes, gameplay activity, and device security while using the app.",
                 ),
 
                 buildSection(
                   isDark,
                   "4. Internet Connection",
-                  "Stable internet is required for smooth online gameplay experience.",
+                  "A stable internet connection is required for smooth online multiplayer gameplay. Network issues may cause delays or disconnections.",
                 ),
 
                 buildSection(
                   isDark,
-                  "5. App Updates",
-                  "Features and gameplay mechanics may change in future updates.",
+                  "5. Temporary Online Data",
+                  "During online gameplay, temporary match-related data may be synchronized through cloud services for room connectivity and multiplayer functionality.",
                 ),
 
                 buildSection(
                   isDark,
-                  "6. Privacy",
-                  "We do not collect sensitive personal information from users.",
+                  "6. Local Device Storage",
+                  "Basic user preferences such as nickname, settings, and game preferences may be stored locally on your device for a better gameplay experience.",
                 ),
 
                 buildSection(
                   isDark,
-                  "7. Acceptance",
-                  "By using this application, you agree to these terms and conditions.",
+                  "7. Privacy",
+                  "We do not collect sensitive personal information from users. Personal gameplay preferences are primarily stored locally on the user's device.",
+                ),
+
+                buildSection(
+                  isDark,
+                  "8. Server & Connectivity",
+                  "Online services may occasionally become unavailable due to maintenance, technical issues, or internet-related problems.",
+                ),
+
+                buildSection(
+                  isDark,
+                  "9. App Updates",
+                  "Game features, design, multiplayer systems, rewards, advertisements, or gameplay mechanics may change in future updates without prior notice.",
+                ),
+
+                buildSection(
+                  isDark,
+                  "10. Prohibited Activities",
+                  "Users must not exploit bugs, impersonate other players, attempt unauthorized server/database access, or disrupt normal gameplay.",
+                ),
+
+                buildSection(
+                  isDark,
+                  "11. Match Interruption",
+                  "Unexpected app closures, internet failures, or device-related problems may interrupt online matches. The app is not responsible for gameplay losses caused by such issues.",
+                ),
+
+                buildSection(
+                  isDark,
+                  "12. Acceptance",
+                  "By downloading or using this application, you agree to these terms and conditions.",
                 ),
 
                 const SizedBox(height: 10),
+
 
                 Center(
                   child: Text(
