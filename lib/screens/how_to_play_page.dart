@@ -87,6 +87,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           "How To Play",
 
           style: TextStyle(
+            fontSize: 20,
             color: isDark
                 ? Colors.cyanAccent
                 : Colors.blue,

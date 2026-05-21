@@ -5,14 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/build_circle_icon_button.dart';
 
-class TermsConditionPage extends StatefulWidget {
-  const TermsConditionPage({super.key});
+class InfoPage extends StatefulWidget {
+  const InfoPage({super.key});
 
   @override
-  State<TermsConditionPage> createState() => _TermsConditionPageState();
+  State<InfoPage> createState() => _TermsConditionPageState();
 }
 
-class _TermsConditionPageState extends State<TermsConditionPage> {
+class _TermsConditionPageState extends State<InfoPage> {
   bool isDark = true;
 
   @override
@@ -82,9 +82,10 @@ class _TermsConditionPageState extends State<TermsConditionPage> {
         ),
 
         title: Text(
-          "Terms & Conditions",
+          "Info Center",
 
           style: TextStyle(
+            fontSize: 20,
             color: isDark ? Colors.cyanAccent : Colors.blue,
 
             fontWeight: FontWeight.bold,
