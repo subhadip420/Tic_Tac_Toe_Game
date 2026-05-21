@@ -290,6 +290,7 @@ class _TermsConditionPageState extends State<TermsConditionPage> {
                 Text(
                   "Version 1.0.0",
                   style: TextStyle(
+                    fontSize: 12,
                     color: isDark
                         ? Colors.white60
                         : Colors.black54,
@@ -301,6 +302,7 @@ class _TermsConditionPageState extends State<TermsConditionPage> {
                 Text(
                   "Powered by SP Tech Studios",
                   style: TextStyle(
+                    fontSize: 12,
                     color: isDark
                         ? Colors.white54
                         : Colors.black54,
