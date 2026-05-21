@@ -361,7 +361,7 @@ class _HomePageState extends State<HomePage>
                           },
 
                           child: Text(
-                            "How to Play?",
+                            "Guide",
 
                             style: TextStyle(
                               fontSize: 16,
@@ -383,7 +383,7 @@ class _HomePageState extends State<HomePage>
                               : Colors.black26,
                         ),
 
-                        /// 🔹 TERMS & CONDITIONS
+                        /// 🔹 About
                         TextButton(
                           onPressed: () {
 
@@ -398,7 +398,7 @@ class _HomePageState extends State<HomePage>
                           },
 
                           child: Text(
-                            "Terms & Conditions",
+                            "Info",
 
                             style: TextStyle(
                               fontSize: 16,
