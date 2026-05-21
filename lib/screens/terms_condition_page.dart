@@ -2,22 +2,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/build_circle_icon_button.dart';
 
 class TermsConditionPage extends StatefulWidget {
   const TermsConditionPage({super.key});
 
   @override
-  State<TermsConditionPage> createState() =>
-      _TermsConditionPageState();
+  State<TermsConditionPage> createState() => _TermsConditionPageState();
 }
 
-class _TermsConditionPageState
-    extends State<TermsConditionPage> {
-
-
+class _TermsConditionPageState extends State<TermsConditionPage> {
   bool isDark = true;
+
   @override
   void initState() {
     super.initState();
@@ -25,28 +22,20 @@ class _TermsConditionPageState
     loadTheme();
   }
 
-
   Future<void> loadTheme() async {
-
-    SharedPreferences prefs =
-    await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (!mounted) return;
 
     setState(() {
-
-      isDark =
-          prefs.getBool("theme_dark") ?? true;
+      isDark = prefs.getBool("theme_dark") ?? true;
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     // final bool isDark =
     //     Theme.of(context).brightness == Brightness.dark;
-
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -56,7 +45,6 @@ class _TermsConditionPageState
           : const Color(0xFFF3F7FF),
 
       appBar: AppBar(
-
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
           statusBarIconBrightness: isDark
@@ -71,9 +59,7 @@ class _TermsConditionPageState
           preferredSize: const Size.fromHeight(1),
           child: Container(
             height: 1,
-            color: isDark
-                ? Colors.white24
-                : Colors.black12,
+            color: isDark ? Colors.white24 : Colors.black12,
           ),
         ),
 
@@ -83,10 +69,7 @@ class _TermsConditionPageState
 
         flexibleSpace: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
-            ),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
 
             child: Container(
               decoration: BoxDecoration(
@@ -102,9 +85,7 @@ class _TermsConditionPageState
           "Terms & Conditions",
 
           style: TextStyle(
-            color: isDark
-                ? Colors.cyanAccent
-                : Colors.blue,
+            color: isDark ? Colors.cyanAccent : Colors.blue,
 
             fontWeight: FontWeight.bold,
           ),
@@ -118,214 +99,221 @@ class _TermsConditionPageState
               onTap: () async {
                 Navigator.pop(context);
               },
-              child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
+              child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
             ),
           ),
         ),
       ),
 
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              10,
-              kToolbarHeight +
-                  MediaQuery.of(context).padding.top +
+      // body: SingleChildScrollView(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
                   10,
-              10,
-              10,
+                  kToolbarHeight + MediaQuery.of(context).padding.top + 10,
+                  10,
+                  10,
+                ),
+
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+
+                  padding: const EdgeInsets.all(10),
+
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      /// TERMS & CONDITIONS
+                      Text(
+                        "Terms & Conditions",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
+                        ),
+                      ),
+
+                      const SizedBox(height: 02),
+
+                      Container(
+                        width: 185,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      Text(
+                        "• Players must play fairly and should not use cheats, hacks, bugs, or modified versions of the game.\n\n"
+                        "• A stable internet connection is required for smooth online multiplayer gameplay.\n\n"
+                        "• Online rooms, gameplay synchronization, and multiplayer functionality may occasionally be affected by internet or server-related issues.\n\n"
+                        "• Users must not exploit bugs, spam rooms, disturb gameplay, or attempt unauthorized access to online services.\n\n"
+                        "• Game features, systems, advertisements, or gameplay mechanics may change in future updates without prior notice.\n\n"
+                        "• By downloading or using this application, you agree to these terms and conditions.",
+
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5,
+                          color: isDark ? Colors.white70 : Colors.black87,
+                        ),
+                      ),
+
+                      const SizedBox(height: 35),
+
+                      /// PRIVACY POLICY
+                      Text(
+                        "Privacy Policy",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
+                        ),
+                      ),
+
+                      const SizedBox(height: 02),
+
+                      Container(
+                        width: 130,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      Text(
+                        "• We do not collect sensitive personal information from users.\n\n"
+                        "• Basic game preferences such as nickname, settings, and gameplay preferences may be stored locally on the user's device.\n\n"
+                        "• During online gameplay, temporary match-related data may be synchronized through cloud services for multiplayer functionality.\n\n"
+                        "• Personal gameplay preferences are primarily stored locally and are not shared publicly.",
+
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5,
+                          color: isDark ? Colors.white70 : Colors.black87,
+                        ),
+                      ),
+
+                      const SizedBox(height: 35),
+
+                      /// SUPPORT
+                      Text(
+                        "Support",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
+                        ),
+                      ),
+
+                      const SizedBox(height: 02),
+
+                      Container(
+                        width: 75,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      Text(
+                        "For support, bug reports, feedback, or business inquiries, contact us at:",
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5,
+                          color: isDark ? Colors.white70 : Colors.black87,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      GestureDetector(
+                        onTap: () async {
+                          final Uri emailUri = Uri(
+                            scheme: 'mailto',
+                            path: 'support.sptechstudios@gmail.com',
+                          );
+
+                          await launchUrl(emailUri);
+                        },
+
+                        child: Text(
+                          "support.sptechstudios@gmail.com",
+
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.blueAccent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blueAccent,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+
+                    ],
+                  ),
+                ),
+              ),
             ),
+          ),
 
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-
-          padding: const EdgeInsets.all(10),
-
-          child: Container(
+          /// FIXED BOTTOM BAR
+          Container(
             width: double.infinity,
 
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(vertical: 5),
 
             decoration: BoxDecoration(
               color: isDark
-                  ? const Color(0xFF1E293B)
+                  ? const Color(0xFF111827)
                   : Colors.white,
 
-              borderRadius: BorderRadius.circular(25),
-
-              border: Border.all(
-                color: isDark
-                    ? Colors.blueAccent
-                    : Colors.blue,
-
-                width: 1.2,
-              ),
-
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: isDark ? 0.5 : 0.12,
-                  ),
-
-                  blurRadius: 12,
-
-                  offset: const Offset(0, 6),
+              border: Border(
+                top: BorderSide(
+                  color: isDark
+                      ? Colors.white24
+                      : Colors.black12,
                 ),
-              ],
+              ),
             ),
 
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
 
               children: [
-
-                buildSection(
-                  isDark,
-                  "1. Fair Play",
-                  "Players must play fairly and should not use cheats, hacks, bugs, or modified versions of the game.",
+                Text(
+                  "Version 1.0.0",
+                  style: TextStyle(
+                    color: isDark
+                        ? Colors.white60
+                        : Colors.black54,
+                  ),
                 ),
 
-                buildSection(
-                  isDark,
-                  "2. Online Match Rules",
-                  "Intentionally disconnecting, disturbing gameplay, spamming rooms, or ruining the multiplayer experience may result in temporary restrictions.",
-                ),
+                SizedBox(height: 2),
 
-                buildSection(
-                  isDark,
-                  "3. User Responsibility",
-                  "You are responsible for your nickname, room codes, gameplay activity, and device security while using the app.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "4. Internet Connection",
-                  "A stable internet connection is required for smooth online multiplayer gameplay. Network issues may cause delays or disconnections.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "5. Temporary Online Data",
-                  "During online gameplay, temporary match-related data may be synchronized through cloud services for room connectivity and multiplayer functionality.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "6. Local Device Storage",
-                  "Basic user preferences such as nickname, settings, and game preferences may be stored locally on your device for a better gameplay experience.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "7. Privacy",
-                  "We do not collect sensitive personal information from users. Personal gameplay preferences are primarily stored locally on the user's device.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "8. Server & Connectivity",
-                  "Online services may occasionally become unavailable due to maintenance, technical issues, or internet-related problems.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "9. App Updates",
-                  "Game features, design, multiplayer systems, rewards, advertisements, or gameplay mechanics may change in future updates without prior notice.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "10. Prohibited Activities",
-                  "Users must not exploit bugs, impersonate other players, attempt unauthorized server/database access, or disrupt normal gameplay.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "11. Match Interruption",
-                  "Unexpected app closures, internet failures, or device-related problems may interrupt online matches. The app is not responsible for gameplay losses caused by such issues.",
-                ),
-
-                buildSection(
-                  isDark,
-                  "12. Acceptance",
-                  "By downloading or using this application, you agree to these terms and conditions.",
-                ),
-
-                const SizedBox(height: 10),
-
-
-                Center(
-                  child: Text(
-                    "Powered by SP Tech Studios",
-
-                    textAlign: TextAlign.center,
-
-                    style: TextStyle(
-                      fontSize: 13,
-
-                      letterSpacing: 1,
-
-                      color: isDark
-                          ? Colors.white54
-                          : Colors.black54,
-                    ),
+                Text(
+                  "Powered by SP Tech Studios",
+                  style: TextStyle(
+                    color: isDark
+                        ? Colors.white54
+                        : Colors.black54,
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-      ),
-    );
-  }
-
-  Widget buildSection(
-      bool isDark,
-      String title,
-      String description,
-      ) {
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-
-      child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
-
-        children: [
-
-          Text(
-            title,
-
-            style: TextStyle(
-              fontSize: 18,
-
-              fontWeight: FontWeight.bold,
-
-              color: isDark
-                  ? Colors.cyanAccent
-                  : Colors.blue,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          Text(
-            description,
-
-            style: TextStyle(
-              fontSize: 15,
-
-              height: 1.5,
-
-              color: isDark
-                  ? Colors.white70
-                  : Colors.black87,
             ),
           ),
         ],
       ),
     );
   }
+
 }
+
+/// end main class
