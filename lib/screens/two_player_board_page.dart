@@ -67,6 +67,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   Timer? turnTimer;
   int lastAlertSecond = -1;
   bool hasGameStarted = false;
+
   bool get isGameRunning {
     return board.any((e) => e != "") && !gameOver;
   }
@@ -147,8 +148,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   Future loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int savedSize =
-        prefs.getInt("board_size") ?? 3;
+    int savedSize = prefs.getInt("board_size") ?? 3;
 
     setState(() {
       isDark = prefs.getBool("theme_dark") ?? true;
@@ -157,7 +157,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       timerEnabled = prefs.getBool("timer_enabled") ?? true;
       boardSize = savedSize;
 
-      board = List.filled(boardSize * boardSize, "",);
+      board = List.filled(boardSize * boardSize, "");
     });
   }
 
@@ -220,14 +220,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     if (!soundOn) return;
 
     await xPlayer.stop();
-    await xPlayer.play(AssetSource("audio/tum_dum.mp3"));
+    await xPlayer.play(AssetSource("audio/tap.mp3"));
   }
 
   Future<void> playOSound() async {
     if (!soundOn) return;
 
     await oPlayer.stop();
-    await oPlayer.play(AssetSource("audio/tedau.mp3"));
+    await oPlayer.play(AssetSource("audio/tap.mp3"));
   }
 
   Future<void> playWinSound() async {
@@ -257,7 +257,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     /// 🔥 FIRST MOVE
     if (!hasGameStarted) {
-
       hasGameStarted = true;
 
       if (timerEnabled) {
@@ -286,11 +285,15 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       if (board[index] == "X") {
         playXSound();
         //playVibration(110);
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
       } else {
         playOSound();
         //playVibration(110);
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
       }
 
       checkWinner();
@@ -426,7 +429,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           GestureDetector(
                             onTap: () {
                               //playVibration(120);
-                              if (vibrationOn) {HapticFeedback.lightImpact();}
+                              if (vibrationOn) {
+                                HapticFeedback.lightImpact();
+                              }
                               setState(() {
                                 player1Symbol = "X";
                                 player2Symbol = "O"; // ⭐ important
@@ -468,7 +473,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           GestureDetector(
                             onTap: () {
                               //playVibration(120);
-                              if (vibrationOn) {HapticFeedback.lightImpact();}
+                              if (vibrationOn) {
+                                HapticFeedback.lightImpact();
+                              }
                               setState(() {
                                 player1Symbol = "O";
                                 player2Symbol = "X"; // ⭐ important
@@ -627,10 +634,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     }
 
     //String currentPlayer = player1Turn ? "X" : "O";
-    String currentPlayer =
-    player1Turn
-        ? player1Symbol
-        : player2Symbol;
+    String currentPlayer = player1Turn ? player1Symbol : player2Symbol;
+
     /// 🔥 CHECK ALL CELLS
     for (int row = 0; row < boardSize; row++) {
       for (int col = 0; col < boardSize; col++) {
@@ -688,7 +693,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   }
 
   bool _checkDirection(
-
     int row,
     int col,
 
@@ -769,12 +773,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       barrierDismissible: true,
       canPop: true,
       onPositive: () async {
-        if (vibrationOn) {HapticFeedback.heavyImpact();}
+        if (vibrationOn) {
+          HapticFeedback.heavyImpact();
+        }
         resetGame();
       },
 
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         // dialog auto close
       },
     );
@@ -1010,7 +1018,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
             //playVibration(130);
-            if (vibrationOn) {HapticFeedback.lightImpact();}
+            if (vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
               isDark = value;
             });
@@ -1033,7 +1043,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
             //playVibration(130);
-            if (vibrationOn) {HapticFeedback.lightImpact();}
+            if (vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
               soundOn = value;
             });
@@ -1054,7 +1066,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            if (!vibrationOn) {HapticFeedback.lightImpact();}
+            if (!vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
               vibrationOn = value;
             });
@@ -1099,7 +1113,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            if (vibrationOn) {HapticFeedback.lightImpact();}
+            if (vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
               timerEnabled = value;
             });
@@ -1136,8 +1152,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
       //position: const RelativeRect.fromLTRB(0, 90, 10, 0),
       position: RelativeRect.fromLTRB(
-        MediaQuery.of(context).size.width / 2 - 75, 85,
-        MediaQuery.of(context).size.width / 2 - 75, 0,
+        MediaQuery.of(context).size.width / 2 - 75,
+        85,
+        MediaQuery.of(context).size.width / 2 - 75,
+        0,
       ),
       color: Colors.transparent,
 
@@ -1163,7 +1181,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                   //padding: const EdgeInsets.all(5),
                   //padding: const EdgeInsets.symmetric(vertical: 5),
-
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
 
@@ -1202,7 +1219,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       ),
                     ],
                   ),
-
 
                   ///old
                   // child: Column(
@@ -1343,8 +1359,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   //   }).toList(),
                   // ),
 
-
-
                   ///new
                   child: SizedBox(
                     height: 210,
@@ -1357,14 +1371,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       controller: ScrollController(
                         /// 🔥 SELECTED ITEM CENTER
                         //initialScrollOffset: ((boardSize - 3) * 72).toDouble(),
-                        initialScrollOffset:
-
-                        (
-                            ((boardSize - 3) * 58) - 58
-                        ).clamp(
-                          0,
-                          double.infinity,
-                        ).toDouble(),
+                        initialScrollOffset: (((boardSize - 3) * 58) - 58)
+                            .clamp(0, double.infinity)
+                            .toDouble(),
                       ),
 
                       physics: const BouncingScrollPhysics(),
@@ -1379,7 +1388,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         return GestureDetector(
                           onTap: () {
                             //playVibration(120);
-                            if (vibrationOn) {HapticFeedback.lightImpact();}
+                            if (vibrationOn) {
+                              HapticFeedback.lightImpact();
+                            }
+
                             /// 🔥 TIMER RESET
                             hasGameStarted = false;
 
@@ -1389,13 +1401,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             stopTickingSound();
 
-                            SharedPreferences.getInstance()
-                                .then((prefs) {
-
-                              prefs.setInt(
-                                "board_size",
-                                size,
-                              );
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.setInt("board_size", size);
                             });
 
                             setState(() {
@@ -1426,8 +1433,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             margin: const EdgeInsets.only(bottom: 5),
 
-                            padding: const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
-
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 5,
+                              top: 5,
+                              bottom: 5,
+                            ),
 
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
@@ -1570,12 +1581,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
         /// 🔥 MATCH RUNNING
         if (!gameOver && board.any((e) => e != "")) {
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
           await showExitDialog();
         } else {
           /// 🔥 DIRECT BACK
           //playVibration(120);
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
           if (mounted && Navigator.canPop(context)) {
             Navigator.pop(context);
           }
@@ -1624,11 +1639,15 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 onTap: () async {
                   /// 🔥 MATCH RUNNING
                   if (!gameOver && board.any((e) => e != "")) {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     await showExitDialog();
                   } else {
                     /// 🔥 DIRECT BACK
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     //playVibration(120);
 
                     Navigator.pop(context);
@@ -1764,7 +1783,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               // }
 
               showBoardSizeMenu();
-              if (vibrationOn) {HapticFeedback.mediumImpact();}
+              if (vibrationOn) {
+                HapticFeedback.mediumImpact();
+              }
               //playVibration(130);
             },
 
@@ -1851,7 +1872,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 message: "Draw Board", // 🔥 long press tooltip
                 child: GestureDetector(
                   onTap: () {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DrawBoardPage()),
@@ -1869,7 +1892,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 message: "Settings", // 🔥 tooltip
                 child: GestureDetector(
                   onTap: () {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     showSettingsMenu();
                   },
                   child: build3DIconButton(
@@ -2167,9 +2192,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                         Colors.blueAccent,
                                       ]
                                     : [
-                                  Colors.blueAccent,
-                                  Colors.deepOrangeAccent,
-                                  Colors.blueAccent,
+                                        Colors.blueAccent,
+                                        Colors.deepOrangeAccent,
+                                        Colors.blueAccent,
                                       ],
                               ),
 
@@ -2372,7 +2397,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 icon: Icons.home,
                                 onTap: () {
                                   //playVibration(120);
-                                  if (vibrationOn) {HapticFeedback.mediumImpact();}
+                                  if (vibrationOn) {
+                                    HapticFeedback.mediumImpact();
+                                  }
                                   Navigator.pop(context);
                                 },
                                 isDark: isDark,
@@ -2388,7 +2415,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 onTap: () {
                                   //playXSound();   // replay sound
                                   //playVibration(120);
-                                  if (vibrationOn) {HapticFeedback.mediumImpact();}
+                                  if (vibrationOn) {
+                                    HapticFeedback.mediumImpact();
+                                  }
                                   resetGame();
                                 },
                                 isDark: isDark,
@@ -2487,7 +2516,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             //resetGame();
                             showResetGameDialog();
-                            if (vibrationOn) {HapticFeedback.lightImpact();}
+                            if (vibrationOn) {
+                              HapticFeedback.lightImpact();
+                            }
                           },
 
                           onTapCancel: () {
@@ -2572,13 +2603,17 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       canPop: true,
 
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         // 🔥 nothing needed
       },
 
       onPositive: () async {
         //playVibration(120);
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
         stopTickingSound();
         Navigator.pop(context);
       },

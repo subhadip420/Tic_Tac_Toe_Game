@@ -360,13 +360,13 @@ class _GameBoardPageState extends State<GameBoardPage>
   Future<void> playXSound() async {
     if (!soundOn) return;
     await xPlayer.stop();
-    await xPlayer.play(AssetSource("audio/o.mp3"));
+    await xPlayer.play(AssetSource("audio/tap.mp3"));
   }
 
   Future<void> playOSound() async {
     if (!soundOn) return;
     await oPlayer.stop();
-    await oPlayer.play(AssetSource("audio/o.mp3"));
+    await oPlayer.play(AssetSource("audio/tap.mp3"));
   }
 
   Future playWinSound() async {
