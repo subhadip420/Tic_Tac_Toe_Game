@@ -14,7 +14,6 @@ class DrawBoardPage extends StatefulWidget {
   State<DrawBoardPage> createState() => _DrawBoardPageState();
 }
 
-// ✅ Stroke model (TOP LEVEL, not inside class)
 class Stroke {
   final List<Offset?> points;
   final Color color;
@@ -42,13 +41,11 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
   bool detectXO = false;
   bool turnBased = false;
 
-
-
   @override
   void initState() {
     super.initState();
     loadTheme().then((_) {
-      setDefaultColor(); // ✅ ADD
+      setDefaultColor();
     });
   }
 
@@ -65,227 +62,48 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     selectedColor = isDark ? Colors.white : Colors.black;
   }
 
-  ///old
-  // void showSettingsMenu() {
-  //   showMenu(
-  //     context: context,
-  //     position: RelativeRect.fromLTRB(
-  //       MediaQuery
-  //           .of(context)
-  //           .size
-  //           .width,
-  //       kToolbarHeight,
-  //       0,
-  //       0,
-  //     ),
-  //
-  //     color: isDark ? const Color(0xFF344364) : Colors.white,
-  //
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  //
-  //     items: [
-  //       PopupMenuItem(
-  //         enabled: false,
-  //         child: SizedBox(
-  //           width: 200,
-  //           child: StatefulBuilder(
-  //             builder: (context, setStateMenu) {
-  //               return Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   // 🌙 THEME TOGGLE
-  //                   settingsTile(
-  //                     icon: isDark ? Icons.dark_mode : Icons.light_mode,
-  //                     title: "Dark Theme",
-  //                     value: isDark,
-  //                     onChanged: (value) async {
-  //                       SharedPreferences prefs =
-  //                       await SharedPreferences.getInstance();
-  //
-  //                       setState(() {
-  //                         isDark = value;
-  //                         setDefaultColor(); // ✅ RESET COLOR
-  //                       });
-  //
-  //                       // setStateMenu(() {});
-  //                       prefs.setBool("theme_dark", isDark);
-  //                       Navigator.pop(context);
-  //                     },
-  //                   ),
-  //
-  //                   const Divider(height: 10, thickness: 0.6),
-  //
-  //                   // 🎮 AUTO GRID
-  //                   settingsTile(
-  //                     icon: Icons.grid_on,
-  //                     title: "Auto Grid",
-  //                     value: autoGrid,
-  //                     onChanged: (value) {
-  //                       setState(() {
-  //                         autoGrid = value;
-  //                       });
-  //                       setStateMenu(() {});
-  //                     },
-  //                   ),
-  //
-  //
-  //
-  //                   //
-  //                   // // 🎯 SNAP TO BOX
-  //                   // settingsTile(
-  //                   //   icon: Icons.crop_square,
-  //                   //   title: "Snap to Box",
-  //                   //   value: snapToBox,
-  //                   //   onChanged: (value) {
-  //                   //     setState(() {
-  //                   //       snapToBox = value;
-  //                   //     });
-  //                   //     setStateMenu(() {});
-  //                   //   },
-  //                   // ),
-  //                   //
-  //                   // // ❌⭕ DETECT XO
-  //                   // settingsTile(
-  //                   //   icon: Icons.gesture,
-  //                   //   title: "Detect X / O",
-  //                   //   value: detectXO,
-  //                   //   onChanged: (value) {
-  //                   //     setState(() {
-  //                   //       detectXO = value;
-  //                   //     });
-  //                   //     setStateMenu(() {});
-  //                   //   },
-  //                   // ),
-  //
-  //                   // 🔄 TURN BASED MODE
-  //                   // settingsTile(
-  //                   //   icon: Icons.swap_horiz,
-  //                   //   title: "Turn Based Mode",
-  //                   //   value: turnBased,
-  //                   //   onChanged: (value) {
-  //                   //     setState(() {
-  //                   //       turnBased = value;
-  //                   //     });
-  //                   //     setStateMenu(() {});
-  //                   //   },
-  //                   // ),
-  //                 ],
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-  //
-  // Widget settingsTile({
-  //   required IconData icon,
-  //   required String title,
-  //   required bool value,
-  //   required Function(bool) onChanged,
-  // }) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 2),
-  //     child: Row(
-  //       mainAxisSize: MainAxisSize.min, // ✅ IMPORTANT
-  //
-  //       children: [
-  //         Icon(icon, size: 20, color: Colors.blueAccent),
-  //         const SizedBox(width: 8),
-  //
-  //         Expanded(
-  //           // ✅ takes only needed space
-  //           child: Text(
-  //             title,
-  //             style: TextStyle(
-  //               fontSize: 13,
-  //               color: isDark ? Colors.white : Colors.black,
-  //             ),
-  //           ),
-  //         ),
-  //
-  //         // ✅ SHRINK SWITCH
-  //         Transform.scale(
-  //           scale: 0.8, // 👈 make switch smaller
-  //
-  //           child: Switch(
-  //             value: value,
-  //             activeThumbColor: Colors.blueAccent,
-  //             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-  //             // 👈 remove extra padding
-  //             onChanged: onChanged,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   ///new
   void showSettingsMenu() {
-
     showGlassSettingsMenu(
-
       context: context,
-
       isDark: isDark,
-
       items: [
-
-        /// 🌙 THEME
+        /// THEME
         SettingsMenuItem(
-
           affectsTheme: true,
-
           iconBuilder: (value) {
-
-            return value
-
-                ? Icons.dark_mode
-
-                : Icons.light_mode;
+            return value ? Icons.dark_mode : Icons.light_mode;
           },
-
           title: "Dark Theme",
-
           value: isDark,
-
           onChanged: (value) async {
-
-            SharedPreferences prefs =
-            await SharedPreferences
-                .getInstance();
-            if (vibrationOn) {HapticFeedback.lightImpact();}
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
-
               isDark = value;
 
-              /// ✅ RESET COLOR
+              /// RESET COLOR
               setDefaultColor();
             });
 
-            await prefs.setBool(
-              "theme_dark",
-              isDark,
-            );
+            await prefs.setBool("theme_dark", isDark);
           },
         ),
 
-
-        /// 📳 VIBRATION
+        /// VIBRATION
         SettingsMenuItem(
           iconBuilder: (value) {
             return value ? Icons.vibration : Icons.phonelink_erase;
           },
-
           title: "Vibration",
-
           value: vibrationOn,
-
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            if (!vibrationOn) {HapticFeedback.lightImpact();}
+            if (!vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
               vibrationOn = value;
             });
@@ -294,158 +112,52 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           },
         ),
 
-        /// 🎮 AUTO GRID
+        /// AUTO GRID
         SettingsMenuItem(
-
           iconBuilder: (value) {
-
             return Icons.grid_on;
           },
-
           title: "Auto Grid",
-
           value: autoGrid,
-
           onChanged: (value) {
-            if (vibrationOn) {HapticFeedback.lightImpact();}
+            if (vibrationOn) {
+              HapticFeedback.lightImpact();
+            }
             setState(() {
-
               autoGrid = value;
             });
           },
         ),
-
-        // /// 🎯 SNAP TO BOX
-        // SettingsMenuItem(
-        //
-        //   iconBuilder: (value) {
-        //
-        //     return Icons.crop_square;
-        //   },
-        //
-        //   title: "Snap to Box",
-        //
-        //   value: snapToBox,
-        //
-        //   onChanged: (value) {
-        //
-        //     setState(() {
-        //
-        //       snapToBox = value;
-        //     });
-        //   },
-        // ),
-
-        // /// ❌⭕ DETECT XO
-        // SettingsMenuItem(
-        //
-        //   iconBuilder: (value) {
-        //
-        //     return Icons.gesture;
-        //   },
-        //
-        //   title: "Detect X / O",
-        //
-        //   value: detectXO,
-        //
-        //   onChanged: (value) {
-        //
-        //     setState(() {
-        //
-        //       detectXO = value;
-        //     });
-        //   },
-        // ),
-
-        // /// 🔄 TURN BASED MODE
-        // SettingsMenuItem(
-        //
-        //   iconBuilder: (value) {
-        //
-        //     return Icons.swap_horiz;
-        //   },
-        //
-        //   title: "Turn Based Mode",
-        //
-        //   value: turnBased,
-        //
-        //   onChanged: (value) {
-        //
-        //     setState(() {
-        //
-        //       turnBased = value;
-        //     });
-        //   },
-        // ),
       ],
     );
   }
 
-
-  ///old
-  // Future<void> showExitDialog() async {
-  //   await showAppDialog(
-  //     context: context,
-  //
-  //     title: "EXIT MATCH",
-  //
-  //     message: "Exit and end the match?",
-  //
-  //     positiveText: "EXIT",
-  //     negativeText: "CANCEL",
-  //
-  //     barrierDismissible: true,
-  //     canPop: true,
-  //
-  //     onNegative: () {
-  //       HapticFeedback.lightImpact();
-  //       // 🔥 nothing needed
-  //     },
-  //
-  //     onPositive: () async {
-  //       //playVibration(120);
-  //       HapticFeedback.mediumImpact();
-  //       //Navigator.pop(context);
-  //     },
-  //   );
-  // }
-
   ///new
   Future<bool> showExitDialog() async {
-
     bool shouldExit = false;
 
     await showAppDialog(
-
       context: context,
-
       title: "EXIT MATCH",
-
       message: "Exit and end the match?",
-
       positiveText: "EXIT",
-
       negativeText: "CANCEL",
-
       barrierDismissible: true,
-
       canPop: true,
 
       onNegative: () {
-
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         shouldExit = false;
       },
-
       onPositive: () async {
-
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
-
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
         shouldExit = true;
       },
     );
-
     return shouldExit;
   }
 
@@ -465,12 +177,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           ),
         ),
         centerTitle: true,
-        backgroundColor:
-        isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back, color: textColor),
-        //   onPressed: () => Navigator.pop(context),
-        // ),
+        backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
 
         leading: Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -478,7 +185,9 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             message: "Back",
             child: GestureDetector(
               onTap: () async {
-                if (vibrationOn) {HapticFeedback.lightImpact();}
+                if (vibrationOn) {
+                  HapticFeedback.lightImpact();
+                }
                 // await showExitDialog();
                 // Navigator.pop(context);
                 bool exit = await showExitDialog();
@@ -486,19 +195,10 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                   Navigator.pop(context);
                 }
               },
-              child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
+              child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
             ),
           ),
         ),
-
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(Icons.settings, color: textColor),
-        //     onPressed: () {
-        //       showSettingsMenu();
-        //     },
-        //   ),
-        // ],
 
         actions: [
           Padding(
@@ -507,21 +207,22 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
               message: "Settings",
               child: GestureDetector(
                 onTap: () {
-                  if (vibrationOn) {HapticFeedback.lightImpact();}
+                  if (vibrationOn) {
+                    HapticFeedback.lightImpact();
+                  }
                   showSettingsMenu();
                 },
-                child: build3DIconButton(icon:Icons.settings,isDark: isDark),
+                child: build3DIconButton(icon: Icons.settings, isDark: isDark),
               ),
             ),
           ),
         ],
       ),
 
-      // ✅ FIX: BODY STRUCTURE
+      /// FIX: BODY STRUCTURE
       body: Column(
         children: [
-
-          // 🎨 DRAW AREA
+          /// DRAW AREA
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -531,7 +232,6 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                 );
 
                 return GestureDetector(
-
                   onTapDown: (details) {
                     if (isEraser) {
                       eraseStroke(details.localPosition);
@@ -540,40 +240,28 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
                   onPanStart: (details) {
                     if (isEraser) return;
-
                     currentStroke = [];
-
                     Offset point = details.localPosition;
-
                     if (snapToBox && autoGrid) {
                       point = snapToGridPoint(point, canvasSize);
                     }
-
-                    currentStrokeColor =
-                    isEraser ? bgColor : selectedColor;
-
+                    currentStrokeColor = isEraser ? bgColor : selectedColor;
                     currentStrokeWidth = strokeWidth;
-
                     currentStroke.add(point);
                   },
-
                   onPanUpdate: (details) {
                     if (isEraser) return;
-
                     setState(() {
                       Offset point = details.localPosition;
-
                       if (snapToBox && autoGrid) {
                         point = snapToGridPoint(point, canvasSize);
                       }
-
                       currentStroke.add(point);
                     });
                   },
 
                   onPanEnd: (_) {
                     if (isEraser) return;
-
                     strokes.add(
                       Stroke(
                         List.from(currentStroke),
@@ -604,18 +292,15 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
             ),
           ),
 
-          // 🎛 FIXED TOOL PANEL (BOTTOM)
+          /// FIXED TOOL PANEL (BOTTOM)
           Container(
             padding: const EdgeInsets.all(10),
-            color: isDark
-                ? const Color(0xFF2B3A5A)
-                : Color(0xFFE5E5E3),
+            color: isDark ? const Color(0xFF2B3A5A) : Color(0xFFE5E5E3),
 
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
-                // 🖊 TOOLS
+                ///TOOLS
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -623,7 +308,9 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.edit,
                       isSelected: !isEraser,
                       onTap: () {
-                        if (vibrationOn) {HapticFeedback.selectionClick();}
+                        if (vibrationOn) {
+                          HapticFeedback.selectionClick();
+                        }
                         setState(() {
                           isEraser = false;
                         });
@@ -634,7 +321,9 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.cleaning_services,
                       isSelected: isEraser,
                       onTap: () {
-                        if (vibrationOn) {HapticFeedback.selectionClick();}
+                        if (vibrationOn) {
+                          HapticFeedback.selectionClick();
+                        }
                         setState(() {
                           isEraser = true;
                         });
@@ -645,7 +334,9 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       icon: Icons.delete,
                       isSelected: false,
                       onTap: () {
-                        if (vibrationOn) {HapticFeedback.selectionClick();}
+                        if (vibrationOn) {
+                          HapticFeedback.selectionClick();
+                        }
                         setState(() {
                           strokes.clear();
                         });
@@ -656,7 +347,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
                 const SizedBox(height: 8),
 
-                // 🎨 COLORS
+                /// COLORS
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -675,7 +366,9 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                   min: 2,
                   max: 12,
                   onChanged: (value) {
-                    if (vibrationOn) {HapticFeedback.selectionClick();}
+                    if (vibrationOn) {
+                      HapticFeedback.selectionClick();
+                    }
                     setState(() {
                       strokeWidth = value;
                     });
@@ -689,17 +382,16 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     );
   }
 
-  // 🎛 TOOL BUTTON
+  ///TOOL BUTTON
   Widget toolButton({
     required IconData icon,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
-
       onTapDown: (details) {
         if (isEraser) {
-          eraseStroke(details.localPosition); // ✅ erase on tap
+          eraseStroke(details.localPosition);
         }
       },
 
@@ -715,13 +407,15 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     );
   }
 
-  // 🎨 COLOR BUTTON
+  /// COLOR BUTTON
   Widget colorBtn(Color color) {
     bool isSelected = selectedColor == color;
 
     return GestureDetector(
       onTap: () {
-        if (vibrationOn) {HapticFeedback.selectionClick();}
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
         setState(() {
           selectedColor = color;
           isEraser = false;
@@ -741,22 +435,18 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
   }
 
   void eraseStroke(Offset touchPoint) {
-    const double threshold = 20; // 👈 sensitivity (increase/decrease)
+    const double threshold = 20;
 
     for (int i = strokes.length - 1; i >= 0; i--) {
       Stroke stroke = strokes[i];
-
       for (var point in stroke.points) {
         if (point == null) continue;
-
         double dx = point.dx - touchPoint.dx;
         double dy = point.dy - touchPoint.dy;
-
         double distance = sqrt(dx * dx + dy * dy);
-
         if (distance < threshold) {
           setState(() {
-            strokes.removeAt(i); // ✅ remove whole stroke
+            strokes.removeAt(i);
           });
           return;
         }
@@ -780,29 +470,29 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
 
     return Offset(centerX, centerY);
   }
-
-
 } // end ,main class///////////////////////////////////////////////////////////////////
 
-// 🎨 PAINTER
+/// PAINTER
 class DrawPainter extends CustomPainter {
   final List<Stroke> strokes;
   final List<Offset?> currentStroke;
-  final Color currentStrokeColor; // ✅ ADD
-  final double currentStrokeWidth; // ✅ ADD
+  final Color currentStrokeColor;
+  final double currentStrokeWidth;
   final bool isDark;
   final bool autoGrid;
 
-  DrawPainter(this.strokes,
-      this.currentStroke,
-      this.currentStrokeColor,
-      this.currentStrokeWidth,
-      this.isDark,
-      this.autoGrid,);
+  DrawPainter(
+    this.strokes,
+    this.currentStroke,
+    this.currentStrokeColor,
+    this.currentStrokeWidth,
+    this.isDark,
+    this.autoGrid,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 🎯 DRAW GRID ONLY IF ENABLED
+    /// DRAW GRID ONLY IF ENABLED
     if (autoGrid) {
       final gridPaint = Paint()
         ..color = isDark ? Colors.white : Colors.black
@@ -812,11 +502,8 @@ class DrawPainter extends CustomPainter {
       double w = size.width;
       double h = size.height;
 
-      // ✅ OUTER BOX (border)
-      canvas.drawRect(
-        Rect.fromLTWH(0, 0, w, h),
-        gridPaint,
-      );
+      ///OUTER BOX (border)
+      canvas.drawRect(Rect.fromLTWH(0, 0, w, h), gridPaint);
 
       // vertical
       canvas.drawLine(Offset(w / 3, 0), Offset(w / 3, h), gridPaint);
@@ -827,13 +514,11 @@ class DrawPainter extends CustomPainter {
       canvas.drawLine(Offset(0, 2 * h / 3), Offset(w, 2 * h / 3), gridPaint);
     }
 
-    // ✅ DRAW SAVED STROKES (correct color per stroke)
+    /// DRAW SAVED STROKES (correct color per stroke)
     for (var stroke in strokes) {
       final paint = Paint()
-        ..color = stroke
-            .color // ✅ FIX
-        ..strokeWidth = stroke
-            .width // ✅ FIX
+        ..color = stroke.color
+        ..strokeWidth = stroke.width
         ..strokeCap = StrokeCap.round;
 
       for (int i = 0; i < stroke.points.length - 1; i++) {
@@ -843,12 +528,10 @@ class DrawPainter extends CustomPainter {
       }
     }
 
-    // ✅ DRAW CURRENT STROKE (real-time color)
+    /// DRAW CURRENT STROKE (real-time color)
     final paint = Paint()
-      ..color =
-          currentStrokeColor // ✅ FIX
-      ..strokeWidth =
-          currentStrokeWidth // ✅ FIX
+      ..color = currentStrokeColor
+      ..strokeWidth = currentStrokeWidth
       ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < currentStroke.length - 1; i++) {
@@ -861,117 +544,3 @@ class DrawPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
-
-
-///old icon button
-// Widget build3DIconButton(IconData icon, bool isDark) {
-//   return Container(
-//     width: 44,
-//     height: 44,
-//     alignment: Alignment.center,
-//
-//     // 🔥 FIX
-//     padding: const EdgeInsets.all(1.5),
-//
-//     // 🔥 border thickness
-//     decoration: BoxDecoration(
-//       shape: BoxShape.circle,
-//
-//       /// 🔥 Gradient Border
-//       gradient: isDark
-//           ? const LinearGradient(colors: [Colors.blueAccent, Colors.cyanAccent])
-//           : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-//
-//       /// 🔥 Glow
-//       boxShadow: [
-//         BoxShadow(
-//           color: Colors.blueAccent.withValues(alpha:0.4),
-//           blurRadius: 10,
-//           spreadRadius: 1,
-//         ),
-//       ],
-//     ),
-//
-//     child: Container(
-//       alignment: Alignment.center,
-//       decoration: BoxDecoration(
-//         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-//         shape: BoxShape.circle,
-//
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
-//             offset: const Offset(-3, -3),
-//             blurRadius: 6,
-//           ),
-//           BoxShadow(
-//             color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
-//             offset: const Offset(3, 3),
-//             blurRadius: 6,
-//           ),
-//         ],
-//       ),
-//
-//       child: Icon(
-//         icon,
-//         color: isDark ? Colors.cyanAccent : Colors.blue,
-//         size: 20,
-//       ),
-//     ),
-//   );
-// }
-
-///new icon button
-// Widget build3DIconButton({
-//   IconData? icon,
-//   String? text,
-//   required bool isDark,
-// }) {
-//   return SizedBox(
-//     width: 44,
-//     height: 44,
-//
-//     child: Container(
-//       padding: const EdgeInsets.all(1.5),
-//
-//       decoration: BoxDecoration(
-//         shape: BoxShape.circle,
-//         gradient: isDark
-//             ? const LinearGradient(
-//           colors: [Colors.blueAccent, Colors.cyanAccent],
-//         )
-//             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.blueAccent.withValues(alpha:0.4),
-//             blurRadius: 10,
-//             spreadRadius: 1,
-//           ),
-//         ],
-//       ),
-//
-//       child: Container(
-//         alignment: Alignment.center,
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-//         ),
-//
-//         child: icon != null
-//             ? Icon(
-//           icon,
-//           size: 20, // 🔥 fixed icon size
-//           color: isDark ? Colors.cyanAccent : Colors.blue,
-//         )
-//             : Text(
-//           text ?? "",
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//             fontSize: 20, // 🔥 CONTROL TEXT SIZE
-//             color: isDark ? Colors.cyanAccent : Colors.blue,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
