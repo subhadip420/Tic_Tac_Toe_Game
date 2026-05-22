@@ -10,7 +10,6 @@ bool isDark = true;
 
 class HowToPlayPage extends StatefulWidget {
   const HowToPlayPage({super.key});
-
   @override
   State<HowToPlayPage> createState() => _HowToPlayPageState();
 }
@@ -19,13 +18,11 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   @override
   void initState() {
     super.initState();
-
     loadTheme();
   }
 
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-
     setState(() {
       isDark = prefs.getBool("theme_dark") ?? true;
     });
@@ -110,13 +107,12 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
         ),
       ),
 
-      /// 🔥 SCROLLABLE BODY
-      //body: SingleChildScrollView(
+      /// SCROLLABLE BODY
+
         body: SafeArea(
         top: false,
     child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-
         child: Padding(
           //padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           padding: EdgeInsets.only(
@@ -210,7 +206,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                     const SizedBox(height: 20),
 
-                    /// 🔥 TABLE
+                    /// TABLE
                     Container(
                       decoration: BoxDecoration(
                         color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -243,7 +239,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                         },
 
                         children: [
-                          /// 🔥 HEADER
+                          /// HEADER
                           TableRow(
                             decoration: BoxDecoration(
                               color: isDark
@@ -258,7 +254,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                             ],
                           ),
 
-                          /// 🔥 ROWS
+                          /// ROWS
                           buildTableRow("3x3", "Connect 3 symbols"),
                           buildTableRow("4x4", "Connect 4 symbols"),
                           buildTableRow("5x5", "Connect 4 symbols"),
@@ -367,95 +363,24 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     );
   }
 
-  // WIN Graphic
-  // WIN Graphic
+  /// WIN Graphic
   Widget buildWinGraphic() {
     return miniBoard(["O", "O", "O", "", "X", "", "X", "", ""]);
   }
 
-  // DEFEAT Graphic
+  /// DEFEAT Graphic
   Widget buildDefeatGraphic() {
     return miniBoard(["X", "", "O", "X", "O", "", "X", "", ""]);
   }
 
-  // DRAW Graphic
+  /// DRAW Graphic
   Widget buildDrawGraphic() {
     return miniBoard(["X", "O", "X", "O", "X", "O", "O", "X", "O"]);
   }
 
-  // Widget miniBoard(List<String> values) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(6),
-  //
-  //     decoration: BoxDecoration(
-  //       color: isDark ? const Color(0xFF1E293B) : Colors.white,
-  //
-  //       borderRadius: BorderRadius.circular(6),
-  //
-  //       border: Border.all(color: isDark ? Colors.white24 : Colors.black12),
-  //
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withValues(alpha:0.15),
-  //           blurRadius: 8,
-  //           offset: const Offset(2, 4),
-  //         ),
-  //       ],
-  //     ),
-  //
-  //     child: SizedBox(
-  //       width: 70,
-  //       height: 70,
-  //
-  //       child: GridView.builder(
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         itemCount: 9,
-  //
-  //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //           crossAxisCount: 3,
-  //         ),
-  //
-  //         itemBuilder: (context, index) {
-  //           String value = values[index];
-  //
-  //           Color textColor;
-  //
-  //           if (value == "X") {
-  //             textColor = Colors.blueAccent;
-  //           } else if (value == "O") {
-  //             textColor = Colors.orangeAccent;
-  //           } else {
-  //             textColor = Colors.transparent;
-  //           }
-  //
-  //           return Container(
-  //             alignment: Alignment.center,
-  //
-  //             decoration: BoxDecoration(
-  //               border: Border.all(
-  //                 color: isDark ? Colors.white24 : Colors.black45,
-  //               ),
-  //             ),
-  //
-  //             child: Text(
-  //               value,
-  //
-  //               style: TextStyle(
-  //                 color: textColor,
-  //                 fontWeight: FontWeight.bold,
-  //                 fontSize: 18,
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget miniBoard(List<String> values) {
     return Container(
-      padding: const EdgeInsets.all(4), // Reduced padding to give the grid more space
+      padding: const EdgeInsets.all(4),
 
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -471,18 +396,18 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
       ),
 
       child: SizedBox(
-        width: 72,  // Slightly increased size to properly fit the 3x3 grid
+        width: 72,
         height: 72,
 
         child: GridView.builder(
-          padding: EdgeInsets.zero, // 🔥 CRITICAL FIX: Removes default GridView padding that was hiding the grid
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: 9,
 
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            mainAxisSpacing: 1,  // Adds subtle spacing between rows
-            crossAxisSpacing: 1, // Adds subtle spacing between columns
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
           ),
 
           itemBuilder: (context, index) {
@@ -502,7 +427,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
               decoration: BoxDecoration(
                 border: Border.all(
                   color: isDark ? Colors.white12 : Colors.black12,
-                  width: 0.5, // Thinner border so it doesn't clutter the small grid cells
+                  width: 0.5,
                 ),
               ),
 
@@ -511,7 +436,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                 style: TextStyle(
                   color: textColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14, // Decreased font size from 18 to 14 so text fits inside the small cells
+                  fontSize: 14,
                 ),
               ),
             );
