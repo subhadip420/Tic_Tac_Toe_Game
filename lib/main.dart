@@ -30,16 +30,16 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final prefs = await SharedPreferences.getInstance();
-
-  isDark = prefs.getBool("theme_dark") ?? true;
+  // final prefs = await SharedPreferences.getInstance();
+  //
+  // isDark = prefs.getBool("theme_dark") ?? true;
 
   runApp(const TicTacToeApp());
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-bool isDark = true;
+//bool isDark = true;
 
 class TicTacToeApp extends StatelessWidget {
   const TicTacToeApp({super.key});
@@ -51,8 +51,8 @@ class TicTacToeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Tic Tac Toe",
 
-      //themeMode: ThemeMode.system,
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: ThemeMode.system,
+      //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
       // LIGHT THEME
       theme: ThemeData(
@@ -126,9 +126,9 @@ class _HomePageState extends State<HomePage>
   // }
   @override
   Widget build(BuildContext context) {
-    // final isDark = Theme
-    //     .of(context)
-    //     .brightness == Brightness.dark;
+    final isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark
@@ -445,9 +445,9 @@ class _HomePageState extends State<HomePage>
     String title,
     String subtitle,
   ) {
-    // final isDark = Theme
-    //     .of(context)
-    //     .brightness == Brightness.dark;
+    final isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
