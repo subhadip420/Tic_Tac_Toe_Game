@@ -243,37 +243,7 @@ Future<void> showAppDialog({
                                         if (positiveText.isNotEmpty)
                                           Expanded(
                                             child: GestureDetector(
-                                              // onTap: isLoading
-                                              //     ? null
-                                              //     : () async {
-                                              //         if (showLoadingOnPositive) {
-                                              //           setState(
-                                              //             () => isLoading = true,
-                                              //           );
-                                              //         }
-                                              //
-                                              //         try {
-                                              //           // if (onPositive != null) {
-                                              //           //   await onPositive();
-                                              //           // }
-                                              //
-                                              //           if (Navigator.canPop(dialogContext)) {
-                                              //             Navigator.pop(dialogContext);
-                                              //           }
-                                              //
-                                              //           if (onPositive != null) {
-                                              //             await onPositive();
-                                              //           }
-                                              //
-                                              //           Navigator.pop(
-                                              //             dialogContext,
-                                              //           );
-                                              //         } catch (e) {
-                                              //           setState(
-                                              //             () => isLoading = false,
-                                              //           );
-                                              //         }
-                                              //       },
+
                                               onTap: isLoading
                                                   ? null
                                                   : () async {
@@ -390,45 +360,7 @@ Future<void> showAppDialog({
                           ),
                         ),
 
-                        /// 🔥 CLOSE BUTTON
-                        // Positioned(
-                        //   top: 10,
-                        //   right: -5,
-                        //
-                        //   child: GestureDetector(
-                        //     onTap: () {
-                        //       Navigator.pop(dialogContext);
-                        //     },
-                        //
-                        //     child: Container(
-                        //       width: 36,
-                        //       height: 36,
-                        //
-                        //       decoration: BoxDecoration(
-                        //         shape: BoxShape.circle,
-                        //
-                        //         gradient: const LinearGradient(
-                        //           colors: [Colors.redAccent, Colors.deepOrange],
-                        //         ),
-                        //
-                        //         border: Border.all(color: Colors.white, width: 2),
-                        //
-                        //         boxShadow: [
-                        //           BoxShadow(
-                        //             color: Colors.redAccent.withOpacity(0.4),
-                        //             blurRadius: 10,
-                        //           ),
-                        //         ],
-                        //       ),
-                        //
-                        //       child: const Icon(
-                        //         Icons.close,
-                        //         color: Colors.white,
-                        //         size: 20,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
+
                       ],
                     ),
                   ),
@@ -495,85 +427,3 @@ Widget buildGamingButton({
           ),
   );
 }
-
-// Future<void> showAppDialog({
-//   required BuildContext context, // 🔥 ADD THIS
-//   required String title,
-//   required String message,
-//
-//   String positiveText = "OK",
-//   String negativeText = "CANCEL",
-//
-//   Future<void> Function()? onPositive,
-//   VoidCallback? onNegative,
-//
-//   bool barrierDismissible = true,
-//   bool showLoadingOnPositive = false,
-// }) async {
-//
-//   bool isLoading = false;
-//
-//   await showDialog(
-//     context: context, // ✅ now valid
-//     barrierDismissible: barrierDismissible,
-//     builder: (dialogContext) {
-//
-//       return StatefulBuilder(
-//         builder: (context, setState) {
-//
-//           return AlertDialog(
-//             title: Text(title),
-//             content: Text(message),
-//
-//             actions: [
-//
-//               // 🔹 NEGATIVE BUTTON
-//               if (negativeText.isNotEmpty)
-//                 TextButton(
-//                   onPressed: isLoading
-//                       ? null
-//                       : () {
-//                     Navigator.pop(dialogContext);
-//                     onNegative?.call();
-//                   },
-//                   child: Text(negativeText),
-//                 ),
-//
-//               // 🔹 POSITIVE BUTTON
-//               if (positiveText.isNotEmpty)
-//                 TextButton(
-//                   onPressed: isLoading
-//                       ? null
-//                       : () async {
-//
-//                     if (showLoadingOnPositive) {
-//                       setState(() => isLoading = true);
-//                     }
-//
-//                     try {
-//                       if (onPositive != null) {
-//                         await onPositive();
-//                       }
-//
-//                       Navigator.pop(dialogContext);
-//
-//                     } catch (e) {
-//                       setState(() => isLoading = false);
-//                     }
-//                   },
-//
-//                   child: isLoading
-//                       ? const SizedBox(
-//                     width: 18,
-//                     height: 18,
-//                     child: CircularProgressIndicator(strokeWidth: 2),
-//                   )
-//                       : Text(positiveText),
-//                 ),
-//             ],
-//           );
-//         },
-//       );
-//     },
-//   );
-// }
