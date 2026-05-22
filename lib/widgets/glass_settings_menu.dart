@@ -200,11 +200,8 @@ class SettingsMenuItem {
     required this.iconBuilder,
     this.canChange,
     required this.title,
-
     required this.value,
-
     required this.onChanged,
-
     this.affectsTheme = false,
   });
 }
@@ -216,10 +213,10 @@ Future<void> showGlassSettingsMenu({
 
   required List<SettingsMenuItem> items,
 }) async {
-  /// 🔥 LOCAL SWITCH VALUES
+  /// LOCAL SWITCH VALUES
   List<bool> localValues = items.map((e) => e.value).toList();
 
-  /// 🔥 LOCAL THEME
+  /// LOCAL THEME
   bool localIsDark = isDark;
 
   await showMenu(
@@ -302,38 +299,23 @@ Future<void> showGlassSettingsMenu({
                                 //       ? Color(0xFF67E8F9)
                                 //       : Color(0xFF1308B0),
                                 // ),
-
                                 Container(
-
                                   padding: const EdgeInsets.all(6),
-
                                   decoration: BoxDecoration(
-
                                     shape: BoxShape.circle,
-
                                     color: localIsDark
-
                                         ? Colors.cyanAccent.withValues(
-                                      alpha: 0.12,
-                                    )
-
-                                        : Colors.blue.withValues(
-                                      alpha: 0.08,
-                                    ),
+                                            alpha: 0.12,
+                                          )
+                                        : Colors.blue.withValues(alpha: 0.08),
                                   ),
 
                                   child: Icon(
-
-                                    item.iconBuilder(
-                                      localValues[index],
-                                    ),
+                                    item.iconBuilder(localValues[index]),
 
                                     size: 18,
-
                                     color: localIsDark
-
                                         ? const Color(0xFF70DCEA)
-
                                         : Colors.blue.shade700,
                                   ),
                                 ),
@@ -343,7 +325,6 @@ Future<void> showGlassSettingsMenu({
                                 Expanded(
                                   child: Text(
                                     item.title,
-
                                     style: TextStyle(
                                       color: localIsDark
                                           ? Colors.white
@@ -362,38 +343,24 @@ Future<void> showGlassSettingsMenu({
 
                                     activeThumbColor: Colors.blueAccent,
 
-                                    // onChanged: (value) async {
-                                    //   setStateMenu(() {
-                                    //     /// 🔥 UPDATE SWITCH
-                                    //     localValues[index] = value;
-                                    //
-                                    //     /// 🔥 UPDATE THEME
-                                    //     if (item.affectsTheme) {
-                                    //       localIsDark = value;
-                                    //     }
-                                    //   });
-                                    //
-                                    //   /// 🔥 CALLBACK
-                                    //   item.onChanged(value);
-                                    // },
                                     onChanged: (value) async {
-                                      /// 🔥 VALIDATION
+                                      /// VALIDATION
                                       bool allowed =
                                           item.canChange?.call(value) ?? true;
 
                                       if (!allowed) return;
 
                                       setStateMenu(() {
-                                        /// 🔥 UPDATE SWITCH
+                                        /// UPDATE SWITCH
                                         localValues[index] = value;
 
-                                        /// 🔥 UPDATE THEME
+                                        /// UPDATE THEME
                                         if (item.affectsTheme) {
                                           localIsDark = value;
                                         }
                                       });
 
-                                      /// 🔥 CALLBACK
+                                      /// CALLBACK
                                       item.onChanged(value);
                                     },
                                   ),
