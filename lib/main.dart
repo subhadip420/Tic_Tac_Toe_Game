@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage>
                             color: (isDark
                                 ? Colors.blue
                                 : Colors.cyanAccent)
-                                .withValues(alpha: 0.5),
+                                .withValues(alpha: 0.15),
 
                             blurRadius: 15,
 
@@ -268,9 +268,9 @@ class _HomePageState extends State<HomePage>
                     ),
                     const SizedBox(height: 6),
 
-// SUBTITLE
+                    // SUBTITLE
                     Text(
-                      "Powered by SP Tech Studios",
+                      "Fast • Fun • Multiplayer",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -346,8 +346,8 @@ class _HomePageState extends State<HomePage>
 
                       children: [
 
-                        /// 🔹 HOW TO PLAY
-                        TextButton(
+                        /// GUIDE
+                        TextButton.icon(
                           onPressed: () {
 
                             Navigator.push(
@@ -360,7 +360,16 @@ class _HomePageState extends State<HomePage>
                             );
                           },
 
-                          child: Text(
+                          icon: Icon(
+                            Icons.menu_book_rounded,
+                            size: 18,
+
+                            color: isDark
+                                ? Colors.white70
+                                : Colors.blue,
+                          ),
+
+                          label: Text(
                             "Guide",
 
                             style: TextStyle(
@@ -373,7 +382,7 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
 
-                        /// 🔥 DIVIDER
+                        /// DIVIDER
                         Container(
                           width: 1,
                           height: 18,
@@ -383,8 +392,8 @@ class _HomePageState extends State<HomePage>
                               : Colors.black26,
                         ),
 
-                        /// 🔹 About
-                        TextButton(
+                        /// INFO
+                        TextButton.icon(
                           onPressed: () {
 
                             Navigator.push(
@@ -397,7 +406,16 @@ class _HomePageState extends State<HomePage>
                             );
                           },
 
-                          child: Text(
+                          icon: Icon(
+                            Icons.info_outline_rounded,
+                            size: 18,
+
+                            color: isDark
+                                ? Colors.white70
+                                : Colors.blue,
+                          ),
+
+                          label: Text(
                             "Info",
 
                             style: TextStyle(
@@ -410,7 +428,7 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
