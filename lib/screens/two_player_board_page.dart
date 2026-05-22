@@ -2163,13 +2163,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 colors: isDark
                                     ? [
                                         Colors.blueAccent,
-                                        Colors.purpleAccent,
+                                        Colors.deepOrangeAccent,
                                         Colors.blueAccent,
                                       ]
                                     : [
-                                        Colors.orangeAccent,
-                                        Colors.pinkAccent,
-                                        Colors.orangeAccent,
+                                  Colors.blueAccent,
+                                  Colors.deepOrangeAccent,
+                                  Colors.blueAccent,
                                       ],
                               ),
 
@@ -2179,7 +2179,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   color:
                                       (isDark
                                               ? Colors.blueAccent
-                                              : Colors.orangeAccent)
+                                              : Colors.blueAccent)
                                           .withValues(alpha: 0.5),
                                   blurRadius: 20,
                                   spreadRadius: 1,
