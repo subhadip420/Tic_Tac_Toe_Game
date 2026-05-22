@@ -6,6 +6,7 @@ class BuildIconTextButton extends StatelessWidget {
   final bool isDark;
   final BorderRadius? borderRadius;
   final List<BoxShadow>? boxShadow;
+
   const BuildIconTextButton({
     super.key,
     required this.icon,
@@ -23,14 +24,14 @@ class BuildIconTextButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: borderRadius ?? BorderRadius.circular(18),
 
-        /// 🔥 Gradient Border
+        /// Gradient Border
         gradient: isDark
             ? const LinearGradient(
                 colors: [Colors.blueAccent, Colors.cyanAccent],
               )
-            :  LinearGradient(colors: [Color(0xFF194B9B), Color(0xFF1F5CC0)]),
+            : LinearGradient(colors: [Color(0xFF194B9B), Color(0xFF1F5CC0)]),
 
-        /// 🔥 Outer glow
+        /// Outer glow
         boxShadow: [
           BoxShadow(
             color: Colors.blueAccent.withValues(alpha: 0.5),
