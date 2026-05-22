@@ -2844,7 +2844,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                           gradient: const LinearGradient(
                             colors: [
                               Colors.blueAccent,
-                              Colors.purpleAccent,
+                              Colors.deepOrange,
                               Colors.blueAccent,
                             ],
                           ),
