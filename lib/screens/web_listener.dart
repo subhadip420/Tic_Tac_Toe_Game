@@ -10,14 +10,14 @@ void setupWebListeners({
   web.window.addEventListener(
     'offline',
     ((web.Event e) {
-      onOffline(); // 🔥 no return
+      onOffline(); // no return
     }).toJS,
   );
 
   web.window.addEventListener(
     'online',
     ((web.Event e) {
-      onOnline(); // 🔥 no return
+      onOnline(); // no return
     }).toJS,
   );
 }
