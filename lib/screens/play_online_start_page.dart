@@ -1,18 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:app_links/app_links.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/screens/play_online_board_page.dart';
 import '../main.dart';
@@ -39,15 +35,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     with TickerProviderStateMixin {
   static PlayOnlineStartPageState? instance;
   String nickname = "Player";
-  bool isCreateSelected = true; // toggle
+  bool isCreateSelected = true;
   bool isPublicRoom = false;
   String roomCode = "XXXXXX";
   String enteredCode = "";
   final FocusNode codeFocusNode = FocusNode();
   bool isCodeGenerated = false;
-  bool isButtonDisabled = false; // NEW
-  bool opponentJoined = false; // NEW
-  /// 🔥 HEARTBEAT TIMER
+  bool isButtonDisabled = false;
+  bool opponentJoined = false;
+
+  /// HEARTBEAT TIMER
   Timer? roomHeartbeatTimer;
   int countdown = 300; // 5 min
   Timer? timer;
@@ -63,8 +60,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   String dots = "";
   Timer? dotTimer;
-
-  //String activeRoomCode = "";
 
   StreamSubscription? internetSubscription;
   BuildContext? noInternetDialogCtx;
@@ -99,7 +94,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   @override
   void initState() {
     super.initState();
-    instance = this; // 🔥 ADD
+    instance = this;
     monitorInternet();
     loadBoardSize();
     loadProfileImage();
@@ -108,10 +103,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     cleanUpDeadRooms();
     //startPublicRoomRefresh();
     Future.delayed(Duration.zero, () {
-      checkUser(); // 🔥 ADD THIS
+      checkUser(); // ADD THIS
     });
-
-    //initSetup(); // 🔥 new function
 
     borderController = AnimationController(
       vsync: this,
@@ -119,39 +112,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
 
     borderController!.forward(); // start animation
-
-    // 🔥 Deep link auto join
-    // 🔥 Auto join from deep link
-    // if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
-    //
-    //   print("🔥 StartPage opened");
-    //   print("🔥 initialCode: ${widget.initialCode}");
-    //
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //
-    //     await Future.delayed(const Duration(milliseconds: 400)); // 🔥 IMPORTANT
-    //
-    //     String code = widget.initialCode!;
-    //
-    //     print("🔥 Deep link join request: $code");
-    //     print("🔥 isCodeGenerated: $isCodeGenerated");
-    //     print("🔥 roomCode: $roomCode");
-    //
-    //     if (isCodeGenerated && roomCode.isNotEmpty) {
-    //
-    //       print("🔥 SHOWING DIALOG");
-    //
-    //       await showCloseRoomBeforeJoinDialog();
-    //       return;
-    //
-    //     } else {
-    //
-    //       print("🔥 DIRECT JOIN");
-    //
-    //       await handleDeepLinkJoin(code);
-    //     }
-    //   });
-    // }
 
     shakeController = AnimationController(
       vsync: this,
@@ -185,36 +145,36 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     publicRoomRefreshTimer?.cancel();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     //final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
-      canPop: !isCodeGenerated, // 🔥 block back when code active
+      canPop: !isCodeGenerated,
+
+      /// block back when code active
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         await handleBackPress();
       },
       child: Scaffold(
-        extendBodyBehindAppBar: true, // 🔥 IMPORTANT
+        extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: false,
 
         backgroundColor: isDark
             ? const Color(0xFF0F172A) // dark background
-            : const Color(0xFFF3F7FF), // light background
+            : const Color(0xFFF3F7FF),
 
+        /// light background
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
 
-          /// 🔥 FIX STATUS BAR ICON COLOR
-          // systemOverlayStyle: isDark
-          //     ? SystemUiOverlayStyle.light
-          //     : SystemUiOverlayStyle.dark,
+          /// FIX STATUS BAR ICON COLOR
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent, // transparent status bar
             statusBarIconBrightness: isDark
@@ -229,9 +189,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             preferredSize: const Size.fromHeight(1),
             child: Container(
               height: 1,
-              color: isDark
-                  ? Colors.white24
-                  : Colors.black12,
+              color: isDark ? Colors.white24 : Colors.black12,
             ),
           ),
 
@@ -242,16 +200,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               child: Container(
                 decoration: BoxDecoration(
                   color: isDark
-                      ? Colors.black.withValues(alpha:0.2)
-                      : Colors.white.withValues(alpha:0.2),
-
-                  /// 🔥 optional bottom border glow
-                  // border: Border(
-                  //   bottom: BorderSide(
-                  //     color: Colors.cyanAccent.withOpacity(0.3),
-                  //     width: 1,
-                  //   ),
-                  // ),
+                      ? Colors.black.withValues(alpha: 0.2)
+                      : Colors.white.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -272,7 +222,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               message: "Back",
               child: GestureDetector(
                 onTap: () async {
-                  if (vibrationOn) {HapticFeedback.lightImpact();}
+                  if (vibrationOn) {
+                    HapticFeedback.lightImpact();
+                  }
                   await handleBackPress();
                 },
                 child: build3DIconButton(
@@ -290,14 +242,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 message: "Profile",
                 child: GestureDetector(
                   onTap: () {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
-                    /// 🔥 IF ROOM ACTIVE
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
+
+                    /// IF ROOM ACTIVE
                     if (isCodeGenerated) {
-
                       showCloseRoomBeforeOpenProfileDialog();
-
                     } else {
-
                       openProfileDialog();
                     }
                   },
@@ -311,14 +263,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           ],
         ),
 
-        // body: SafeArea(
-        //   child: SingleChildScrollView(
-        //     child: Padding(
-        //       padding: const EdgeInsets.all(20),
-        //       child: build3DCard(isDark),
-        //     ),
-        //   ),
-        // ),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -339,7 +283,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Widget build3DCard() {
     return Column(
       children: [
-        // 🔥 EXISTING MAIN CARD
+        // EXISTING MAIN CARD
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
@@ -350,16 +294,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               color: isDark ? Color(0xFF122B57) : Colors.blue,
             ),
             boxShadow: [
-              // 🔥 Light shadow (top-left)
+              // Light shadow (top-left)
               BoxShadow(
                 color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.9),
                 offset: const Offset(-6, -6),
                 blurRadius: 12,
               ),
 
-              // 🔥 Dark shadow (bottom-right)
+              // Dark shadow (bottom-right)
               BoxShadow(
-                color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+                color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.2),
                 offset: const Offset(6, 6),
                 blurRadius: 12,
               ),
@@ -367,7 +311,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           ),
           child: Column(
             children: [
-              // 🔹 CREATE / JOIN
+              /// CREATE / JOIN
               Container(
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
@@ -376,11 +320,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 ),
                 child: Row(
                   children: [
-                    // 🔹 CREATE
+                    /// CREATE
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          if (vibrationOn) {HapticFeedback.lightImpact();}
+                          if (vibrationOn) {
+                            HapticFeedback.lightImpact();
+                          }
                           setState(() => isCreateSelected = true);
                         },
                         child: AnimatedContainer(
@@ -393,11 +339,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(15),
 
-                            // 🔥 subtle 3D shadow
+                            /// subtle 3D shadow
                             boxShadow: isCreateSelected
                                 ? [
                                     BoxShadow(
-                                      color: Colors.blue.withValues(alpha:0.2),
+                                      color: Colors.blue.withValues(alpha: 0.2),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),
@@ -420,11 +366,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       ),
                     ),
 
-                    // 🔹 JOIN
+                    /// JOIN
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          if (vibrationOn) {HapticFeedback.lightImpact();}
+                          if (vibrationOn) {
+                            HapticFeedback.lightImpact();
+                          }
                           setState(() => isCreateSelected = false);
                         },
                         child: AnimatedContainer(
@@ -437,11 +385,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(15),
 
-                            // 🔥 subtle 3D shadow
+                            /// subtle 3D shadow
                             boxShadow: !isCreateSelected
                                 ? [
                                     BoxShadow(
-                                      color: Colors.blue.withValues(alpha:0.2),
+                                      color: Colors.blue.withValues(alpha: 0.2),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),
@@ -471,20 +419,21 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 const SizedBox(height: 10),
 
                 Container(
-                  padding: const EdgeInsets.all(2), // 🔥 border thickness
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18),
 
-                    /// 🔥 Gradient Neon Border
+                    ///  Gradient Neon Border
                     gradient: LinearGradient(
-                      colors: isDark? const [Colors.cyanAccent, Colors.cyanAccent]
-                          :const [Colors.blueAccent, Colors.blueAccent],
+                      colors: isDark
+                          ? const [Colors.cyanAccent, Colors.cyanAccent]
+                          : const [Colors.blueAccent, Colors.blueAccent],
                     ),
 
-                    /// 🔥 Outer Glow
+                    ///  Outer Glow
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blueAccent.withValues(alpha:0.4),
+                        color: Colors.blueAccent.withValues(alpha: 0.4),
                         blurRadius: 12,
                         spreadRadius: 1,
                       ),
@@ -500,10 +449,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(16),
 
-                      /// 🔹 Inner Shadow (depth feel)
+                      ///  Inner Shadow (depth feel)
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.1),
+                          color: Colors.black.withValues(
+                            alpha: isDark ? 0.6 : 0.1,
+                          ),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -513,7 +464,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        /// 🔹 Top Row
+                        ///  Top Row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -538,7 +489,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                         const SizedBox(height: 12),
 
-                        /// 🔥 Your Premium Slider (same as before)
+                        ///  Your Premium Slider (same as before)
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             trackHeight: 4,
@@ -557,7 +508,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                               int newValue = value.toInt();
 
                               if (newValue != selectedBoardSize) {
-                                if (vibrationOn) {HapticFeedback.selectionClick();}
+                                if (vibrationOn) {
+                                  HapticFeedback.selectionClick();
+                                }
                               }
 
                               setState(() {
@@ -576,7 +529,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
               const SizedBox(height: 10),
 
-              // 🔥 INNER ROOM CARD
+              /// INNER ROOM CARD
               Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -584,7 +537,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     topRight: Radius.circular(20),
                   ),
 
-                  /// 🔥 GRADIENT BORDER
+                  /// GRADIENT BORDER
                   gradient: const LinearGradient(
                     colors: [Colors.blueAccent, Colors.blueAccent],
                   ),
@@ -594,9 +547,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                   padding: const EdgeInsets.symmetric(vertical: 30),
                   margin: const EdgeInsets.all(1.5),
 
-                  // 🔥 border thickness
+                  /// border thickness
                   decoration: BoxDecoration(
-                    /// 🔥 Gradient Background (same feel, not too strong)
+                    ///  Gradient Background (same feel, not too strong)
                     gradient: isDark
                         ? const LinearGradient(
                             colors: [Color(0xFF0F172A), Color(0xFF0F172A)],
@@ -605,11 +558,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                             colors: [Color(0xFFCDEDF8), Color(0xFFCDEDF8)],
                           ),
 
-                    // /// 🔥 Neon Border (NEW)
-                    // border: Border.all(
-                    //   width: 1.5,
-                    //   color: Colors.cyanAccent,
-                    // ),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
@@ -617,19 +565,21 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       bottomRight: Radius.circular(0),
                     ),
 
-                    /// 🔥 Glow Effect (NEW)
+                    ///  Glow Effect (NEW)
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.cyanAccent.withValues(alpha:
-                          isDark ? 0.4 : 0.3,
+                        color: Colors.cyanAccent.withValues(
+                          alpha: isDark ? 0.4 : 0.3,
                         ),
                         blurRadius: 5,
                         spreadRadius: 1,
                       ),
 
-                      /// 🔹 keep your original shadow feel
+                      /// keep your original shadow feel
                       BoxShadow(
-                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.6 : 0.2,
+                        ),
                         offset: const Offset(4, 4),
                         blurRadius: 8,
                       ),
@@ -638,54 +588,22 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Text(
-                      //   isCreateSelected ? "Your Room Code" : "Enter Room Code",
-                      //   style: TextStyle(
-                      //     fontSize: 16,
-                      //     color: isDark ? Colors.white70 : Colors.black54,
-                      //   ),
-                      // ),
-                      //
-                      // const SizedBox(height: 5),
-                      //
-                      // isCreateSelected
-                      //     ? Text(
-                      //         roomCode,
-                      //         style: const TextStyle(
-                      //           fontSize: 34,
-                      //           fontWeight: FontWeight.bold,
-                      //           letterSpacing: 3,
-                      //         ),
-                      //       )
-                      //     : buildCodeInput(),
-
-                      /// 🔥 PUBLIC ROOM → SHOW LOTTIE
+                      ///  PUBLIC ROOM → SHOW LOTTIE
                       if (isCreateSelected &&
                           isCodeGenerated &&
                           isPublicRoom) ...[
                         //const SizedBox(height: 10),
 
-                        /// 🔥 LOTTIE LOADING
+                        ///  LOTTIE LOADING
                         SizedBox(
                           height: 100,
                           child: Lottie.asset(
-                            "assets/lottie/sandy_loading.json", // 🔥 your file
+                            "assets/lottie/sandy_loading.json",
                             repeat: true,
                           ),
                         ),
-
-                        // const SizedBox(height: 10),
-                        //
-                        // const Text(
-                        //   "Finding Opponent...",
-                        //   style: TextStyle(
-                        //     fontSize: 16,
-                        //     fontWeight: FontWeight.w600,
-                        //     color: Colors.red,
-                        //   ),
-                        // ),
                       ]
-                      /// 🔥 PRIVATE ROOM → SHOW CODE
+                      /// PRIVATE ROOM → SHOW CODE
                       else if (isCreateSelected) ...[
                         Text(
                           "Your Room Code",
@@ -707,7 +625,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                         ),
                       ]
-                      /// 🔥 JOIN MODE
+                      /// JOIN MODE
                       else ...[
                         Text(
                           "Enter Room Code",
@@ -718,7 +636,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         ),
 
                         const SizedBox(height: 5),
-
                         buildCodeInput(),
                       ],
 
@@ -727,7 +644,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           padding: const EdgeInsets.only(top: 8),
                           child: Column(
                             children: [
-                              // 🔥 Expiry Time
+                              ///  Expiry Time
                               Text(
                                 "Your Room Code will expire in "
                                 "${(countdown ~/ 60).toString().padLeft(2, '0')}:"
@@ -740,7 +657,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                               const SizedBox(height: 4),
 
-                              // 🔥 Blinking dots text
+                              /// Blinking dots text
                               Text(
                                 "Finding Opponent$dots",
                                 style: const TextStyle(
@@ -761,13 +678,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
               if (isCreateSelected && !isCodeGenerated)
                 Pressable3DButton(
                   onTap: () async {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     if (isButtonDisabled) return;
-
                     bool isConnected = await checkInternet();
 
                     if (!isConnected) {
-                      //showToast("No Internet Connection ⚠️");
                       CustomToast.show(
                         context: context,
                         message: "No Internet Connection",
@@ -781,8 +698,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     await generateCode();
                   },
                   child: BuildIconTextButton(
-                    icon:Icons.auto_awesome,
-                    text:"GENERATE CODE",
+                    icon: Icons.auto_awesome,
+                    text: "GENERATE CODE",
                     isDark: isDark,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(0),
@@ -792,7 +709,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.6 : 0.2,
+                        ),
                         offset: const Offset(3, 3),
                         blurRadius: 6,
                       ),
@@ -802,7 +721,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
               const SizedBox(height: 1),
 
-              // 🔥 CREATE MODE BUTTONS
+              /// CREATE MODE BUTTONS
               if (isCreateSelected && isCodeGenerated) ...[
                 Row(
                   children: [
@@ -810,12 +729,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
-                          if (vibrationOn) {HapticFeedback.lightImpact();}
+                          if (vibrationOn) {
+                            HapticFeedback.lightImpact();
+                          }
                           handleCopyRoomCode();
                         }, // call function
                         child: BuildIconTextButton(
-                          icon:Icons.copy,
-                          text:"COPY",
+                          icon: Icons.copy,
+                          text: "COPY",
                           isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
@@ -825,8 +746,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha:
-                                isDark ? 0.6 : 0.2,
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
                               blurRadius: 6,
@@ -838,7 +759,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     const SizedBox(width: 2),
 
-                    // SHARE
+                    /// SHARE
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
@@ -846,8 +767,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           handleShareRoomCode();
                         },
                         child: BuildIconTextButton(
-                          icon:Icons.share,
-                          text:"SHARE",
+                          icon: Icons.share,
+                          text: "SHARE",
                           isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
@@ -857,8 +778,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha:
-                                isDark ? 0.6 : 0.2,
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
                               blurRadius: 6,
@@ -871,7 +792,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 ),
               ],
 
-              // 🔥 JOIN MODE BUTTONS
+              /// JOIN MODE BUTTONS
               if (!isCreateSelected) ...[
                 Row(
                   children: [
@@ -879,12 +800,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
-                          if (vibrationOn) {HapticFeedback.lightImpact();}
+                          if (vibrationOn) {
+                            HapticFeedback.lightImpact();
+                          }
                           handlePasteRoomCode();
                         }, // function call
                         child: BuildIconTextButton(
-                          icon:Icons.paste,
-                          text:"PASTE",
+                          icon: Icons.paste,
+                          text: "PASTE",
                           isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
@@ -894,8 +817,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha:
-                                isDark ? 0.6 : 0.2,
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
                               blurRadius: 6,
@@ -907,29 +830,25 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     const SizedBox(width: 2),
 
-                    // PLAY
+                    /// PLAY
                     Expanded(
                       child: Pressable3DButton(
                         onTap: () async {
-                          // FocusManager.instance.primaryFocus?.unfocus();
-                          //
-                          // Future.delayed(const Duration(milliseconds: 50), () {
-                          //   FocusManager.instance.primaryFocus?.unfocus();
-                          // });
-
-                          // 🔥 STEP 1: FORCE HIDE KEYBOARD
+                          /// STEP 1: FORCE HIDE KEYBOARD
                           FocusManager.instance.primaryFocus?.unfocus();
-                          if (vibrationOn) {HapticFeedback.lightImpact();}
+                          if (vibrationOn) {
+                            HapticFeedback.lightImpact();
+                          }
                           await Future.delayed(
                             const Duration(milliseconds: 100),
                           );
 
-                          // 🔥 STEP 2: validation
+                          /// STEP 2: validation
                           await validateRoomCode();
                         },
                         child: BuildIconTextButton(
-                          icon:Icons.play_arrow,
-                          text:"PLAY",
+                          icon: Icons.play_arrow,
+                          text: "PLAY",
                           isDark: isDark,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(0),
@@ -939,8 +858,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha:
-                                isDark ? 0.6 : 0.2,
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.6 : 0.2,
                               ),
                               offset: const Offset(3, 3),
                               blurRadius: 6,
@@ -957,14 +876,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 const SizedBox(height: 10),
                 Pressable3DButton(
                   onTap: () async {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     FocusScope.of(context).unfocus();
                     await showCloseRoomDialog();
                   },
 
                   child: Stack(
                     children: [
-                      /// 🔥 MAIN BUTTON
+                      /// MAIN BUTTON
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
@@ -1004,39 +925,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         ),
                       ),
 
-                      /// 🔥 PROGRESS BORDER
-                      // Positioned.fill(
-                      //   child: borderController == null
-                      //       ? const SizedBox() // safety
-                      //       : AnimatedBuilder(
-                      //           animation: borderController!,
-                      //           builder: (context, child) {
-                      //             double progressValue =
-                      //                 1 - borderController!.value;
-                      //
-                      //             /// 🔥 COLOR LOGIC (optional but pro)
-                      //             Color borderColor;
-                      //             borderColor = Colors.red;
-                      //
-                      //             // if (progressValue > 0.5) {
-                      //             //   borderColor = Colors.green;
-                      //             // } else if (progressValue > 0.2) {
-                      //             //   borderColor = Colors.orange;
-                      //             // } else {
-                      //             //   borderColor = Colors.red;
-                      //             // }
-                      //
-                      //             return CustomPaint(
-                      //               painter: BorderProgressPainter(
-                      //                 progressValue,
-                      //                 borderColor, // 🔥 dynamic color
-                      //                 20, // 🔥 SAME radius as container
-                      //               ),
-                      //             );
-                      //           },
-                      //         ),
-                      // ),
-                      /// 🔥 PROGRESS BORDER
+                      ///  PROGRESS BORDER
                       Positioned.fill(
                         child: CustomPaint(
                           painter: BorderProgressPainter(
@@ -1074,37 +963,25 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 const SizedBox(height: 10),
               ],
 
-              // 🔥 RANDOM MATCH BUTTON (only CREATE mode)
+              /// RANDOM MATCH BUTTON (only CREATE mode)
               if (isCreateSelected && !isCodeGenerated) ...[
                 Pressable3DButton(
                   onTap: () async {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     FocusScope.of(context).unfocus();
 
-                    await createPublicRoomInFirebase(); // 🔥 main logic
+                    await createPublicRoomInFirebase();
                   },
                   child: BuildIconTextButton(
                     icon: Icons.public,
                     text: "QUICK MATCH",
                     isDark: isDark,
                     borderRadius: const BorderRadius.all(Radius.circular(19)),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
-                    //     offset: const Offset(-4, 0),
-                    //     blurRadius: 8,
-                    //   ),
-                    //   BoxShadow(
-                    //     color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
-                    //     offset: const Offset(4, 4),
-                    //     blurRadius: 10,
-                    //   ),
-                    // ],
                   ),
                 ),
               ],
-
-              //SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
         ),
@@ -1124,7 +1001,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         color: isDark ? const Color(0xFF26344B) : const Color(0xFFE9E9EF),
         borderRadius: BorderRadius.circular(25),
 
-        /// 🔥 Add Border
+        /// Add Border
         border: Border.all(
           width: 1.5,
           color: isDark ? Color(0xFF122B57) : Colors.blue,
@@ -1132,7 +1009,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+            color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.2),
             blurRadius: 10,
           ),
         ],
@@ -1160,13 +1037,13 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 boxShadow: [
                   BoxShadow(
                     color: isDark
-                        ? Colors.blue.withValues(alpha:0.4)
-                        : Colors.blue.withValues(alpha:0.2),
+                        ? Colors.blue.withValues(alpha: 0.4)
+                        : Colors.blue.withValues(alpha: 0.2),
                     blurRadius: 2,
                     spreadRadius: 0,
                   ),
                   BoxShadow(
-                    color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.15),
+                    color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
                     offset: const Offset(0, 0),
                     blurRadius: 2,
                   ),
@@ -1190,21 +1067,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
                     ),
                   ),
-
-                  //const SizedBox(height: 6),
-
-                  // Container(
-                  //   width: 80,
-                  //   height: 3,
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(10),
-                  //     gradient: LinearGradient(
-                  //       colors: isDark
-                  //           ? [Colors.blueAccent, Colors.cyanAccent]
-                  //           : [Colors.blue, Colors.indigo],
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -1214,7 +1076,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           publicRooms.isEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  // এখানে তোমার ইচ্ছেমতো ভ্যালু দাও
+
                   child: const Center(
                     child: Text(
                       "No available rooms to join",
@@ -1229,7 +1091,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     itemCount: publicRooms.length,
                     itemBuilder: (context, index) {
                       final room = publicRooms[index];
-                      //return buildRoomItem(room);
+
                       return KeyedSubtree(
                         key: ValueKey(room["code"]),
                         child: buildRoomItem(room),
@@ -1243,23 +1105,17 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Widget buildRoomItem(Map room) {
-    //final isDark = Theme.of(context).brightness == Brightness.dark;
-    //bool isMyRoom = room["creatorId"] == currentUserId;
-
     int createdAt = room["createdAt"] ?? 0;
-
     int now = DateTime.now().millisecondsSinceEpoch;
-
     double totalDuration = 300000; // 5 min
     double elapsed = (now - createdAt).toDouble();
-
     double progress = (elapsed / totalDuration).clamp(0.0, 1.0);
-
     double remainingProgress = 1 - progress;
-    // 🔥 SAFE access
+
+    /// SAFE access
     String? creatorId = room["creatorId"];
 
-    // 🔥 SAFE compare
+    /// SAFE compare
     bool isMyRoom =
         currentUserId.isNotEmpty &&
         creatorId != null &&
@@ -1271,7 +1127,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
 
-      /// 🔥 OUTER GRADIENT BORDER
+      /// OUTER GRADIENT BORDER
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
@@ -1280,10 +1136,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           colors: [Colors.blueAccent, Colors.blueAccent],
         ),
 
-        /// 🔥 glow
+        /// glow
         boxShadow: [
           BoxShadow(
-            color: Colors.blueAccent.withValues(alpha:0.4),
+            color: Colors.blueAccent.withValues(alpha: 0.4),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -1296,7 +1152,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
 
-          /// 🔹 YOUR ORIGINAL GRADIENT (unchanged)
+          ///  YOUR ORIGINAL GRADIENT (unchanged)
           gradient: isDark
               ? const LinearGradient(
                   colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
@@ -1305,16 +1161,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                   colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
                 ),
 
-          /// 🔹 keep shadows
+          ///  keep shadows
           boxShadow: [
             BoxShadow(
               color: isDark
-                  ? Colors.blue.withValues(alpha:0.3)
-                  : Colors.blue.withValues(alpha:0.2),
+                  ? Colors.blue.withValues(alpha: 0.3)
+                  : Colors.blue.withValues(alpha: 0.2),
               blurRadius: 1,
             ),
             BoxShadow(
-              color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.15),
+              color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
               offset: const Offset(3, 3),
               blurRadius: 6,
             ),
@@ -1323,11 +1179,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 🔥 LEFT SIDE (Avatar + Name + Board)
+            /// LEFT SIDE (Avatar + Name + Board)
             Expanded(
               child: Row(
                 children: [
-                  // 🔹 AVATAR
+                  /// AVATAR
                   Container(
                     width: 40,
                     height: 40,
@@ -1350,130 +1206,72 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                   const SizedBox(width: 10),
 
-                  // 🔥 NAME + BOARD SIZE (same row)
+                  /// NAME + BOARD SIZE (same row)
                   Expanded(
                     child: Row(
                       children: [
-                        // 🔹 SCROLLING NAME
-                        // Expanded(
-                        //   child: SingleChildScrollView(
-                        //     scrollDirection: Axis.horizontal,
-                        //     child: Text(
-                        //       name,
-                        //       style: TextStyle(
-                        //         fontWeight: FontWeight.bold,
-                        //         fontSize: 14,
-                        //         color: isDark ? Colors.white : Colors.black,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-
                         Expanded(
                           child: LayoutBuilder(
-
                             builder: (context, constraints) {
-
                               final textPainter = TextPainter(
-
                                 text: TextSpan(
-
                                   text: name,
-
                                   style: TextStyle(
-
                                     fontWeight: FontWeight.bold,
-
                                     fontSize: 14,
-
-                                    color: isDark
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: isDark ? Colors.white : Colors.black,
                                   ),
                                 ),
 
                                 maxLines: 1,
-
                                 textDirection: TextDirection.ltr,
                               )..layout();
 
                               bool shouldScroll =
-                                  textPainter.width >
-                                      constraints.maxWidth;
+                                  textPainter.width > constraints.maxWidth;
 
-                              /// 🔥 AUTO MARQUEE ONLY IF OVERFLOW
+                              ///  AUTO MARQUEE ONLY IF OVERFLOW
                               if (shouldScroll) {
-
                                 return SizedBox(
-
                                   height: 20,
-
                                   child: Marquee(
-
                                     text: name,
-
                                     style: TextStyle(
-
                                       fontWeight: FontWeight.bold,
-
                                       fontSize: 14,
-
                                       color: isDark
                                           ? Colors.white
                                           : Colors.black,
                                     ),
 
-                                    scrollAxis:
-                                    Axis.horizontal,
-
+                                    scrollAxis: Axis.horizontal,
                                     blankSpace: 40,
-
                                     velocity: 25,
-
-                                    pauseAfterRound:
-                                    const Duration(
-                                      seconds: 1,
-                                    ),
-
+                                    pauseAfterRound: const Duration(seconds: 1),
                                     startPadding: 10,
-
-                                    accelerationDuration:
-                                    const Duration(
+                                    accelerationDuration: const Duration(
                                       milliseconds: 800,
                                     ),
 
-                                    accelerationCurve:
-                                    Curves.linear,
-
-                                    decelerationDuration:
-                                    const Duration(
+                                    accelerationCurve: Curves.linear,
+                                    decelerationDuration: const Duration(
                                       milliseconds: 500,
                                     ),
 
-                                    decelerationCurve:
-                                    Curves.easeOut,
+                                    decelerationCurve: Curves.easeOut,
                                   ),
                                 );
                               }
 
-                              /// 🔥 NORMAL TEXT
+                              /// NORMAL TEXT
                               return Text(
-
                                 name,
-
                                 overflow: TextOverflow.ellipsis,
-
                                 maxLines: 1,
-
                                 style: TextStyle(
-
                                   fontWeight: FontWeight.bold,
-
                                   fontSize: 14,
-
-                                  color: isDark
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color: isDark ? Colors.white : Colors.black,
                                 ),
                               );
                             },
@@ -1482,7 +1280,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                         const SizedBox(width: 6),
 
-                        // 🔹 BOARD SIZE (FIXED POSITION)
+                        /// BOARD SIZE (FIXED POSITION)
                         Text(
                           "(${room["boardSize"]}x${room["boardSize"]})",
                           style: TextStyle(
@@ -1507,52 +1305,20 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey.withValues(alpha:0.3),
+                      color: Colors.grey.withValues(alpha: 0.3),
                     ),
                     child: Text(
                       "YOUR ROOM",
                       style: TextStyle(
                         color: isDark
                             ? Colors
-                                  .white70 // 🌙 dark mode
+                                  .white70 //  dark mode
                             : Colors.black54,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
                     ),
                   )
-                // : GestureDetector(
-                //     onTap: () async {
-                //       await smartJoinRoom(room["code"]);
-                //     },
-                //
-                //     child: Container(
-                //       padding: const EdgeInsets.symmetric(
-                //         horizontal: 14,
-                //         vertical: 8,
-                //       ),
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(12),
-                //         gradient: const LinearGradient(
-                //           colors: [Colors.green, Colors.green],
-                //         ),
-                //         boxShadow: [
-                //           BoxShadow(
-                //             color: Colors.green.withOpacity(0.6),
-                //             blurRadius: 1,
-                //           ),
-                //         ],
-                //       ),
-                //       child: const Text(
-                //         "JOIN",
-                //         style: TextStyle(
-                //           color: Colors.black,
-                //           fontWeight: FontWeight.bold,
-                //           letterSpacing: 1,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
                 : GestureDetector(
                     onTap: () async {
                       await smartJoinRoom(room["code"]);
@@ -1560,7 +1326,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     child: Stack(
                       children: [
-                        /// 🔥 MAIN BUTTON
+                        /// MAIN BUTTON
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
@@ -1574,7 +1340,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.blueAccent.withValues(alpha:0.4),
+                                color: Colors.blueAccent.withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 spreadRadius: 1,
                               ),
@@ -1590,42 +1356,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                         ),
 
-                        /// 🔥 TIMER BORDER
-                        // Positioned.fill(
-                        //   child: TweenAnimationBuilder<double>(
-                        //     tween: Tween<double>(
-                        //       begin: remainingProgress.toDouble(),
-                        //       end: 0.0,
-                        //     ),
-                        //     duration: Duration(
-                        //       milliseconds: (remainingProgress * 300000)
-                        //           .toInt(),
-                        //     ),
-                        //     builder: (context, value, child) {
-                        //       double progressValue = value; // ✅ no cast needed
-                        //
-                        //       /// 🔥 DYNAMIC COLOR
-                        //       Color borderColor;
-                        //       borderColor = Colors.cyanAccent;
-                        //
-                        //       // if (progressValue > 0.5) {
-                        //       //   borderColor = Colors.green;
-                        //       // } else if (progressValue > 0.2) {
-                        //       //   borderColor = Colors.orange;
-                        //       // } else {
-                        //       //   borderColor = Colors.red;
-                        //       // }
-                        //
-                        //       return CustomPaint(
-                        //         painter: BorderProgressPainter(
-                        //           progressValue,
-                        //           borderColor, // 🔥 dynamic color
-                        //           12, // 🔥 radius (same as button)
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
+                        ///  TIMER BORDER
                         Positioned.fill(
                           child: CustomPaint(
                             painter: BorderProgressPainter(
@@ -1650,7 +1381,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     return Stack(
       alignment: Alignment.center,
       children: [
-        // 🔥 REAL TEXTFIELD (NOT hidden)
+        ///REAL TEXTFIELD (NOT hidden)
         TextField(
           controller: hiddenController,
           focusNode: hiddenFocus,
@@ -1664,7 +1395,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
           cursorColor: Colors.transparent,
 
-          // 🔥 hide cursor
+          /// hide cursor
           decoration: const InputDecoration(
             counterText: "",
             border: InputBorder.none,
@@ -1694,9 +1425,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           },
         ),
 
-        // 🔥 UI BOXES (overlay)
+        /// UI BOXES (overlay)
         IgnorePointer(
-          // 🔥 IMPORTANT
+          /// IMPORTANT
           child: AnimatedBuilder(
             animation: shakeController,
             builder: (context, child) {
@@ -1723,8 +1454,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                     border: Border.all(
                       color: isError
-                          ? Colors
-                                .red // 🔥 ERROR COLOR
+                          ? Colors.red
+                          /// ERROR COLOR
                           : (isActive
                                 ? Colors.blue
                                 : (isDark ? Colors.white24 : Colors.black12)),
@@ -1749,168 +1480,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
   }
 
-
-  ///old build3DIconButton
-  // Widget build3DIconButton(IconData icon, bool isDark) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(10),
-  //     decoration: BoxDecoration(
-  //       color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-  //       shape: BoxShape.circle,
-  //       boxShadow: [
-  //         // light shadow
-  //         BoxShadow(
-  //           color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
-  //           offset: const Offset(-3, -3),
-  //           blurRadius: 6,
-  //         ),
-  //         // dark shadow
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
-  //           offset: const Offset(3, 3),
-  //           blurRadius: 6,
-  //         ),
-  //       ],
-  //     ),
-  //     child: Icon(icon, color: Colors.blue, size: 20),
-  //   );
-  // }
-
-
-  ///new build3DIconButton
-  // Widget build3DIconButton({
-  //   IconData? icon,
-  //   String? text,
-  //   required bool isDark,
-  // }) {
-  //   return SizedBox(
-  //     width: 44,
-  //     height: 44,
-  //
-  //     child: Container(
-  //       padding: const EdgeInsets.all(1.5),
-  //
-  //       decoration: BoxDecoration(
-  //         shape: BoxShape.circle,
-  //         gradient: isDark
-  //             ? const LinearGradient(
-  //                 colors: [Colors.blueAccent, Colors.cyanAccent],
-  //               )
-  //             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.blueAccent.withValues(alpha:0.4),
-  //             blurRadius: 10,
-  //             spreadRadius: 1,
-  //           ),
-  //         ],
-  //       ),
-  //
-  //       child: Container(
-  //         alignment: Alignment.center,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-  //         ),
-  //
-  //         child: icon != null
-  //             ? Icon(
-  //                 icon,
-  //                 size: 20, // 🔥 fixed icon size
-  //                 color: isDark ? Colors.cyanAccent : Colors.blue,
-  //               )
-  //             : Text(
-  //                 text ?? "",
-  //                 style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 20, // 🔥 CONTROL TEXT SIZE
-  //                   color: isDark ? Colors.cyanAccent : Colors.blue,
-  //                 ),
-  //               ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget build3DButton(
-  //   IconData icon,
-  //   String text,
-  //   //bool isDark,
-  //     {
-  //   BorderRadius? borderRadius,
-  //   List<BoxShadow>? boxShadow, // 🔥 new parameter
-  // }) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(1.5), // 🔥 border thickness
-  //
-  //     decoration: BoxDecoration(
-  //       borderRadius: borderRadius ?? BorderRadius.circular(18),
-  //
-  //       /// 🔥 Gradient Border
-  //       // gradient: const LinearGradient(
-  //       //   colors: [Colors.blueAccent, Colors.purpleAccent],
-  //       // ),
-  //       gradient: isDark
-  //           ? const LinearGradient(
-  //               colors: [Colors.blueAccent, Colors.cyanAccent],
-  //             )
-  //           : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-  //
-  //       /// 🔥 Outer glow
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.blueAccent.withValues(alpha: 0.5),
-  //           blurRadius: 5,
-  //           spreadRadius: 1,
-  //         ),
-  //       ],
-  //     ),
-  //
-  //     child: Container(
-  //       padding: const EdgeInsets.symmetric(vertical: 14),
-  //
-  //       decoration: BoxDecoration(
-  //         color: isDark ? const Color(0xFF1E293B) : Colors.blue,
-  //
-  //         borderRadius: borderRadius ?? BorderRadius.circular(18),
-  //
-  //         /// 🔹 Keep your neumorphic shadows
-  //         // boxShadow: [
-  //         //   ...(boxShadow ??
-  //         //       [
-  //         //         BoxShadow(
-  //         //           color: Colors.white.withOpacity(isDark ? 0.05 : 0.9),
-  //         //           offset: const Offset(-4, -4),
-  //         //           blurRadius: 8,
-  //         //         ),
-  //         //         BoxShadow(
-  //         //           color: Colors.black.withOpacity(isDark ? 0.6 : 0.2),
-  //         //           offset: const Offset(4, 4),
-  //         //           blurRadius: 8,
-  //         //         ),
-  //         //       ]),
-  //         // ],
-  //       ),
-  //
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Icon(icon, color: isDark ? Colors.cyanAccent : Colors.white),
-  //           const SizedBox(width: 8),
-  //           Text(
-  //             text,
-  //             style: TextStyle(
-  //               fontWeight: FontWeight.bold,
-  //               color: isDark ? Colors.cyanAccent : Colors.white,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-
   Future<void> loadBoardSize() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -1922,45 +1491,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt("board_size", size);
   }
-
-  // Future<void> initSetup() async {
-  //   await loadActiveRoom(); // 🔥 now allowed
-  //
-  //   print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-  //
-  //   // 🔥 deep link logic AFTER state load
-  //   if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //       String code = widget.initialCode!;
-  //
-  //       print("🔥 Deep link join request: $code");
-  //
-  //       if (isCodeGenerated && roomCode.isNotEmpty) {
-  //         print("🔥 SHOWING DIALOG");
-  //
-  //         await showCloseRoomBeforeJoinDialog();
-  //       } else {
-  //         print("🔥 DIRECT JOIN");
-  //
-  //         await handleDeepLinkJoin(code);
-  //       }
-  //     });
-  //   }
-  // }
-  //
-  // Future<void> loadActiveRoom() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //
-  //   bool hasRoom = prefs.getBool("hasActiveRoom") ?? false;
-  //   String savedCode = prefs.getString("activeRoomCode") ?? "";
-  //
-  //   if (hasRoom && savedCode.isNotEmpty) {
-  //     isCodeGenerated = true;
-  //     roomCode = savedCode;
-  //   }
-  //
-  //   print("🔥 Loaded room: $roomCode | $isCodeGenerated");
-  // }
 
   Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -1984,7 +1514,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   void triggerError() async {
-    // 🔥 vibration
+    /// vibration
     HapticFeedback.mediumImpact();
 
     setState(() {
@@ -1993,7 +1523,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     await shakeController.forward(from: 0);
 
-    // 🔥 reset perfectly
+    /// reset perfectly
     shakeController.reset();
 
     setState(() {
@@ -2019,111 +1549,42 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         Navigator.of(context, rootNavigator: true).pop();
         return;
       }
-      if (vibrationOn) {HapticFeedback.selectionClick();}
+      if (vibrationOn) {
+        HapticFeedback.selectionClick();
+      }
       await showCloseRoomBeforeExitDialog();
     } finally {
       isExiting = false;
     }
   }
 
-  /// 🔥 START ROOM HEARTBEAT
+  ///  START ROOM HEARTBEAT
   void startRoomHeartbeat(String roomCode) {
-
-    /// 🔥 STOP OLD TIMER
+    ///  STOP OLD TIMER
     roomHeartbeatTimer?.cancel();
 
-    roomHeartbeatTimer = Timer.periodic(
-      const Duration(seconds: 5),
-          (_) async {
-
-        try {
-
-          await dbRef
-              .child(
-            "rooms/$roomCode/heartbeat/player1",
-          )
-              .set(
-            DateTime.now()
-                .millisecondsSinceEpoch,
-          );
-
-        } catch (e) {
-
-          print(
-            "Heartbeat Error: $e",
-          );
-        }
-      },
-    );
+    roomHeartbeatTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      try {
+        await dbRef
+            .child("rooms/$roomCode/heartbeat/player1")
+            .set(DateTime.now().millisecondsSinceEpoch);
+      } catch (e) {
+        print("Heartbeat Error: $e");
+      }
+    });
   }
 
-
-  /// 🔥 STOP HEARTBEAT
+  ///  STOP HEARTBEAT
   void stopRoomHeartbeat() {
-
     if (roomHeartbeatTimer?.isActive ?? false) {
-
       roomHeartbeatTimer?.cancel();
-
-      print("🔥 Room heartbeat stopped");
+      print(" Room heartbeat stopped");
     }
   }
 
-  // void startPublicRoomRefresh() {
-  //
-  //   publicRoomRefreshTimer?.cancel();
-  //
-  //   publicRoomRefreshTimer =
-  //       Timer.periodic(
-  //         const Duration(seconds: 3),
-  //             (_) {
-  //
-  //           if (!mounted) return;
-  //
-  //           updatePublicRoomsFromCache();
-  //         },
-  //       );
-  // }
-
-  // void updatePublicRoomsFromCache() {
-  //
-  //   List<Map> temp = [];
-  //
-  //   int currentTime =
-  //       DateTime.now()
-  //           .millisecondsSinceEpoch;
-  //
-  //   for (var room in publicRooms) {
-  //
-  //     int heartbeat =
-  //         room["heartbeat"] ?? 0;
-  //
-  //     if (heartbeat > 0) {
-  //
-  //       bool isAlive =
-  //           (currentTime - heartbeat)
-  //               <= 15000;
-  //
-  //       if (!isAlive) continue;
-  //     }
-  //
-  //     temp.add(room);
-  //   }
-  //
-  //   if (!mounted) return;
-  //
-  //   setState(() {
-  //
-  //     publicRooms = temp;
-  //   });
-  // }
-
   void updatePublicRooms(dynamic data) {
-
     if (data == null) {
-
       setState(() {
-
         publicRooms = [];
       });
 
@@ -2131,168 +1592,57 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
 
     Map rooms = data as Map;
-
     List<Map> temp = [];
-
-    int currentTime =
-        DateTime.now()
-            .millisecondsSinceEpoch;
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
 
     rooms.forEach((key, value) {
-
       if (value == null) return;
-
-      if (value["roomType"] == "public" &&
-          value["status"] == "waiting") {
-
-        final heartbeatData =
-        value["heartbeat"];
-
+      if (value["roomType"] == "public" && value["status"] == "waiting") {
+        final heartbeatData = value["heartbeat"];
         int heartbeat = 0;
-
-        if (heartbeatData != null &&
-            heartbeatData["player1"] != null) {
-
-          heartbeat =
-          heartbeatData["player1"];
+        if (heartbeatData != null && heartbeatData["player1"] != null) {
+          heartbeat = heartbeatData["player1"];
         }
 
-        /// 🔥 HEARTBEAT EXPIRED
+        ///  HEARTBEAT EXPIRED
         if (heartbeat > 0) {
-
-          bool isAlive =
-              (currentTime - heartbeat)
-                  <= 30000;
-
+          bool isAlive = (currentTime - heartbeat) <= 30000;
           if (!isAlive) return;
         }
 
         temp.add({
-
           "code": key,
+          "name": value["players"]["player1"]["uid"] ?? "Player",
+          "boardSize": value["boardSize"] ?? 3,
+          "creatorId": value["creatorId"],
+          "createdAt": value["createdAt"] ?? 0,
 
-          "name":
-          value["players"]
-          ["player1"]
-          ["uid"] ??
-              "Player",
-
-          "boardSize":
-          value["boardSize"] ?? 3,
-
-          "creatorId":
-          value["creatorId"],
-
-          "createdAt":
-          value["createdAt"] ?? 0,
-
-          /// 🔥 SAVE HEARTBEAT
+          ///  SAVE HEARTBEAT
           "heartbeat": heartbeat,
         });
       }
     });
 
     temp = temp.reversed.toList();
-
     if (!mounted) return;
-
     setState(() {
-
       publicRooms = temp;
     });
   }
 
-  ///old listenPublicRooms
-  // void listenPublicRooms() {
-  //   roomListener?.cancel();
-  //   dbRef.child("rooms").onValue.listen((event) {
-  //     if (!mounted) return; // 🔥 MOST IMPORTANT
-  //     final data = event.snapshot.value;
-  //
-  //     if (data == null) {
-  //       setState(() => publicRooms = []);
-  //       return;
-  //     }
-  //
-  //     Map rooms = data as Map;
-  //
-  //     List<Map> temp = [];
-  //
-  //     rooms.forEach((key, value) {
-  //       if (value == null) return;
-  //
-  //       // 🔥 define creatorId here
-  //       //String creatorId = value["players"]?["player1"]?["uid"] ?? "";
-  //
-  //       if (value["roomType"] == "public" && value["status"] == "waiting") {
-  //         temp.add({
-  //           "code": key,
-  //           "name": value["players"]["player1"]["uid"] ?? "Player",
-  //           "boardSize": value["boardSize"] ?? 3,
-  //           "creatorId": value["creatorId"],
-  //           "createdAt": value["createdAt"] ?? 0,
-  //         });
-  //       }
-  //     });
-  //
-  //     // 🔥 latest first
-  //     temp = temp.reversed.toList();
-  //
-  //     if (!mounted) return; // 🔥 MOST IMPORTANT
-  //     setState(() {
-  //       publicRooms = temp;
-  //     });
-  //   });
-  // }
-
-
   ///new listenPublicRooms
   void listenPublicRooms() {
-
     publicRoomListener?.cancel();
-
-    publicRoomListener =
-        dbRef
-            .child("rooms")
-            .onValue
-            .listen((event) {
-
-          if (!mounted) return;
-
-          updatePublicRooms(
-            event.snapshot.value,
-          );
-        });
+    publicRoomListener = dbRef.child("rooms").onValue.listen((event) {
+      if (!mounted) return;
+      updatePublicRooms(event.snapshot.value);
+    });
   }
 
-
-
-  /////////////////////////////////////////////
-  // void addCharacter(String char) {
-  //   if (enteredCode.length >= 6) return;
-  //
-  //   final valid = RegExp(r'[A-Z0-9]');
-  //   if (!valid.hasMatch(char)) return;
-  //
-  //   setState(() {
-  //     enteredCode += char;
-  //   });
-  // }
-  ///////////////////////////////////////////////////
-
-  // void showToast(String msg) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
-  //   );
-  // }
-
   Future<bool> checkInternet() async {
-    // 🌐 WEB-এর জন্য (handled by events)
     if (kIsWeb) {
       return true;
     }
-
-    // 📱 MOBILE-এর জন্য আসল ইন্টারনেট চেক
     try {
       final response = await http
           .get(Uri.parse('https://clients3.google.com/generate_204'))
@@ -2300,17 +1650,17 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       return response.statusCode == 204;
     } catch (_) {
-      return false; // ইন্টারনেট না থাকলে বা টাইমআউট হলে false রিটার্ন করবে
+      return false;
     }
   }
 
   void monitorInternet() {
-    // 🔥 1. Page open hote hi check
+    /// 1. Page open hote hi check
     checkInternet().then((hasInternet) {
       _updateInternetState(hasInternet);
     });
 
-    // 🔥 2. Mobile realtime listener
+    /// 2. Mobile realtime listener
     internetSubscription = Connectivity().onConnectivityChanged.listen((
       result,
     ) async {
@@ -2318,29 +1668,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       _updateInternetState(hasInternet);
     });
 
-    // 🔥 3. Web listener
-    // if (kIsWeb) {
-    //   setupWebListeners(
-    //     onOffline: () => _updateInternetState(false),
-    //     onOnline: () => _updateInternetState(true),
-    //   );
-    // }
-
     if (kIsWeb) {
-
       setupWebListeners(
-
         onOffline: () {
-
           if (!isPageActive || !mounted) return;
-
           _updateInternetState(false);
         },
-
         onOnline: () {
-
           if (!isPageActive || !mounted) return;
-
           _updateInternetState(true);
         },
       );
@@ -2348,38 +1683,35 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   void _updateInternetState(bool hasInternet) {
-    /// 🔥 PAGE NOT ACTIVE
+    ///  PAGE NOT ACTIVE
     if (!isPageActive) return;
     if (!mounted) return;
 
     if (!hasInternet) {
-      // 🔴 show dialog
+      /// show dialog
       if (!isOfflineDialogShowing) {
         isOfflineDialogShowing = true;
 
         Future.delayed(Duration.zero, () {
           if (mounted) {
-            if (vibrationOn) {HapticFeedback.vibrate();}
+            if (vibrationOn) {
+              HapticFeedback.vibrate();
+            }
             showNoInternetDialog();
           }
         });
       }
     } else {
-      // 🟢 close dialog
+      /// close dialog
       if (isOfflineDialogShowing && noInternetDialogCtx != null) {
         //Navigator.of(noInternetDialogCtx!).pop();
-
-        Navigator.of(
-          noInternetDialogCtx!,
-          rootNavigator: true,
-        ).pop();
-
+        Navigator.of(noInternetDialogCtx!, rootNavigator: true).pop();
         noInternetDialogCtx = null;
         isOfflineDialogShowing = false;
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
 
-        if (vibrationOn) {HapticFeedback.selectionClick();}
-
-        //showToast("Internet Restored ✅");
         CustomToast.show(
           context: context,
           message: "Internet Restored.",
@@ -2391,42 +1723,24 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
   }
 
-
-///old
-  // void _exitFromNoInternet() {
-  //   // 🔥 close dialog
-  //   if (noInternetDialogCtx != null) {
-  //     //Navigator.of(noInternetDialogCtx!).pop();
-  //     Navigator.of(
-  //       noInternetDialogCtx!,
-  //       rootNavigator: true,
-  //     ).pop();
-  //   }
-  //
-  //   // 🔥 go back page
-  //   Navigator.pop(context);
-  // }
-
-
   ///new
   Future<void> _exitFromNoInternet() async {
-    /// 🔥 STOP ROOM HEARTBEAT
+    ///  STOP ROOM HEARTBEAT
     stopRoomHeartbeat();
-    /// 🔥 RESET FLAGS
+
+    ///  RESET FLAGS
     noInternetDialogCtx = null;
     isOfflineDialogShowing = false;
 
-    /// 🔥 EXIT PAGE ONLY
+    ///  EXIT PAGE ONLY
     if (mounted && Navigator.canPop(context)) {
       Navigator.pop(context);
     }
   }
 
   Future<void> generateCode() async {
-
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     Random random = Random();
-
     String newCode = List.generate(6, (index) {
       return chars[random.nextInt(chars.length)];
     }).join();
@@ -2444,107 +1758,15 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     startDotAnimation();
     borderController?.reset();
     borderController?.forward();
-
-    print("🔥 Generating Code...");
-
-    await createPrivateRoomInFirebase(newCode); // 🔥 FIX
-
+    print(" Generating Code...");
+    await createPrivateRoomInFirebase(newCode); //  FIX
     print("✅ Done");
   }
 
-
   ///new PublicRoom
-  // Future<void> createPublicRoomInFirebase() async {
-  //
-  //   // 🔥 already room check
-  //   if (isCodeGenerated) {
-  //
-  //     showToast("Room already created!");
-  //     return;
-  //   }
-  //
-  //   bool isConnected = await checkInternet();
-  //
-  //   if (!isConnected) {
-  //
-  //     showToast("No Internet Connection ⚠️");
-  //     return;
-  //   }
-  //
-  //   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  //   Random random = Random();
-  //
-  //   String newCode = List.generate(6, (index) {
-  //     return chars[random.nextInt(chars.length)];
-  //   }).join();
-  //
-  //   setState(() {
-  //     roomCode = newCode;
-  //     isCodeGenerated = true;
-  //     isButtonDisabled = true;
-  //     opponentJoined = false;
-  //     countdown = 300;
-  //     isPublicRoom = true; // 🔥 ADD THIS
-  //   });
-  //
-  //   startTimer();
-  //   startDotAnimation();
-  //
-  //   borderController?.reset();
-  //   borderController?.forward();
-  //
-  //   LoadingDialog.show(context, message: "Creating Room...");
-  //
-  //   // 🔥 CREATE PUBLIC ROOM
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     String userId = prefs.getString("nickname") ?? "Player";
-  //
-  //     //final prefs = await SharedPreferences.getInstance();
-  //
-  //     //await prefs.setBool("hasActiveRoom", true);
-  //     //await prefs.setString("activeRoomCode", roomCode);
-  //
-  //     await dbRef.child("rooms/$newCode").set({
-  //       "roomCode": newCode,
-  //       "creatorId": userId,
-  //       "createdAt": DateTime.now().millisecondsSinceEpoch,
-  //       "status": "waiting",
-  //
-  //       // 🔥 IMPORTANT
-  //       "roomType": "public",
-  //
-  //       "boardSize": selectedBoardSize,
-  //
-  //       "players": {
-  //         "player1": {"uid": userId, "symbol": "O"},
-  //       },
-  //
-  //       "exitStatus": {"player1": "online", "player2": "online"},
-  //
-  //       "currentTurn": "",
-  //       "board": List.filled(selectedBoardSize * selectedBoardSize, ""),
-  //       "winner": "",
-  //     });
-  //
-  //     listenForOpponent(newCode);
-  //
-  //     showToast("Finding opponent...");
-  //   } catch (e) {
-  //
-  //     print("❌ Firebase ERROR: $e");
-  //   }finally {
-  //
-  //     LoadingDialog.hide(context);
-  //   }
-  // }
-
-///new PublicRoom
   Future<void> createPublicRoomInFirebase() async {
-
-    // 🔥 already room check
+    /// already room check
     if (isCodeGenerated) {
-
       //showToast("Room already created!");
       CustomToast.show(
         context: context,
@@ -2555,15 +1777,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       );
       return;
     }
-
-    bool isConnected =
-    await checkInternet();
-
+    bool isConnected = await checkInternet();
     if (!isConnected) {
-
-      // showToast(
-      //   "No Internet Connection ⚠️",
-      // );
       CustomToast.show(
         context: context,
         message: "No Internet Connection",
@@ -2575,130 +1790,58 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    const chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     Random random = Random();
-
-    String newCode = List.generate(
-      6,
-          (index) {
-
-        return chars[
-        random.nextInt(
-          chars.length,
-        )
-        ];
-      },
-    ).join();
+    String newCode = List.generate(6, (index) {
+      return chars[random.nextInt(chars.length)];
+    }).join();
 
     setState(() {
-
       roomCode = newCode;
-
       isCodeGenerated = true;
-
       isButtonDisabled = true;
-
       opponentJoined = false;
-
       countdown = 300;
-
       isPublicRoom = true;
     });
-
     startTimer();
-
     startDotAnimation();
-
     borderController?.reset();
-
     borderController?.forward();
-
-    LoadingDialog.show(
-      context,
-      message: "Creating Room...",
-    );
+    LoadingDialog.show(context, message: "Creating Room...");
 
     try {
+      final prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString("nickname") ?? "Player";
 
-      final prefs =
-      await SharedPreferences
-          .getInstance();
-
-      String userId =
-          prefs.getString(
-            "nickname",
-          ) ??
-              "Player";
-
-      /// 🔥 CURRENT TIME
-      int now =
-          DateTime.now()
-              .millisecondsSinceEpoch;
-
-      await dbRef
-          .child("rooms/$newCode")
-          .set({
-
+      /// CURRENT TIME
+      int now = DateTime.now().millisecondsSinceEpoch;
+      await dbRef.child("rooms/$newCode").set({
         "matchStarted": false,
-
         "roomCode": newCode,
-
         "creatorId": userId,
-
         "createdAt": now,
-
         "status": "waiting",
 
-        /// 🔥 PUBLIC ROOM
+        /// PUBLIC ROOM
         "roomType": "public",
-
-        "boardSize":
-        selectedBoardSize,
-
+        "boardSize": selectedBoardSize,
         "players": {
-
-          "player1": {
-
-            "uid": userId,
-
-            "symbol": "O",
-          },
+          "player1": {"uid": userId, "symbol": "O"},
         },
 
-        /// 🔥 HEARTBEAT
-        "heartbeat": {
-
-          "player1": now,
-        },
-
-        "exitStatus": {
-
-          "player1": "online",
-
-          "player2": "online",
-        },
-
+        /// HEARTBEAT
+        "heartbeat": {"player1": now},
+        "exitStatus": {"player1": "online", "player2": "online"},
         "currentTurn": "",
-
-        "board": List.filled(
-          selectedBoardSize *
-              selectedBoardSize,
-          "",
-        ),
-
+        "board": List.filled(selectedBoardSize * selectedBoardSize, ""),
         "winner": "",
       });
 
-      /// 🔥 START HEARTBEAT
+      ///  START HEARTBEAT
       startRoomHeartbeat(newCode);
-
       listenForOpponent(newCode);
 
-      // showToast(
-      //   "Finding opponent...",
-      // );
       CustomToast.show(
         context: context,
         message: "Finding Opponent...",
@@ -2707,36 +1850,20 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         color: Colors.blueAccent,
       );
     } catch (e) {
-
-      print(
-        "❌ Firebase ERROR: $e",
-      );
-
+      print("❌ Firebase ERROR: $e");
     } finally {
-
       LoadingDialog.hide(context);
     }
   }
 
   Future<void> createPrivateRoomInFirebase(String code) async {
-
-    LoadingDialog.show(
-      context,
-      message: "Creating room...",
-    );
-
+    LoadingDialog.show(context, message: "Creating room...");
 
     try {
-
-      print("🔥 createRoomInFirebase start");
+      print(" createRoomInFirebase start");
 
       final prefs = await SharedPreferences.getInstance();
       String userId = prefs.getString("nickname") ?? "Player";
-
-      //final prefs = await SharedPreferences.getInstance();
-
-      //await prefs.setBool("hasActiveRoom", true);
-      //await prefs.setString("activeRoomCode", roomCode);
 
       await dbRef.child("rooms/$code").set({
         "roomCode": code,
@@ -2745,68 +1872,30 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         "status": "waiting",
         "matchStarted": false,
         "roomType": "private",
-
         "boardSize": selectedBoardSize,
-
         "players": {
           "player1": {"uid": userId, "symbol": "O"},
         },
-
         "exitStatus": {"player1": "online", "player2": "online"},
-
         "currentTurn": "",
         "board": List.filled(selectedBoardSize * selectedBoardSize, ""),
         "winner": "",
       });
 
       print("✅ Room created");
-
       listenForOpponent(code);
     } catch (e) {
       print("❌ Firebase ERROR: $e");
-    }finally {
-
+    } finally {
       LoadingDialog.hide(context);
     }
   }
-
-  // void startTimer() {
-  //   timer?.cancel();
-  //
-  //   timer = Timer.periodic(const Duration(seconds: 1), (t) {
-  //     if (opponentJoined) {
-  //       t.cancel();
-  //       //startMatch();
-  //       return;
-  //     }
-  //
-  //     if (countdown == 0) {
-  //       t.cancel();
-  //
-  //       if (!opponentJoined) {
-  //         deleteRoom(roomCode);
-  //       }
-  //
-  //       setState(() {
-  //         roomCode = "XXXXXX";
-  //         isCodeGenerated = false;
-  //         isButtonDisabled = false;
-  //       });
-  //
-  //       showToast("Room expired!!!");
-  //     } else {
-  //       setState(() {
-  //         countdown--; // 🔥 MUST be inside setState
-  //       });
-  //     }
-  //   });
-  // }
 
   void startTimer() {
     timer?.cancel();
 
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      // 🔥 PAUSE when opponent joined (DON'T cancel)
+      /// PAUSE when opponent joined (DON'T cancel)
       if (opponentJoined) {
         return;
       }
@@ -2824,7 +1913,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           isButtonDisabled = false;
         });
 
-        // showToast("Room expired!!!");
         CustomToast.show(
           context: context,
           message: "Room Expired!",
@@ -2856,35 +1944,21 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   Future<void> handleCopyRoomCode() async {
     if (roomCode.isEmpty || roomCode == "XXXXXX") {
-      //showToast("No room code available ❌");
       CustomToast.show(
-
         context: context,
-
         message: "No Room Code Available ❌",
-
         isDark: isDark,
-
         icon: Icons.error_outline_rounded,
-
         color: Colors.redAccent,
       );
       return;
     }
-
     await Clipboard.setData(ClipboardData(text: roomCode));
-
-    //showToast("Room code copied ✅");
     CustomToast.show(
-
       context: context,
-
       message: "Room Code Copied.",
-
       isDark: isDark,
-
       icon: Icons.copy_rounded,
-
       color: Colors.green,
     );
   }
@@ -2893,7 +1967,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     final data = await Clipboard.getData('text/plain');
 
     if (data?.text == null || data!.text!.isEmpty) {
-      //showToast("Clipboard empty!");
       CustomToast.show(
         context: context,
         message: "Clipboard Empty!",
@@ -2912,13 +1985,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     if (pasted.length > 6) {
       pasted = pasted.substring(0, 6);
     }
-
     setState(() {
       enteredCode = pasted;
       hiddenController.text = pasted;
     });
 
-    //showToast("Code pasted ✅");
     CustomToast.show(
       context: context,
       message: "Code Pasted!",
@@ -2932,7 +2003,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   Future<void> handleShareRoomCode() async {
     if (roomCode.isEmpty || roomCode == "XXXXXX") {
-      //showToast("No room code to share!");
       CustomToast.show(
         context: context,
         message: "No Room Code to Share!",
@@ -2943,9 +2013,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-
     String link = generateInviteLink();
-
     DateTime now = DateTime.now();
     DateTime expiry = now.add(const Duration(minutes: 5));
 
@@ -2962,51 +2030,40 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
             "Expires at: $formattedTime",
       ),
     );
-
   }
-
-  // String generateInviteLink() {
-  //   return "https://tictactoe.app/join?code=$roomCode";
-  // }
 
   String generateInviteLink() {
     return "https://tic-tac-toe-9c3bf.web.app/join?code=$roomCode";
   }
 
   Future<void> handleDeepLinkJoin(String code) async {
-    print("🔥 AUTO JOIN: $code");
-
-    // 🔥 agar already room banaya hai → close karo
+    print(" AUTO JOIN: $code");
     if (isCodeGenerated && roomCode.isNotEmpty) {
       await deleteRoom(roomCode);
     }
 
-
-
     enteredCode = code;
     hiddenController.text = code;
-
     setState(() {});
-
     await Future.delayed(const Duration(milliseconds: 200));
+    await smartJoinRoom(code);
 
-    await smartJoinRoom(code); // 🔥 MAIN JOIN
+    /// MAIN JOIN
   }
 
   void handleIncomingLink(Uri uri) {
-
     if (uri.path.contains("join")) {
       String? code = uri.queryParameters['code'];
 
       if (code != null && code.isNotEmpty) {
-        print("🔥 Deep link received: $code");
+        print(" Deep link received: $code");
 
         Future.delayed(const Duration(milliseconds: 100), () {
-          // 🔥 CASE 1: Already on Start Page
+          /// CASE 1: Already on Start Page
           if (PlayOnlineStartPageState.instance != null) {
             PlayOnlineStartPageState.instance!.handleDeepLinkJoin(code);
           } else {
-            // 🔥 CASE 2: Open Start Page
+            /// CASE 2: Open Start Page
             navigatorKey.currentState?.pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (_) => PlayOnlineStartPage(initialCode: code),
@@ -3018,340 +2075,61 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         });
       }
     }
-
   }
 
-  // void handleIncomingLink(Uri uri) {
-  //   if (uri.path.contains("join")) {
-  //     String? code = uri.queryParameters['code'];
-  //
-  //     if (code != null && code.isNotEmpty) {
-  //       print("🔥 Auto join: $code");
-  //
-  //       Future.delayed(const Duration(milliseconds: 500), () {
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (_) => PlayOnlineStartPage(initialCode: code),
-  //           ),
-  //         );
-  //       });
-  //     }
-  //   }
-  // }
-
-  /////////////////////////////////////////////////////////////////////
-
   Future<void> checkUser() async {
-
     final prefs = await SharedPreferences.getInstance();
-
     String name = prefs.getString("nickname") ?? "";
-
     if (name.isEmpty) {
       name = generatePlayerName();
       await prefs.setString("nickname", name);
     }
-
     if (!mounted) return;
-
     setState(() {
       nickname = name;
     });
-
   }
-
-  ///old check user
-  // Future<void> checkUser() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //
-  //   String? name = prefs.getString("nickname");
-  //
-  //   if (name == null || name.isEmpty) {
-  //     //askUserName();
-  //
-  //     final prefs =
-  //     await SharedPreferences.getInstance();
-  //
-  //     String autoName = generatePlayerName();
-  //
-  //     await prefs.setString("nickname", autoName);
-  //     setState(() {
-  //       nickname = autoName; // 🔥 UPDATE UI
-  //     });
-  //
-  //   } else {
-  //     setState(() {
-  //       nickname = name; // 🔥 store
-  //     });
-  //   }
-  // }
-
-  // void askUserName() {
-  //   TextEditingController controller = TextEditingController();
-  //
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (context) {
-  //       final isDark = Theme.of(context).brightness == Brightness.dark;
-  //
-  //       return PopScope(
-  //         canPop: false, // 🔥 prevent default pop
-  //         onPopInvoked: (didPop) {
-  //           if (!didPop) {
-  //             SystemNavigator.pop(); // 🔥 exit app
-  //           }
-  //         },
-  //
-  //         child: Center(
-  //           child: SingleChildScrollView(
-  //             child: Padding(
-  //               padding: EdgeInsets.only(
-  //                 left: 20,
-  //                 right: 20,
-  //                 bottom: MediaQuery.of(context).viewInsets.bottom,
-  //               ),
-  //               child: Material(
-  //                 borderRadius: BorderRadius.circular(16),
-  //                 color: isDark ? const Color(0xFF1E293B) : Colors.white,
-  //
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(20),
-  //                   child: Column(
-  //                     mainAxisSize: MainAxisSize.min,
-  //                     children: [
-  //                       const Text(
-  //                         "Enter your name",
-  //                         style: TextStyle(
-  //                           fontSize: 18,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //
-  //                       const SizedBox(height: 15),
-  //
-  //                       TextField(
-  //                         controller: controller,
-  //                         autofocus: true,
-  //                         decoration: const InputDecoration(
-  //                           hintText: "Your nickname",
-  //                           border: OutlineInputBorder(),
-  //                         ),
-  //                       ),
-  //
-  //                       const SizedBox(height: 20),
-  //
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.end,
-  //                         children: [
-  //                           // 🔥 SKIP → auto name
-  //                           TextButton(
-  //                             onPressed: () async {
-  //                               final prefs =
-  //                                   await SharedPreferences.getInstance();
-  //
-  //                               String autoName = generatePlayerName();
-  //
-  //                               await prefs.setString("nickname", autoName);
-  //                               setState(() {
-  //                                 nickname = autoName; // 🔥 UPDATE UI
-  //                               });
-  //                               Navigator.pop(context);
-  //                             },
-  //                             child: const Text("Skip"),
-  //                           ),
-  //
-  //                           const SizedBox(width: 10),
-  //
-  //                           // 🔥 CONTINUE → user input
-  //                           ElevatedButton(
-  //                             onPressed: () async {
-  //                               String name = controller.text.trim();
-  //
-  //                               if (name.isEmpty) {
-  //                                 ScaffoldMessenger.of(context).showSnackBar(
-  //                                   const SnackBar(
-  //                                     content: Text("Please enter name"),
-  //                                   ),
-  //                                 );
-  //                                 return;
-  //                               }
-  //
-  //                               final prefs =
-  //                                   await SharedPreferences.getInstance();
-  //
-  //                               await prefs.setString("nickname", name);
-  //                               setState(() {
-  //                                 nickname = name; // 🔥 UPDATE UI
-  //                               });
-  //                               Navigator.pop(context);
-  //
-  //                               // ✅ SUCCESS TOAST
-  //                               ScaffoldMessenger.of(context).showSnackBar(
-  //                                 const SnackBar(
-  //                                   content: Text("Name saved successfully"),
-  //                                   duration: Duration(seconds: 2),
-  //                                 ),
-  //                               );
-  //                             },
-  //                             child: const Text("Continue"),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-
-  ///old cleanUp
-  // Future<void> cleanUpDeadRooms() async {
-  //   LoadingDialog.show(context, message: "Removing Expired Room");
-  //   try {
-  //     final dbRef = FirebaseDatabase.instanceFor(
-  //       app: FirebaseDatabase.instance.app,
-  //       databaseURL:
-  //           "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  //     ).ref();
-  //
-  //     final snapshot = await dbRef.child("rooms").get();
-  //
-  //     if (snapshot.exists) {
-  //       final rooms = Map<String, dynamic>.from(snapshot.value as Map);
-  //
-  //       int currentTime = DateTime.now().millisecondsSinceEpoch;
-  //
-  //       for (var entry in rooms.entries) {
-  //         String roomCode = entry.key;
-  //         Map<String, dynamic> roomData = Map<String, dynamic>.from(
-  //           entry.value as Map,
-  //         );
-  //
-  //         // ১. Time-based condition (১ ঘণ্টা = ৩৬,০০,০০০ মিলিসেকেন্ড)
-  //         int createdAt = roomData["createdAt"] as int? ?? currentTime;
-  //         bool isOlderThanOneHour = (currentTime - createdAt) > 3600000;
-  //         //bool isOlderThanOneHour = (currentTime - createdAt) > 180000;
-  //
-  //         // ২. Status-based conditions
-  //         final exitStatus = roomData["exitStatus"];
-  //         final players = roomData["players"];
-  //
-  //         String p1Status = exitStatus?["player1"]?.toString() ?? "";
-  //         String p2Status = exitStatus?["player2"]?.toString() ?? "";
-  //         bool p2Exists = players != null && players["player2"] != null;
-  //
-  //         bool bothExited = (p1Status == "exited" && p2Status == "exited");
-  //         bool onlyP1Exited = (p1Status == "exited" && !p2Exists);
-  //
-  //         // 💥 FINAL TRIGGER: ১ ঘণ্টা পার হলে অথবা স্ট্যাটাস exited হলে রুম ডিলিট!
-  //         if (isOlderThanOneHour || bothExited || onlyP1Exited) {
-  //           await dbRef.child("rooms/$roomCode").remove();
-  //           print("🧹 Garbage Collector: Deleted dead room -> $roomCode");
-  //         }
-  //       }
-  //     }
-  //     // LoadingDialog.hide(context);
-  //   } catch (e) {
-  //     //LoadingDialog.hide(context);
-  //     print("Garbage Collector Error: $e");
-  //   }
-  //   LoadingDialog.hide(context);
-  // }
 
   ///new cleanUp
   Future<void> cleanUpDeadRooms() async {
-
-    LoadingDialog.show(
-      context,
-      message: "Removing Expired Room",
-    );
+    LoadingDialog.show(context, message: "Removing Expired Room");
 
     try {
-
       final dbRef = FirebaseDatabase.instanceFor(
         app: FirebaseDatabase.instance.app,
         databaseURL:
-        "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
       ).ref();
 
       final snapshot = await dbRef.child("rooms").get();
 
       if (snapshot.exists) {
-
-        final rooms = Map<String, dynamic>.from(
-          snapshot.value as Map,
-        );
-
-        int currentTime =
-            DateTime.now().millisecondsSinceEpoch;
-
+        final rooms = Map<String, dynamic>.from(snapshot.value as Map);
+        int currentTime = DateTime.now().millisecondsSinceEpoch;
         for (var entry in rooms.entries) {
-
           String roomCode = entry.key;
-
-          Map<String, dynamic> roomData =
-          Map<String, dynamic>.from(
+          Map<String, dynamic> roomData = Map<String, dynamic>.from(
             entry.value as Map,
           );
-
-          int createdAt =
-              roomData["createdAt"] as int? ??
-                  currentTime;
-
-          bool isOlderThanOneHour =
-              (currentTime - createdAt) > 3600000;
-
+          int createdAt = roomData["createdAt"] as int? ?? currentTime;
+          bool isOlderThanOneHour = (currentTime - createdAt) > 3600000;
           final exitStatus = roomData["exitStatus"];
           final players = roomData["players"];
-
-          String p1Status =
-              exitStatus?["player1"]?.toString() ?? "";
-
-          String p2Status =
-              exitStatus?["player2"]?.toString() ?? "";
-
-          bool p2Exists =
-              players != null &&
-                  players["player2"] != null;
-
-          bool bothExited =
-          (p1Status == "exited" &&
-              p2Status == "exited");
-
-          bool onlyP1Exited =
-          (p1Status == "exited" &&
-              !p2Exists);
-
-          if (isOlderThanOneHour ||
-              bothExited ||
-              onlyP1Exited) {
-
-            await dbRef
-                .child("rooms/$roomCode")
-                .remove();
-
-            print(
-              "🧹 Deleted dead room -> $roomCode",
-            );
+          String p1Status = exitStatus?["player1"]?.toString() ?? "";
+          String p2Status = exitStatus?["player2"]?.toString() ?? "";
+          bool p2Exists = players != null && players["player2"] != null;
+          bool bothExited = (p1Status == "exited" && p2Status == "exited");
+          bool onlyP1Exited = (p1Status == "exited" && !p2Exists);
+          if (isOlderThanOneHour || bothExited || onlyP1Exited) {
+            await dbRef.child("rooms/$roomCode").remove();
+            print(" Deleted dead room -> $roomCode");
           }
         }
       }
-
     } catch (e) {
-
       print("Garbage Collector Error: $e");
-
     } finally {
-
-      /// 🔥 ALWAYS CLOSE LOADING
+      /// ALWAYS CLOSE LOADING
       if (mounted) {
         LoadingDialog.hide(context);
       }
@@ -3359,18 +2137,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   String generatePlayerName() {
-
     Random random = Random();
-    int number = 100000 + random.nextInt(900000); // 6 digit
-    return "Player$number";
+    int number = 100000 + random.nextInt(900000);
 
+    /// 6 digit
+    return "Player$number";
   }
 
   void openProfileDialog() async {
     final prefs = await SharedPreferences.getInstance();
-
     String currentName = prefs.getString("nickname") ?? "Player";
-
     TextEditingController controller = TextEditingController(text: currentName);
 
     showDialog(
@@ -3380,105 +2156,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
         return StatefulBuilder(
           builder: (context, setStateDialog) {
-            // return Dialog(
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(20),
-            //     child: Column(
-            //       mainAxisSize: MainAxisSize.min,
-            //       children: [
-            //         // 🔥 PROFILE LETTER AVATAR
-            //         CircleAvatar(
-            //           radius: 45,
-            //           backgroundColor: Colors.blue,
-            //
-            //           child: Text(
-            //             controller.text.isNotEmpty
-            //                 ? controller.text[0].toUpperCase()
-            //                 : "",
-            //             style: const TextStyle(
-            //               fontSize: 28,
-            //               color: Colors.white,
-            //               fontWeight: FontWeight.bold,
-            //             ),
-            //           ),
-            //         ),
-            //
-            //         const SizedBox(height: 15),
-            //
-            //         // 🔥 USERNAME FIELD
-            //         TextField(
-            //           controller: controller,
-            //           onChanged: (value) {
-            //             setStateDialog(() {}); // 🔥 live update avatar
-            //           },
-            //           decoration: const InputDecoration(
-            //             labelText: "Username",
-            //             border: OutlineInputBorder(),
-            //           ),
-            //         ),
-            //
-            //         const SizedBox(height: 20),
-            //
-            //         // 🔥 BUTTONS
-            //         Row(
-            //           mainAxisAlignment: MainAxisAlignment.end,
-            //           children: [
-            //             // EXIT
-            //             TextButton(
-            //               onPressed: () {
-            //                 Navigator.pop(context);
-            //               },
-            //               child: const Text("Exit"),
-            //             ),
-            //
-            //             const SizedBox(width: 10),
-            //
-            //             // SAVE
-            //             ElevatedButton(
-            //               onPressed: () async {
-            //                 String newName = controller.text.trim();
-            //
-            //                 if (newName.isEmpty) {
-            //                   ScaffoldMessenger.of(context).showSnackBar(
-            //                     const SnackBar(
-            //                       content: Text("Please enter name"),
-            //                     ),
-            //                   );
-            //                   return;
-            //                 }
-            //
-            //                 await prefs.setString("nickname", newName);
-            //
-            //                 // 🔥 update main UI
-            //                 setState(() {
-            //                   nickname = newName;
-            //                 });
-            //
-            //                 Navigator.pop(context);
-            //
-            //                 ScaffoldMessenger.of(context).showSnackBar(
-            //                   const SnackBar(content: Text("Profile updated")),
-            //                 );
-            //               },
-            //               child: const Text("Save"),
-            //             ),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // );
-
             return TweenAnimationBuilder(
               duration: const Duration(milliseconds: 450),
               tween: Tween<double>(begin: 0.8, end: 1.0),
               curve: Curves.easeOutBack,
 
               builder: (context, scale, child) {
-
                 return Transform.scale(
                   scale: scale,
 
@@ -3491,8 +2174,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                       alignment: Alignment.topCenter,
 
                       children: [
-
-                        /// 🔥 MAIN CARD
+                        /// MAIN CARD
                         Container(
                           margin: const EdgeInsets.only(top: 20),
 
@@ -3500,10 +2182,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                             borderRadius: BorderRadius.circular(28),
 
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 5,
-                                sigmaY: 5,
-                              ),
+                              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
 
                               child: Container(
                                 padding: const EdgeInsets.fromLTRB(
@@ -3514,46 +2193,53 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                 ),
 
                                 decoration: BoxDecoration(
-
-                                  /// 🔥 GLASS BG
+                                  /// GLASS BG
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
 
                                     colors: isDark
                                         ? [
-                                      Colors.white.withValues(alpha:0.14),
-                                      Colors.white.withValues(alpha:0.05),
-                                    ]
+                                            Colors.white.withValues(
+                                              alpha: 0.14,
+                                            ),
+                                            Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                          ]
                                         : [
-                                      Colors.white.withValues(alpha:0.35),
-                                      Colors.white.withValues(alpha:0.12),
-                                    ],
+                                            Colors.white.withValues(
+                                              alpha: 0.35,
+                                            ),
+                                            Colors.white.withValues(
+                                              alpha: 0.12,
+                                            ),
+                                          ],
                                   ),
 
                                   borderRadius: BorderRadius.circular(28),
 
-                                  /// 🔥 BORDER
+                                  /// BORDER
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha:
-                                      isDark ? 0.18 : 0.35,
+                                    color: Colors.white.withValues(
+                                      alpha: isDark ? 0.18 : 0.35,
                                     ),
                                     width: 1.5,
                                   ),
 
-                                  /// 🔥 SHADOW
+                                  /// SHADOW
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.cyanAccent.withValues(alpha:
-                                        isDark ? 0.10 : 0.06,
+                                      color: Colors.cyanAccent.withValues(
+                                        alpha: isDark ? 0.10 : 0.06,
                                       ),
                                       blurRadius: 24,
                                       spreadRadius: 2,
                                     ),
 
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha:
-                                        isDark ? 0.25 : 0.08,
+                                      color: Colors.black.withValues(
+                                        alpha: isDark ? 0.25 : 0.08,
                                       ),
                                       offset: const Offset(0, 8),
                                       blurRadius: 18,
@@ -3564,8 +2250,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-
-                                    /// 🔥 GAMING AVATAR
+                                    /// GAMING AVATAR
                                     Container(
                                       width: 90,
                                       height: 90,
@@ -3576,23 +2261,27 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         gradient: LinearGradient(
                                           colors: isDark
                                               ? [
-                                            Colors.blueAccent,
-                                            Colors.cyanAccent,
-                                          ]
+                                                  Colors.blueAccent,
+                                                  Colors.cyanAccent,
+                                                ]
                                               : [
-                                            Colors.blue,
-                                            Colors.lightBlueAccent,
-                                          ],
+                                                  Colors.blue,
+                                                  Colors.lightBlueAccent,
+                                                ],
                                         ),
 
                                         border: Border.all(
-                                          color: Colors.white.withValues(alpha:0.5),
+                                          color: Colors.white.withValues(
+                                            alpha: 0.5,
+                                          ),
                                           width: 2,
                                         ),
 
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.cyanAccent.withValues(alpha:0.35),
+                                            color: Colors.cyanAccent.withValues(
+                                              alpha: 0.35,
+                                            ),
                                             blurRadius: 18,
                                           ),
                                         ],
@@ -3615,19 +2304,27 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                                     const SizedBox(height: 20),
 
-                                    /// 🔥 USERNAME FIELD
+                                    /// USERNAME FIELD
                                     Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(18),
 
                                         color: isDark
-                                            ? Colors.white.withValues(alpha:0.05)
-                                            : Colors.white.withValues(alpha:0.7),
+                                            ? Colors.white.withValues(
+                                                alpha: 0.05,
+                                              )
+                                            : Colors.white.withValues(
+                                                alpha: 0.7,
+                                              ),
 
                                         border: Border.all(
                                           color: isDark
-                                              ? Colors.white.withValues(alpha:0.15)
-                                              : Colors.blue.withValues(alpha:0.2),
+                                              ? Colors.white.withValues(
+                                                  alpha: 0.15,
+                                                )
+                                              : Colors.blue.withValues(
+                                                  alpha: 0.2,
+                                                ),
                                         ),
                                       ),
 
@@ -3663,24 +2360,25 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                           border: InputBorder.none,
 
                                           contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            vertical: 18,
-                                          ),
+                                              const EdgeInsets.symmetric(
+                                                vertical: 18,
+                                              ),
                                         ),
                                       ),
                                     ),
 
                                     const SizedBox(height: 24),
 
-                                    /// 🔥 BUTTONS
+                                    /// BUTTONS
                                     Row(
                                       children: [
-
                                         /// EXIT
                                         Expanded(
                                           child: GestureDetector(
                                             onTap: () {
-                                              if (vibrationOn) {HapticFeedback.lightImpact();}
+                                              if (vibrationOn) {
+                                                HapticFeedback.lightImpact();
+                                              }
                                               Navigator.pop(context);
                                             },
 
@@ -3708,7 +2406,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                         Expanded(
                                           child: GestureDetector(
                                             onTap: () async {
-                                              if (vibrationOn) {HapticFeedback.lightImpact();}
+                                              if (vibrationOn) {
+                                                HapticFeedback.lightImpact();
+                                              }
                                               await updateProfile(
                                                 context: context,
                                                 prefs: prefs,
@@ -3734,7 +2434,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                                                   : Colors.white,
 
                                               textColor: Colors.white,
-
                                               loadingColor: Colors.white,
                                             ),
                                           ),
@@ -3748,7 +2447,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           ),
                         ),
 
-                        /// 🔥 FLOATING HEADER
+                        /// FLOATING HEADER
                         Positioned(
                           top: 0,
 
@@ -3763,28 +2462,25 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
                               border: Border.all(
                                 color: isDark
-                                    ? Colors.white.withValues(alpha:0.5)
-                                    : Colors.blue.withValues(alpha:0.5),
+                                    ? Colors.white.withValues(alpha: 0.5)
+                                    : Colors.blue.withValues(alpha: 0.5),
                                 width: 2,
                               ),
 
                               gradient: LinearGradient(
                                 colors: isDark
                                     ? [
-                                  const Color(0xFF1E293B),
-                                  const Color(0xFF1E293B),
-                                ]
-                                    : [
-                                  Colors.white,
-                                  Colors.white,
-                                ],
+                                        const Color(0xFF1E293B),
+                                        const Color(0xFF1E293B),
+                                      ]
+                                    : [Colors.white, Colors.white],
                               ),
 
                               boxShadow: [
                                 BoxShadow(
                                   color: isDark
-                                      ? Colors.white.withValues(alpha:0.5)
-                                      : Colors.blue.withValues(alpha:0.4),
+                                      ? Colors.white.withValues(alpha: 0.5)
+                                      : Colors.blue.withValues(alpha: 0.4),
                                   blurRadius: 6,
                                 ),
                               ],
@@ -3793,9 +2489,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                             child: Text(
                               "PROFILE",
                               style: TextStyle(
-                                color: isDark
-                                    ? Colors.white
-                                    : Colors.blue,
+                                color: isDark ? Colors.white : Colors.blue,
 
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -3822,38 +2516,27 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     required TextEditingController controller,
     required Function(String) onProfileUpdated,
   }) async {
-
     String newName = controller.text.trim();
 
-    /// 🔥 EMPTY CHECK
+    /// EMPTY CHECK
     if (newName.isEmpty) {
       LoadingDialog.hide(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter name"),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter name")));
 
       return;
     }
 
-    /// 🔥 SAVE
+    /// SAVE
     await prefs.setString("nickname", newName);
 
-    /// 🔥 UPDATE UI
+    /// UPDATE UI
     onProfileUpdated(newName);
 
-
-
-    /// 🔥 CLOSE DIALOG
+    /// CLOSE DIALOG
     Navigator.pop(context);
 
-    /// 🔥 SUCCESS
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //     content: Text("Profile updated"),
-    //   ),
-    // );
     CustomToast.show(
       context: context,
       message: "Profile Updated!",
@@ -3866,11 +2549,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Future<void> deleteRoom(String code) async {
     if (code.isEmpty) return;
 
-    // 🔥 Internet check
+    /// Internet check
     bool isConnected = await checkInternet();
 
     if (!isConnected) {
-      //showToast("No Internet Connection ⚠️");
       CustomToast.show(
         context: context,
         message: "No Internet Connection",
@@ -3881,33 +2563,28 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // 🔥 Loading
+    /// Loading
     LoadingDialog.show(context, message: "Closing room...");
 
     try {
-      // 🔥 stop timers
+      /// stop timers
       timer?.cancel();
       dotTimer?.cancel();
       borderController?.stop();
 
       stopRoomHeartbeat();
 
-      // 🔥 delete from Firebase
+      ///delete from Firebase
       await dbRef.child("rooms/$code").remove();
-
-      final prefs = await SharedPreferences.getInstance();
-
-      //await prefs.remove("hasActiveRoom");
-      //await prefs.remove("activeRoomCode");
 
       print("✅ Room deleted from Firebase");
 
-      // 🔥 reset state
+      /// reset state
       if (mounted) {
         setState(() {
           isCodeGenerated = false;
           isPublicRoom = false;
-          isButtonDisabled = false; // 🔥 ADD THIS
+          isButtonDisabled = false;
           roomCode = "XXXXXX";
           opponentJoined = false;
         });
@@ -3922,8 +2599,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         color: Colors.redAccent,
       );
     } catch (e) {
-
-      print("🔥 Firebase Error: $e");
+      print(" Firebase Error: $e");
       // showToast("Failed to close room!");
       CustomToast.show(
         context: context,
@@ -3932,136 +2608,66 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         icon: Icons.error_outline_rounded,
         color: Colors.redAccent,
       );
-    }finally {
-
+    } finally {
       LoadingDialog.hide(context);
     }
   }
 
-
-  /// old
-  // void listenForOpponent(String code) {
-  //   roomListener?.cancel(); // 🔥 prevent duplicate listeners
-  //
-  //   roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
-  //     // 🔥 SAFETY
-  //     if (!mounted) return;
-  //
-  //     // 🔥 USER CANCELLED → IGNORE EVERYTHING
-  //     if (hasCancelled) return;
-  //
-  //     // 🔥 ROOM DELETED
-  //     if (!event.snapshot.exists) {
-  //       // ❌ DO NOTHING (user didn’t join)
-  //       return;
-  //     }
-  //
-  //     final data = event.snapshot.value as Map?;
-  //
-  //     if (data == null) return;
-  //
-  //     // 🔥 OPPONENT JOINED
-  //     if (data["status"] == "joined") {
-  //       // 🔥 prevent duplicate dialog
-  //       if (!opponentJoined && startDialogContext == null) {
-  //         setState(() {
-  //           opponentJoined = true;
-  //         });
-  //
-  //         showStartMatchDialog(code);
-  //       }
-  //     }
-  //
-  //     // 🔥 OPPONENT CANCELLED
-  //     if (data["cancelledBy"] == "player2") {
-  //       // 🔥 close dialog if open
-  //       if (startDialogContext != null) {
-  //         Navigator.of(startDialogContext!).pop();
-  //         startDialogContext = null;
-  //       }
-  //
-  //       setState(() {
-  //         opponentJoined = false;
-  //       });
-  //
-  //       showToast("Opponent cancelled!");
-  //
-  //       // 🔥 remove flag
-  //       dbRef.child("rooms/$code/cancelledBy").remove();
-  //
-  //       return;
-  //     }
-  //   });
-  // }
-
-///new
+  ///new
   void listenForOpponent(String code) {
-
     roomListener?.cancel();
 
     hasHandledMatchAction = false;
 
     roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
-
-      /// 🔥 SAFETY
+      ///  SAFETY
       if (!mounted) return;
 
-      /// 🔥 PREVENT MULTIPLE FIRE
+      ///  PREVENT MULTIPLE FIRE
       if (hasHandledMatchAction) return;
 
-      /// 🔥 USER CANCELLED
-      //if (hasCancelled) return;
-
-      /// 🔥 ROOM DELETED
+      ///  ROOM DELETED
       if (!event.snapshot.exists) {
         return;
       }
-
       final data = event.snapshot.value as Map?;
-
       if (data == null) return;
 
-      /// ✅ OPPONENT JOINED
+      ///  OPPONENT JOINED
       if (data["status"] == "joined") {
-
         if (!opponentJoined && startDialogContext == null) {
-
           setState(() {
             opponentJoined = true;
           });
 
           hasHandledMatchAction = false;
           startDialogContext = null;
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
           showStartMatchDialog(code);
         }
       }
 
-      /// ❌ OPPONENT CANCELLED
+      ///  OPPONENT CANCELLED
       if (data["cancelledBy"] == "player2") {
-
         //hasHandledMatchAction = true;
 
-        /// 🔥 CLOSE ONLY DIALOG
+        ///  CLOSE ONLY DIALOG
         if (startDialogContext != null) {
-
           final navigator = Navigator.of(
             startDialogContext!,
             rootNavigator: true,
           );
-
           if (navigator.canPop()) {
             navigator.pop();
           }
-
           startDialogContext = null;
         }
-
         setState(() {
           opponentJoined = false;
         });
 
-        //showToast("Opponent cancelled!");
         CustomToast.show(
           context: context,
           message: "Opponent Cancelled!",
@@ -4070,19 +2676,18 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           color: Colors.redAccent,
         );
 
-        /// 🔥 REMOVE FIREBASE FLAG
+        ///  REMOVE FIREBASE FLAG
         dbRef.child("rooms/$code/cancelledBy").remove();
-
         return;
       }
     });
   }
 
   Future<void> startMatch(String code) async {
-
-    /// 🔥 STOP OLD INTERNET LISTENER
+    ///  STOP OLD INTERNET LISTENER
     await internetSubscription?.cancel();
-    /// 🔥 PAGE NO LONGER ACTIVE
+
+    ///  PAGE NO LONGER ACTIVE
     isPageActive = false;
     //showToast("Match Started!");
     CustomToast.show(
@@ -4092,7 +2697,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       icon: Icons.sports_esports_rounded,
       color: Colors.green,
     );
-    // 🔥 Navigate to game screen
+
+    /// Navigate to game screen
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -4101,7 +2707,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
 
     stopRoomHeartbeat();
-    // 🔥 UI reset (optional)
+
+    /// UI reset (optional)
     setState(() {
       roomCode = "XXXXXX";
       isCodeGenerated = false;
@@ -4111,9 +2718,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   }
 
   Future<void> validateRoomCode() async {
-    // 🔹 Input check
+    /// Input check
     if (enteredCode.isEmpty) {
-      //showToast("Please enter room code!");
       CustomToast.show(
         context: context,
         message: "Please Enter Room Code!",
@@ -4125,27 +2731,20 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
 
     if (enteredCode.length < 6) {
-      //showToast("Enter valid 6-digit code!");
       CustomToast.show(
-
         context: context,
-
         message: "Enter Valid 6-Digit Code!",
-
         isDark: isDark,
-
         icon: Icons.pin_outlined,
-
         color: Colors.orange,
       );
       return;
     }
 
-    // 🔹 Internet check
+    ///Internet check
     bool isConnected = await checkInternet();
 
     if (!isConnected) {
-      //showToast("No Internet Connection ⚠️");
       CustomToast.show(
         context: context,
         message: "No Internet Connection",
@@ -4156,142 +2755,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // 🔥 All good → call main function
-    //await handleJoinRoom();
+    /// All good → call main function
     await smartJoinRoom(enteredCode);
   }
-
-  // Future<void> handleJoinRoom() async {
-  //
-  //   LoadingDialog.show(context, message: "Checking room...");
-  //
-  //   try {
-  //     final snapshot = await dbRef.child("rooms/$enteredCode").get();
-  //
-  //     if (!snapshot.exists) {
-  //       LoadingDialog.hide(context);
-  //       showToast("Room not found!");
-  //       return;
-  //     }
-  //
-  //     final data = snapshot.value as Map?;
-  //     if (data == null) {
-  //       LoadingDialog.hide(context);
-  //       showToast("Room not found!");
-  //       return;
-  //     }
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     String userId = prefs.getString("nickname") ?? "Player";
-  //
-  //     String? creatorId = data["players"]?["player1"]?["uid"];
-  //
-  //     if (creatorId == userId) {
-  //       LoadingDialog.hide(context);
-  //       showToast("You can't join your own room!");
-  //       return;
-  //     }
-  //
-  //     if (enteredCode.isEmpty) {
-  //       showToast("Invalid room!");
-  //       return;
-  //     }
-  //
-  //     if (data["players"]?["player1"]["uid"] == userId) {
-  //       LoadingDialog.hide(context);
-  //       showToast("You can't join your own room!");
-  //       return;
-  //     }
-  //
-  //     if (data["status"] == "playing") {
-  //       LoadingDialog.hide(context);
-  //       showToast("Match already started!");
-  //       return;
-  //     }
-  //
-  //     if (data["players"]["player2"] != null) {
-  //       LoadingDialog.hide(context);
-  //       showToast("Room already full!");
-  //       return;
-  //     }
-  //
-  //
-  //     // close your own room before join
-  //     if (isCodeGenerated) {
-  //       await deleteRoom(roomCode);
-  //     }
-  //
-  //
-  //     activeRoomCode = enteredCode;
-  //
-  //     await dbRef.child("rooms/$activeRoomCode/players/player2").set({
-  //       "uid": userId,
-  //       "symbol": "X",
-  //     });
-  //
-  //     await dbRef.child("rooms/$activeRoomCode").update({
-  //       "status": "joined",
-  //       "currentTurn": "X",
-  //     });
-  //
-  //     LoadingDialog.hide(context);
-  //
-  //     // 🔥 WAITING
-  //     showWaitingDialog(enteredCode);
-  //
-  //     roomListener?.cancel();
-  //
-  //     roomListener = dbRef.child("rooms/$activeRoomCode").onValue.listen((event) {
-  //
-  //       if (!event.snapshot.exists) {
-  //         if (mounted && Navigator.canPop(context)) {
-  //           Navigator.pop(context);
-  //         }
-  //
-  //         showToast("Room deleted!");
-  //         roomListener?.cancel();
-  //         return;
-  //       }
-  //
-  //       final data = event.snapshot.value as Map;
-  //
-  //       if (data["status"] == "playing") {
-  //
-  //         if (mounted && Navigator.canPop(context)) {
-  //           Navigator.pop(context);
-  //         }
-  //
-  //         showToast("Match Started!");
-  //
-  //         hiddenController.text = "";
-  //         enteredCode = "";
-  //
-  //         setState(() {});
-  //
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) =>
-  //                 PlayOnlineBoardPage(roomCode: activeRoomCode),
-  //           ),
-  //         );
-  //
-  //         roomListener?.cancel();
-  //       }
-  //     });
-  //
-  //   } catch (e) {
-  //     LoadingDialog.hide(context);
-  //     showToast("Error joining room!");
-  //     print("Join error: $e");
-  //   }
-  // }
 
   Future<void> smartJoinRoom(String code) async {
     hasCancelled = false;
 
     if (code.isEmpty) {
-      //showToast("Invalid room!");
       CustomToast.show(
         context: context,
         message: "Invalid Room!",
@@ -4302,13 +2773,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // 🔥 Internet check
+    //  Internet check
     bool isConnected = await checkInternet();
     if (!isConnected) {
-      //showToast("No Internet Connection ⚠️");
       CustomToast.show(
         context: context,
-        message: "No Internet Connection ⚠️",
+        message: "No Internet Connection!️",
         isDark: isDark,
         icon: Icons.wifi_off_rounded,
         color: Colors.orange,
@@ -4316,43 +2786,29 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // 🔴 IMPORTANT: stop here if already has room
+    /// IMPORTANT: stop here if already has room
     if (isCodeGenerated && roomCode.isNotEmpty) {
-      if (vibrationOn) {HapticFeedback.selectionClick();}
+      if (vibrationOn) {
+        HapticFeedback.selectionClick();
+      }
       await showCloseRoomBeforeJoinDialog();
-      return; // 🔥 STOP — no auto join
+      return;
+
+      /// STOP — no auto join
     }
-
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusManager.instance.primaryFocus?.unfocus();
     });
     try {
-      // 🔥 STEP 1: close own room if exists
-      //if (isCodeGenerated && roomCode.isNotEmpty) {
-      //await dbRef.child("rooms/$roomCode").remove();
-      //await showCloseRoomBeforeJoinDialog();
-
-      //print("✅ Old room deleted");
-
-      // 🔥 reset state immediately
-      // setState(() {
-      //   isCodeGenerated = false;
-      //   isButtonDisabled = false; // 🔥 ADD THIS
-      //   roomCode = "XXXXXX";
-      //   opponentJoined = false;
-      // });
-
-      // 🔥 IMPORTANT delay
+      /// IMPORTANT delay
       await Future.delayed(const Duration(milliseconds: 300));
       //}
 
-      // 🔥 STEP 2: join new room
+      /// STEP 2: join new room
       await _joinRoomInternal(code);
     } catch (e) {
-      print("❌ Smart join error: $e");
-      //showToast("Failed to join room!");
+      print("Smart join error: $e");
       CustomToast.show(
         context: context,
         message: "Failed to Join Room!",
@@ -4361,7 +2817,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         color: Colors.redAccent,
       );
     }
-
   }
 
   Future<void> _joinRoomInternal(String code) async {
@@ -4369,8 +2824,10 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (!snapshot.exists) {
       triggerError();
-      //showToast("Room not found!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Room Not Found!",
@@ -4385,7 +2842,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     if (data == null) {
       //showToast("Invalid room!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Invalid Room!",
@@ -4400,8 +2859,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     final player1 = players?["player1"] as Map?;
 
     if (player1 == null) {
-      //showToast("Invalid room data!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Invalid room data!",
@@ -4417,10 +2877,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     String creatorId = player1["uid"] ?? "";
 
-    // ❌ self join
+    /// self join
     if (creatorId == userId) {
-      //showToast("You can't join your own room!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "You can't join your own room!",
@@ -4431,10 +2892,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // ❌ already playing
+    /// already playing
     if (data["status"] == "playing") {
       //showToast("Match already started!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Match already started!",
@@ -4445,10 +2908,12 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       return;
     }
 
-    // ❌ room full
+    /// room full
     if (players?["player2"] != null) {
       //showToast("Room already full!");
-      if (vibrationOn) {HapticFeedback.lightImpact();}
+      if (vibrationOn) {
+        HapticFeedback.lightImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Room already full!",
@@ -4462,7 +2927,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     LoadingDialog.show(context, message: "Joining room...");
     //activeRoomCode = code;
 
-    // 🔥 SAFE JOIN (atomic style)
+    /// SAFE JOIN (atomic style)
     await dbRef.child("rooms/$code/players/player2").set({
       "uid": userId,
       "symbol": "X",
@@ -4473,11 +2938,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       "currentTurn": "X",
     });
 
-    /// 🔥 CLOSE LOADING FIRST
+    /// CLOSE LOADING FIRST
     LoadingDialog.hide(context);
-    // 🔥 WAIT UI
+
+    /// WAIT UI
     Future.delayed(Duration.zero, () {
-      if (vibrationOn) {HapticFeedback.selectionClick();}
+      if (vibrationOn) {
+        HapticFeedback.selectionClick();
+      }
       showWaitingDialog(code);
     });
 
@@ -4485,22 +2953,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     roomListener = dbRef.child("rooms/$code").onValue.listen((event) {
       if (!event.snapshot.exists) {
-        // if (mounted && Navigator.canPop(context)) {
-        //   //Navigator.pop(context);
-        //   Navigator.of(context, rootNavigator: true).pop();
-        // }
-
-        final navigator = Navigator.of(
-          context,
-          rootNavigator: true,
-        );
-
+        final navigator = Navigator.of(context, rootNavigator: true);
         if (mounted && navigator.canPop()) {
           navigator.pop();
         }
 
-        //showToast("Room deleted!");
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         CustomToast.show(
           context: context,
           message: "Room Deleted!",
@@ -4513,40 +2973,31 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       }
 
       final data = event.snapshot.value as Map?;
-
       if (data == null) return;
 
-      // 🔴 🔥 ADD HERE (VERY IMPORTANT POSITION)
+      ///ADD HERE (VERY IMPORTANT POSITION)
       if (data["rejectedBy"] == "player1") {
-
-        // 🔥 IMPORTANT: resume timer
+        /// IMPORTANT: resume timer
         setState(() {
           opponentJoined = false;
         });
         hideKeyboard();
-        //FocusManager.instance.primaryFocus?.unfocus();
 
-        // if (mounted && Navigator.canPop(context)) {
-        //   Navigator.pop(context); // close waiting dialog
-        // }
-
-        final navigator = Navigator.of(
-          context,
-          rootNavigator: true,
-        );
-
+        final navigator = Navigator.of(context, rootNavigator: true);
         if (mounted && navigator.canPop()) {
           navigator.pop();
         }
 
         Future.delayed(const Duration(milliseconds: 100), () {
           hideKeyboard();
-          //FocusManager.instance.primaryFocus?.unfocus(); // 🔥 ADD HERE
         });
 
-        //showToast("Opponent rejected request ❌");
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         CustomToast.show(
           context: context,
           message: "Opponent Rejected Request!",
@@ -4555,7 +3006,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           color: Colors.redAccent,
         );
 
-        // 🔥 cleanup
+        /// cleanup
         dbRef.child("rooms/$code/rejectedBy").remove();
 
         roomListener?.cancel(); // 🔥 stop listener
@@ -4563,13 +3014,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       }
 
       if (data["status"] == "playing") {
-
         if (mounted && Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         //showToast("Match Started!");
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         CustomToast.show(
           context: context,
           message: "Match Started!",
@@ -4595,7 +3049,6 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         roomListener?.cancel();
       }
     });
-
   }
 
   Future<void> showCloseRoomDialog() async {
@@ -4603,19 +3056,19 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       context: context,
       title: "Close Room",
       message: "Do you want to close this room?",
-
       positiveText: "CLOSE",
       negativeText: "NO",
-
-      //showContentLoading: false,
       showLoadingOnPositive: true,
-
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.selectionClick();}
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
       },
 
       onPositive: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         await deleteRoom(roomCode);
         //if (mounted) Navigator.pop(context);
       },
@@ -4627,24 +3080,27 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       context: context,
       title: "Close Room",
       message: "Please close room before exit.",
-
       positiveText: "CLOSE",
       negativeText: "WAIT",
-
       barrierDismissible: false,
-      // 🔥 always false
+
+      /// always false
       showLoadingOnPositive: true,
 
-      // 🔥 loader
+      /// loader
       //showContentLoading: false,
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.selectionClick();}
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
       },
       onPositive: () async {
         await deleteRoom(roomCode); // 🔥 full logic
 
         if (mounted) {
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
           Navigator.pop(context); // 🔥 exit page
         }
       },
@@ -4656,26 +3112,21 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       context: context,
       title: "Close Room",
       message: "Please close room to open profile.",
-
       positiveText: "CLOSE",
       negativeText: "WAIT",
-
       barrierDismissible: false,
-      // 🔥 always false
       showLoadingOnPositive: true,
 
-      // 🔥 loader
-      //showContentLoading: false,
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.selectionClick();}
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
       },
       onPositive: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-        await deleteRoom(roomCode); // 🔥 full logic
-
-        // if (mounted) {
-        //   Navigator.pop(context); // 🔥 exit page
-        // }
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
+        await deleteRoom(roomCode);
       },
     );
   }
@@ -4691,173 +3142,61 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       //showContentLoading: false,
       barrierDismissible: false,
-      // 🔥 always false
+
+      /// always false
       showLoadingOnPositive: true,
 
-      // 🔥 loader button me
+      /// loader button me
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.selectionClick();}
+        if (vibrationOn) {
+          HapticFeedback.selectionClick();
+        }
       },
       onPositive: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         await deleteRoom(roomCode);
       },
     );
   }
 
-
   /////////////////////////////////////////////////////////////////////////////
 
-  //new
-  // Future<void> showWaitingDialog(String code) async {
-  //   await showAppDialog(
-  //     context: context,
-  //     title: "Request Send",
-  //     message: "Waiting For Opponent Responses...",
-  //
-  //     positiveText: "",
-  //     // ❌ no positive button
-  //     negativeText: "CANCEL",
-  //
-  //     barrierDismissible: false,
-  //     showContentLoading: true,
-  //
-  //     // 🔥 loader in content
-  //     onNegative: () async {
-  //       //FocusManager.instance.primaryFocus?.unfocus();
-  //       hideKeyboard();
-  //
-  //       setState(() {
-  //         opponentJoined = false;
-  //       });
-  //
-  //       try {
-  //         await dbRef.child("rooms/$code/players/player2").remove();
-  //
-  //         await dbRef.child("rooms/$code").update({
-  //           "status": "waiting",
-  //           "currentTurn": "",
-  //           "cancelledBy": "player2",
-  //         });
-  //
-  //         // 🔥 VERY IMPORTANT
-  //         hasCancelled = true;
-  //         roomListener?.cancel();
-  //         roomListener = null;
-  //       } catch (e) {
-  //         print("Cancel error: $e");
-  //       }
-  //
-  //       showToast("Cancelled ❌");
-  //     },
-  //   );
-  // }
-
-
-  ///old
-  // void showWaitingDialog(String code) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (dialogContext) {
-  //       return AlertDialog(
-  //         title: const Text("Waiting..."),
-  //
-  //         content: Row(
-  //           children: const [
-  //             // 🔄 LOADING CIRCLE
-  //             SizedBox(
-  //               width: 24,
-  //               height: 24,
-  //               child: CircularProgressIndicator(strokeWidth: 3),
-  //             ),
-  //
-  //             SizedBox(width: 16),
-  //
-  //             // 📝 TEXT
-  //             Expanded(child: Text("Waiting for opponent...")),
-  //           ],
-  //         ),
-  //
-  //         actions: [
-  //           // ❌ CANCEL BUTTON
-  //           TextButton(
-  //             onPressed: () async {
-  //               Navigator.pop(dialogContext);
-  //
-  //               try {
-  //                 await dbRef.child("rooms/$code/players/player2").remove();
-  //
-  //                 await dbRef.child("rooms/$code").update({
-  //                   "status": "waiting",
-  //                   "currentTurn": "",
-  //                   "cancelledBy": "player2",
-  //                 });
-  //               } catch (e) {
-  //                 print("Cancel error: $e");
-  //               }
-  //
-  //               showToast("Cancelled ❌");
-  //             },
-  //             child: const Text("Cancel"),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-
-  //xxxx
   Future<void> showWaitingDialog(String code) async {
-
     await showAppDialog(
       context: context,
-
       title: "Request Send",
-
-      message:
-      "Waiting for opponent responses...\nPlease stay connected.",
-
+      message: "Waiting for opponent responses...\nPlease stay connected.",
       positiveText: "",
       negativeText: "CANCEL",
-
       barrierDismissible: false,
-
       showContentLoading: true,
-
       onNegative: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-        LoadingDialog.show(context, message: "Cancelling Request...",);
-
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
+        LoadingDialog.show(context, message: "Cancelling Request...");
         try {
-
-          await dbRef
-              .child("rooms/$code/players/player2")
-              .remove();
-
+          await dbRef.child("rooms/$code/players/player2").remove();
           await dbRef.child("rooms/$code").update({
             "status": "waiting",
             "currentTurn": "",
             "cancelledBy": "player2",
           });
 
-          /// 🔥 IMPORTANT
+          /// IMPORTANT
           hasCancelled = true;
 
-          /// 🔥 STOP OLD LISTENER
+          /// STOP OLD LISTENER
           await roomListener?.cancel();
           roomListener = null;
-
         } catch (e) {
-
           print("Cancel error: $e");
-        }finally {
-
+        } finally {
           LoadingDialog.hide(context);
         }
 
-        //showToast("Cancelled ❌");
         CustomToast.show(
           context: context,
           message: "Request Cancelled!",
@@ -4869,137 +3208,44 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
   }
 
-
-  ///old dialog
-  // void showStartMatchDialog(String code) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (dialogContext) {
-  //       startDialogContext = dialogContext;
-  //
-  //       return AlertDialog(
-  //         title: const Text("Opponent Joined!"),
-  //
-  //         content: Row(
-  //           children: const [
-  //             SizedBox(
-  //               width: 24,
-  //               height: 24,
-  //               child: CircularProgressIndicator(strokeWidth: 3),
-  //             ),
-  //             SizedBox(width: 16),
-  //             Expanded(child: Text("Please start the match.")),
-  //           ],
-  //         ),
-  //
-  //         actions: [
-  //           // 🔴 REJECT (FIXED)
-  //           TextButton(
-  //             onPressed: () async {
-  //               Navigator.pop(dialogContext);
-  //               startDialogContext = null;
-  //
-  //               try {
-  //                 // 🔥 notify opponent
-  //                 await dbRef.child("rooms/$code").update({
-  //                   "players/player2": null, // 🔥 VERY IMPORTANT
-  //                   "rejectedBy": "player1",
-  //                   "status": "waiting",
-  //                   "currentTurn": "",
-  //                 });
-  //               } catch (e) {
-  //                 print("🔥 Firebase Error: $e");
-  //               }
-  //
-  //               setState(() {
-  //                 opponentJoined = false;
-  //               });
-  //
-  //               showToast("Request rejected ❌");
-  //             },
-  //             child: const Text("REJECT"),
-  //           ),
-  //
-  //           // ✅ START MATCH
-  //           TextButton(
-  //             onPressed: () async {
-  //               Navigator.pop(dialogContext);
-  //               startDialogContext = null;
-  //
-  //               try {
-  //                 await dbRef.child("rooms/$code").update({
-  //                   "status": "playing",
-  //                   "currentTurn": "X",
-  //                 });
-  //               } catch (e) {
-  //                 print("🔥 Firebase Error: $e");
-  //               }
-  //
-  //               startMatch(code);
-  //             },
-  //             child: const Text("START"),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-  // xxx
   Future<void> showStartMatchDialog(String code) async {
-
     await showAppDialog(
       context: context,
 
-      /// 🔥 SAVE DIALOG CONTEXT
+      /// SAVE DIALOG CONTEXT
       onDialogCreated: (dialogContext) {
         startDialogContext = dialogContext;
       },
-
       title: "MATCH FOUND",
-
-      message:
-      "Someone joined your room.\nStart the match now.",
-
+      message: "Someone joined your room.\nStart the match now.",
       positiveText: "START",
       negativeText: "REJECT",
-
       barrierDismissible: false,
-
       showContentLoading: true,
 
-      /// 🔴 REJECT
+      /// REJECT
       onNegative: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         startDialogContext = null;
-        LoadingDialog.show(
-          context,
-          message: "Rejecting Request...",
-        );
-
+        LoadingDialog.show(context, message: "Rejecting Request...");
         try {
-
           await dbRef.child("rooms/$code").update({
             "players/player2": null,
             "rejectedBy": "player1",
             "status": "waiting",
             "currentTurn": "",
           });
-
         } catch (e) {
-
           print("🔥 Firebase Error: $e");
-        }finally {
-
+        } finally {
           LoadingDialog.hide(context);
         }
-
         setState(() {
           opponentJoined = false;
         });
 
-        //showToast("Request rejected ❌");
         CustomToast.show(
           context: context,
           message: "Request rejected!",
@@ -5009,24 +3255,19 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         );
       },
 
-      /// ✅ START MATCH
+      /// START MATCH
       onPositive: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         startDialogContext = null;
-
-
-
         try {
-
           await dbRef.child("rooms/$code").update({
             "status": "playing",
             "currentTurn": "X",
           });
-
         } catch (e) {
-
-          print("🔥 Firebase Error: $e");
+          print(" Firebase Error: $e");
         }
 
         startMatch(code);
@@ -5034,156 +3275,35 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     );
   }
 
-
-  //new
-  // Future<void> showStartMatchDialog(String code) async {
-  //
-  //   await showAppDialog(
-  //     context: context,
-  //
-  //     onDialogCreated: (dialogContext) {
-  //       startDialogContext = dialogContext;
-  //     },
-  //
-  //     title: "MATCH FOUND",
-  //
-  //     message:
-  //     "Opponent joined successfully.\nStart the match now.",
-  //
-  //     positiveText: "START",
-  //     negativeText: "REJECT",
-  //
-  //     barrierDismissible: false,
-  //
-  //     showContentLoading: true,
-  //
-  //     onNegative: () async {
-  //
-  //       startDialogContext = null;
-  //
-  //       try {
-  //
-  //         await dbRef.child("rooms/$code").update({
-  //           "players/player2": null,
-  //           "rejectedBy": "player1",
-  //           "status": "waiting",
-  //           "currentTurn": "",
-  //         });
-  //
-  //       } catch (e) {
-  //         print("🔥 Firebase Error: $e");
-  //       }
-  //
-  //       setState(() {
-  //         opponentJoined = false;
-  //       });
-  //
-  //       showToast("Request rejected ❌");
-  //     },
-  //
-  //     onPositive: () async {
-  //
-  //       startDialogContext = null;
-  //
-  //       try {
-  //
-  //         await dbRef.child("rooms/$code").update({
-  //           "status": "playing",
-  //           "currentTurn": "X",
-  //         });
-  //
-  //       } catch (e) {
-  //         print("🔥 Firebase Error: $e");
-  //       }
-  //
-  //       startMatch(code);
-  //     },
-  //   );
-  // }
-
-
-///old
-  // void showNoInternetDialog() {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (dialogContext) {
-  //       noInternetDialogCtx = dialogContext;
-  //
-  //       return PopScope(
-  //         canPop: false, // 🔥 block normal back
-  //         onPopInvoked: (didPop) {
-  //           if (!didPop) {
-  //             _exitFromNoInternet(); // 🔥 back press handle
-  //           }
-  //         },
-  //
-  //         child: AlertDialog(
-  //           title: const Text("Internet Disconnected"),
-  //
-  //           content: Row(
-  //             children: const [
-  //               CircularProgressIndicator(),
-  //               SizedBox(width: 20),
-  //               Expanded(child: Text("Waiting for connection...")),
-  //             ],
-  //           ),
-  //
-  //           actions: [
-  //             // 🔴 EXIT BUTTON
-  //             TextButton(
-  //               onPressed: () {
-  //                 _exitFromNoInternet();
-  //               },
-  //               child: const Text("EXIT"),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   ).then((_) {
-  //     noInternetDialogCtx = null;
-  //     isOfflineDialogShowing = false;
-  //   });
-  // }
-
-///new
+  ///new
   Future<void> showNoInternetDialog() async {
-
     await showAppDialog(
-
       context: context,
 
-      /// 🔥 SAVE DIALOG CONTEXT
+      /// SAVE DIALOG CONTEXT
       onDialogCreated: (dialogContext) {
         noInternetDialogCtx = dialogContext;
       },
-
       title: "NO INTERNET",
-
-      message:
-      "Connection lost.\nWaiting for internet...",
-
+      message: "Connection lost.\nWaiting for internet...",
       positiveText: "",
       negativeText: "EXIT",
-
       barrierDismissible: false,
-
       showContentLoading: true,
 
-      /// 🔴 EXIT
+      ///  EXIT
       onNegative: () async {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
-
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         await _exitFromNoInternet();
       },
     );
 
-    /// 🔥 RESET
+    /// RESET
     noInternetDialogCtx = null;
     isOfflineDialogShowing = false;
   }
-
 } // end main class //////////////////////////////////////////
 
 class Pressable3DButton extends StatefulWidget {
@@ -5206,7 +3326,7 @@ class _Pressable3DButtonState extends State<Pressable3DButton> {
   void _handleTap() async {
     setState(() => isPressed = true);
 
-    // 🔥 small delay so animation visible
+    /// small delay so animation visible
     await Future.delayed(const Duration(milliseconds: 120));
 
     setState(() => isPressed = false);
@@ -5217,27 +3337,27 @@ class _Pressable3DButtonState extends State<Pressable3DButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _handleTap, // 🔥 use onTap only
+      onTap: _handleTap,
 
+      /// use onTap only
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
 
-        // 🔥 press effect (down movement)
+        /// press effect (down movement)
         transform: Matrix4.translationValues(0, isPressed ? 4 : 0, 0),
 
-        // 🔥 shadow change
-        decoration: BoxDecoration(
-          // boxShadow: isPressed
-          //     ? [
-          //         BoxShadow(
-          //           color: Colors.black.withOpacity(0.4),
-          //           offset: const Offset(0, 0),
-          //           blurRadius: 4,
-          //         ),
-          //       ]
-          //     : [],
-        ),
-
+        /// shadow change
+        // decoration: BoxDecoration(
+        //   // boxShadow: isPressed
+        //   //     ? [
+        //   //         BoxShadow(
+        //   //           color: Colors.black.withOpacity(0.4),
+        //   //           offset: const Offset(0, 0),
+        //   //           blurRadius: 4,
+        //   //         ),
+        //   //       ]
+        //   //     : [],
+        // ),
         child: widget.child,
       ),
     );
@@ -5271,14 +3391,14 @@ class GlowThumb extends SliderComponentShape {
   }) {
     final Canvas canvas = context.canvas;
 
-    /// 🔥 Glow effect
+    /// Glow effect
     final Paint glowPaint = Paint()
-      ..color = Colors.blueAccent.withValues(alpha:0.4)
+      ..color = Colors.blueAccent.withValues(alpha: 0.4)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
     canvas.drawCircle(center, 14, glowPaint);
 
-    /// 🔵 Main thumb
+    /// Main thumb
     final Paint thumbPaint = Paint()..color = Colors.blueAccent;
 
     canvas.drawCircle(center, 10, thumbPaint);
@@ -5310,17 +3430,17 @@ class GradientTrackShape extends RoundedRectSliderTrackShape {
       isDiscrete: isDiscrete,
     );
 
-    /// 🔥 Gradient Paint (Blue → Cyan)
+    /// Gradient Paint (Blue → Cyan)
     final Paint activePaint = Paint()
       ..shader = const LinearGradient(
         colors: [Colors.blueAccent, Colors.purpleAccent],
       ).createShader(trackRect);
 
-    /// 🔹 Inactive Paint
+    /// Inactive Paint
     final Paint inactivePaint = Paint()
-      ..color = Colors.blueAccent.withValues(alpha:0.2);
+      ..color = Colors.blueAccent.withValues(alpha: 0.2);
 
-    /// 🔹 Active track (left)
+    /// Active track (left)
     final Rect leftTrack = Rect.fromLTRB(
       trackRect.left,
       trackRect.top,
@@ -5328,7 +3448,7 @@ class GradientTrackShape extends RoundedRectSliderTrackShape {
       trackRect.bottom,
     );
 
-    /// 🔹 Inactive track (right)
+    /// Inactive track (right)
     final Rect rightTrack = Rect.fromLTRB(
       thumbCenter.dx,
       trackRect.top,
@@ -5337,9 +3457,7 @@ class GradientTrackShape extends RoundedRectSliderTrackShape {
     );
 
     final Radius radius = const Radius.circular(10);
-
     canvas.drawRRect(RRect.fromRectAndRadius(leftTrack, radius), activePaint);
-
     canvas.drawRRect(
       RRect.fromRectAndRadius(rightTrack, radius),
       inactivePaint,
@@ -5357,29 +3475,26 @@ class BorderProgressPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-
     final path = Path();
     path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(radius)));
-
     final metric = path.computeMetrics().first;
 
-    /// 🔥 BACKGROUND BORDER (FULL)
+    /// BACKGROUND BORDER (FULL)
     final bgPaint = Paint()
-      ..color = color
-          .withValues(alpha:0.3) // 🔥 light shade
+      ..color = color.withValues(alpha: 0.3)
+      /// light shade
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
     canvas.drawPath(path, bgPaint);
 
-    /// 🔥 PROGRESS BORDER (ANIMATED)
+    ///  PROGRESS BORDER (ANIMATED)
     final progressPaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
     final extractPath = metric.extractPath(0, metric.length * progress);
-
     canvas.drawPath(extractPath, progressPaint);
   }
 
@@ -5390,36 +3505,3 @@ class BorderProgressPainter extends CustomPainter {
         oldDelegate.radius != radius;
   }
 }
-
-// class BorderProgressPainter extends CustomPainter {
-//   final double progress;
-//
-//   BorderProgressPainter(this.progress);
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-//
-//     final paint = Paint()
-//       ..shader = const LinearGradient(
-//         colors: [Colors.red, Colors.redAccent],
-//       ).createShader(rect)
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 3;
-//
-//     final path = Path();
-//     path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(20)));
-//
-//     final metric = path.computeMetrics().first;
-//
-//     /// 🔥 Reverse Progress
-//     final extractPath = metric.extractPath(0, metric.length * progress);
-//
-//     canvas.drawPath(extractPath, paint);
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant BorderProgressPainter oldDelegate) {
-//     return oldDelegate.progress != progress;
-//   }
-// }
