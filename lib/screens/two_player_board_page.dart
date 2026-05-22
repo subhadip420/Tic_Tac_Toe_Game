@@ -5,11 +5,8 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:confetti/confetti.dart';
-import 'dart:math';
 import 'package:vibration/vibration.dart';
 import 'dart:ui';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../widgets/game_symbols.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
@@ -59,10 +56,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   int player1Score = 0;
   int player2Score = 0;
 
-  bool timerEnabled = false; // 🔥 default OFF
+  bool timerEnabled = false; // default OFF
   int turnTime = 30;
   int currentTime = 30;
-  late double progress = 1 - timerController.value; // 🔥 reverse
+  late double progress = 1 - timerController.value; // reverse
   bool isTimeUp = false;
   Timer? turnTimer;
   int lastAlertSecond = -1;
@@ -129,10 +126,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     loadSettings();
 
     player1Turn = true; // first game always Player 1
-
-    // if (timerEnabled) {
-    //   startTurnTimer();
-    // }
   }
 
   @override
@@ -156,14 +149,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       vibrationOn = prefs.getBool("vibration_on") ?? true;
       timerEnabled = prefs.getBool("timer_enabled") ?? true;
       boardSize = savedSize;
-
       board = List.filled(boardSize * boardSize, "");
     });
   }
 
   void stopTickingSound() {
     clockSoundPlayer.stop();
-
     lastAlertSecond = -1;
   }
 
@@ -174,7 +165,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   void startTurnTimer() {
     turnTimer?.cancel();
     lastAlertSecond = -1;
-
     setState(() {
       currentTime = turnTime;
     });
@@ -189,19 +179,19 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         });
       } else {
         timer.cancel();
-        onTimeUp(); // 🔥 important
+        onTimeUp(); //  important
       }
     });
   }
 
   void onTimeUp() {
     if (gameOver) return;
-    stopTickingSound(); // 🔥 ADD
+    stopTickingSound(); // ADD
     setState(() {
       gameOver = true;
       isTimeUp = true;
 
-      /// 🔥 opponent wins
+      ///  opponent wins
       if (player1Turn) {
         player2Score++;
         gameMessage = "PLAYER 2 WINS";
@@ -247,7 +237,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   Future<void> playVibration(int duration) async {
     if (!vibrationOn) return;
 
-    if (await Vibration.hasVibrator() ?? false) {
+    if (await Vibration.hasVibrator()  == true) {
       Vibration.vibrate(duration: duration);
     }
   }
@@ -255,7 +245,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   void handleTap(int index) {
     if (board[index] != "" || gameOver) return;
 
-    /// 🔥 FIRST MOVE
+    /// FIRST MOVE
     if (!hasGameStarted) {
       hasGameStarted = true;
 
@@ -281,16 +271,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         lastMove = index;
       });
 
-      // SOUND
+      /// SOUND
       if (board[index] == "X") {
         playXSound();
-        //playVibration(110);
         if (vibrationOn) {
           HapticFeedback.lightImpact();
         }
       } else {
         playOSound();
-        //playVibration(110);
         if (vibrationOn) {
           HapticFeedback.lightImpact();
         }
@@ -304,7 +292,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         });
         stopTickingSound();
         if (timerEnabled) {
-          startTurnTimer(); // 🔥 RESET TIMER
+          startTurnTimer();
+
+          /// RESET TIMER
         }
       }
     });
@@ -323,35 +313,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           child: Material(
             color: Colors.transparent,
 
-            // child: Container(
-            //   padding: const EdgeInsets.all(1.5), // 🔥 border thickness
-            //
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(20),
-            //
-            //     /// 🔥 Gradient Border
-            //     gradient: isDark
-            //         ? const LinearGradient(colors: [Colors.blue, Colors.orange])
-            //         : const LinearGradient(
-            //             colors: [Colors.blue, Colors.indigo],
-            //           ),
-            //   ),
-            //   child: Container(
-            //     width: 300,
-            //     height: 200,
-            //     padding: const EdgeInsets.all(20),
-            //
-            //     decoration: BoxDecoration(
-            //       color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-            //       borderRadius: BorderRadius.circular(20),
-            //
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.black.withValues(alpha: 0.3),
-            //           blurRadius: 20,
-            //         ),
-            //       ],
-            //     ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(28),
 
@@ -364,7 +325,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   padding: const EdgeInsets.all(20),
 
                   decoration: BoxDecoration(
-                    /// 🔥 GLASS EFFECT
+                    /// GLASS EFFECT
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -412,7 +373,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Choose Player 1 Symbol", // ⭐ changed
+                        "Choose Player 1 Symbol", // changed
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -425,18 +386,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          // X BUTTON
+                          /// X BUTTON
                           GestureDetector(
                             onTap: () {
-                              //playVibration(120);
                               if (vibrationOn) {
                                 HapticFeedback.lightImpact();
                               }
                               setState(() {
                                 player1Symbol = "X";
-                                player2Symbol = "O"; // ⭐ important
+                                player2Symbol = "O";
                               });
-
                               Navigator.pop(context);
                             },
 
@@ -469,18 +428,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                             ),
                           ),
 
-                          // O BUTTON
+                          /// O BUTTON
                           GestureDetector(
                             onTap: () {
-                              //playVibration(120);
                               if (vibrationOn) {
                                 HapticFeedback.lightImpact();
                               }
                               setState(() {
                                 player1Symbol = "O";
-                                player2Symbol = "X"; // ⭐ important
+                                player2Symbol = "X";
                               });
-
                               Navigator.pop(context);
                             },
 
@@ -561,66 +518,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     }
   }
 
-  ///old checkWinner
-  // void checkWinner() {
-  //   setState(() {
-  //     isTimeUp = false; // 🔥 reset
-  //   });
-  //
-  //   List<List<int>> wins = [
-  //     [0, 1, 2],
-  //     [3, 4, 5],
-  //     [6, 7, 8],
-  //     [0, 3, 6],
-  //     [1, 4, 7],
-  //     [2, 5, 8],
-  //     [0, 4, 8],
-  //     [2, 4, 6],
-  //   ];
-  //
-  //   for (var combo in wins) {
-  //     if (board[combo[0]] != "" &&
-  //         board[combo[0]] == board[combo[1]] &&
-  //         board[combo[1]] == board[combo[2]]) {
-  //       stopTickingSound();
-  //       setState(() {
-  //         winningLine = combo;
-  //         gameOver = true;
-  //       });
-  //
-  //       // ⭐ start winning line animation
-  //       lineController.reset();
-  //       lineController.forward();
-  //
-  //       // update score
-  //       if (board[combo[0]] == player1Symbol) {
-  //         player1Score++;
-  //       } else {
-  //         player2Score++;
-  //       }
-  //
-  //       // delay result to allow animation
-  //       Future.delayed(const Duration(milliseconds: 900), () {
-  //         showResult(board[combo[0]] == player1Symbol);
-  //       });
-  //
-  //       return;
-  //     }
-  //   }
-  //
-  //   // DRAW
-  //   if (!board.contains("")) {
-  //     stopTickingSound();
-  //     setState(() {
-  //       gameOver = true;
-  //     });
-  //
-  //     Future.delayed(const Duration(milliseconds: 400), () {
-  //       showResult(null);
-  //     });
-  //   }
-  // }
-
   ///new checkWinner
   void checkWinner() {
     int winLength;
@@ -633,10 +530,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       winLength = 5;
     }
 
-    //String currentPlayer = player1Turn ? "X" : "O";
     String currentPlayer = player1Turn ? player1Symbol : player2Symbol;
 
-    /// 🔥 CHECK ALL CELLS
+    /// CHECK ALL CELLS
     for (int row = 0; row < boardSize; row++) {
       for (int col = 0; col < boardSize; col++) {
         int index = row * boardSize + col;
@@ -645,40 +541,28 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           continue;
         }
 
-        /// ✅ HORIZONTAL
+        /// HORIZONTAL
         if (_checkDirection(row, col, 0, 1, currentPlayer, winLength)) {
           return;
         }
 
-        /// ✅ VERTICAL
+        /// VERTICAL
         if (_checkDirection(row, col, 1, 0, currentPlayer, winLength)) {
           return;
         }
 
-        /// ✅ DIAGONAL ↘
+        /// DIAGONAL
         if (_checkDirection(row, col, 1, 1, currentPlayer, winLength)) {
           return;
         }
 
-        /// ✅ DIAGONAL ↙
+        /// DIAGONAL
         if (_checkDirection(row, col, 1, -1, currentPlayer, winLength)) {
           return;
         }
       }
     }
 
-    /// 🔥 DRAW
-    // if (!board.contains("")) {
-    //
-    //   stopTickingSound();
-    //
-    //   setState(() {
-    //
-    //     gameOver = true;
-    //
-    //     gameMessage = "It's a Draw!";
-    //   });
-    // }
     if (!board.contains("")) {
       stopTickingSound();
 
@@ -711,7 +595,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
       int newCol = col + colDir * i;
 
-      /// 🔥 OUTSIDE BOARD
+      /// OUTSIDE BOARD
       if (newRow < 0 ||
           newRow >= boardSize ||
           newCol < 0 ||
@@ -728,29 +612,27 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       matched.add(index);
     }
 
-    /// 🔥 WIN FOUND
+    /// WIN FOUND
     stopTickingSound();
 
     setState(() {
-      //winningLine = matched;
-
       gameOver = true;
       winningLine = List<int>.from(matched);
     });
 
-    /// 🔥 WIN LINE ANIMATION
+    /// WIN LINE ANIMATION
     lineController.reset();
 
     lineController.forward();
 
-    /// 🔥 SCORE
+    /// SCORE
     if (player == player1Symbol) {
       player1Score++;
     } else {
       player2Score++;
     }
 
-    /// 🔥 RESULT MESSAGE
+    /// RESULT MESSAGE
     Future.delayed(const Duration(milliseconds: 900), () {
       showResult(player == player1Symbol);
     });
@@ -761,15 +643,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   Future<void> showResetGameDialog() async {
     await showAppDialog(
       context: context,
-
       title: "RESET GAME",
-
       message: "Are you sure you want to reset the current match?",
-
       positiveText: "RESET",
-
       negativeText: "CANCEL",
-
       barrierDismissible: true,
       canPop: true,
       onPositive: () async {
@@ -783,241 +660,49 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         if (vibrationOn) {
           HapticFeedback.lightImpact();
         }
-        // dialog auto close
+
+        /// dialog auto close
       },
     );
   }
 
   void resetGame() {
-    //playVibration(120);
     stopTickingSound();
     setState(() {
       hasGameStarted = false;
       timerController.reset();
       isTimeUp = false;
       currentTime = 30;
-      // 🔁 alternate first player
+
+      /// alternate first player
       isPlayer1First = !isPlayer1First;
-
       player1Turn = isPlayer1First;
-
-      //board = List.filled(9, "");
       board = List.filled(boardSize * boardSize, "");
       winningLine = null;
       lastMove = -1;
       gameOver = false;
       gameMessage = "";
     });
-
     lineController.reset();
-
     turnTimer?.cancel();
-
-    // if (timerEnabled) {
-    //   startTurnTimer();
-    // }
   }
-
-  // void showSettingsMenu() {
-  //   showMenu(
-  //     context: context,
-  //     position: const RelativeRect.fromLTRB(1000, 80, 20, 0),
-  //
-  //     color: isDark ? const Color(0xFF344364) : Colors.white,
-  //
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-  //
-  //     items: [
-  //       PopupMenuItem(
-  //         enabled: false,
-  //         child: SizedBox(
-  //           width: 200,
-  //           child: StatefulBuilder(
-  //             builder: (context, setStateMenu) {
-  //               return Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   // 🌙 THEME
-  //                   settingsTile(
-  //                     icon: isDark ? Icons.dark_mode : Icons.light_mode,
-  //                     title: "Dark Theme",
-  //                     value: isDark,
-  //                     onChanged: (value) async {
-  //                       SharedPreferences prefs =
-  //                           await SharedPreferences.getInstance();
-  //                       Navigator.pop(context);
-  //                       playVibration(130);
-  //
-  //                       setState(() {
-  //                         isDark = value;
-  //                       });
-  //
-  //                       setStateMenu(() {});
-  //
-  //                       prefs.setBool("theme_dark", isDark);
-  //                     },
-  //                   ),
-  //
-  //                   // 🔊 SOUND
-  //                   settingsTile(
-  //                     icon: soundOn ? Icons.volume_up : Icons.volume_off,
-  //                     title: "Sound",
-  //                     value: soundOn,
-  //                     onChanged: (value) async {
-  //                       SharedPreferences prefs =
-  //                           await SharedPreferences.getInstance();
-  //
-  //                       playVibration(130);
-  //
-  //                       setState(() {
-  //                         soundOn = value;
-  //                       });
-  //
-  //                       setStateMenu(() {});
-  //
-  //                       prefs.setBool("sound_on", soundOn);
-  //                     },
-  //                   ),
-  //
-  //                   // 📳 VIBRATION
-  //                   settingsTile(
-  //                     icon: vibrationOn
-  //                         ? Icons.vibration
-  //                         : Icons.phonelink_erase,
-  //                     title: "Vibration",
-  //                     value: vibrationOn,
-  //                     onChanged: (value) async {
-  //                       SharedPreferences prefs =
-  //                           await SharedPreferences.getInstance();
-  //
-  //                       setState(() {
-  //                         vibrationOn = value;
-  //                       });
-  //
-  //                       setStateMenu(() {});
-  //
-  //                       prefs.setBool("vibration_on", vibrationOn);
-  //                     },
-  //                   ),
-  //
-  //                   //const Divider(height: 10, thickness: 0.6),
-  //
-  //                   // 🕒 TIMER OPTION
-  //                   // settingsTile(
-  //                   //   icon: timerEnabled
-  //                   //       ? Icons.timer
-  //                   //       : Icons.timer_off, // 🔥 clock icon
-  //                   //   title: "Timer",
-  //                   //   value: timerEnabled,
-  //                   //   onChanged: (value) async {
-  //                   //
-  //                   //     SharedPreferences prefs =
-  //                   //     await SharedPreferences.getInstance();
-  //                   //
-  //                   //     setState(() {
-  //                   //       timerEnabled = value;
-  //                   //     });
-  //                   //
-  //                   //     setStateMenu(() {}); // 🔥 update menu UI
-  //                   //
-  //                   //     prefs.setBool("timer_enabled", timerEnabled); // save
-  //                   //
-  //                   //   },
-  //                   // ),
-  //                   settingsTile(
-  //                     icon: timerEnabled ? Icons.timer : Icons.timer_off,
-  //                     title: "Timer",
-  //                     value: timerEnabled,
-  //
-  //                     onChanged: (value) async {
-  //                       /// 🔥 LOCK CONDITION
-  //                       if (isGameRunning) {
-  //                         Fluttertoast.showToast(
-  //                           msg: "Can't change during game",
-  //                           toastLength: Toast.LENGTH_SHORT,
-  //                         );
-  //                         return;
-  //                       }
-  //
-  //                       SharedPreferences prefs =
-  //                           await SharedPreferences.getInstance();
-  //
-  //                       setState(() {
-  //                         timerEnabled = value;
-  //                       });
-  //
-  //                       setStateMenu(() {});
-  //                       prefs.setBool("timer_enabled", timerEnabled);
-  //                     },
-  //                   ),
-  //                 ],
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-  // Widget settingsTile({
-  //   required IconData icon,
-  //   required String title,
-  //   required bool value,
-  //   ValueChanged<bool>? onChanged,
-  // }) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 1),
-  //     child: Row(
-  //       children: [
-  //         Icon(icon, size: 20, color: Colors.blueAccent),
-  //         const SizedBox(width: 8),
-  //
-  //         Expanded(
-  //           child: Text(
-  //             title,
-  //             style: TextStyle(
-  //               color: isDark ? Colors.white : Colors.black,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //
-  //         Transform.scale(
-  //           scale: 0.8,
-  //           child: Switch(
-  //             value: value,
-  //             activeThumbColor: Colors.blueAccent,
-  //             onChanged: onChanged,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   void showSettingsMenu() {
     showGlassSettingsMenu(
       context: context,
-
       isDark: isDark,
-
       items: [
-        /// 🌙 THEME
+        ///  THEME
         SettingsMenuItem(
           affectsTheme: true,
-
           iconBuilder: (value) {
             return value ? Icons.dark_mode : Icons.light_mode;
           },
-
           title: "Dark Theme",
-
           value: isDark,
-
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            //playVibration(130);
             if (vibrationOn) {
               HapticFeedback.lightImpact();
             }
@@ -1029,41 +714,32 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           },
         ),
 
-        /// 🔊 SOUND
+        /// SOUND
         SettingsMenuItem(
           iconBuilder: (value) {
             return value ? Icons.volume_up : Icons.volume_off;
           },
-
           title: "Sound",
-
           value: soundOn,
-
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-
-            //playVibration(130);
             if (vibrationOn) {
               HapticFeedback.lightImpact();
             }
             setState(() {
               soundOn = value;
             });
-
             await prefs.setBool("sound_on", soundOn);
           },
         ),
 
-        /// 📳 VIBRATION
+        /// VIBRATION
         SettingsMenuItem(
           iconBuilder: (value) {
             return value ? Icons.vibration : Icons.phonelink_erase;
           },
-
           title: "Vibration",
-
           value: vibrationOn,
-
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (!vibrationOn) {
@@ -1072,31 +748,21 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             setState(() {
               vibrationOn = value;
             });
-
             await prefs.setBool("vibration_on", vibrationOn);
           },
         ),
 
-        /// ⏱ TIMER
-        /// ⏱ TIMER
+        /// TIMER
         SettingsMenuItem(
           iconBuilder: (value) {
             return value ? Icons.timer : Icons.timer_off;
           },
-
           title: "Timer",
-
           value: timerEnabled,
 
-          /// 🔥 PREVENT CHANGE
+          /// PREVENT CHANGE
           canChange: (value) {
             if (isGameRunning) {
-              // Fluttertoast.showToast(
-              //   msg: "Can't change during game",
-              //
-              //   toastLength: Toast.LENGTH_SHORT,
-              // );
-
               CustomToast.show(
                 context: context,
                 message: "Can't change during game.",
@@ -1104,10 +770,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 icon: Icons.block_rounded,
                 color: Colors.orange,
               );
-
               return false;
             }
-
             return true;
           },
 
@@ -1119,7 +783,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             setState(() {
               timerEnabled = value;
             });
-
             await prefs.setBool("timer_enabled", timerEnabled);
           },
         ),
@@ -1128,14 +791,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   }
 
   void showBoardSizeMenu() {
-    /// 🔥 BLOCK DURING MATCH
+    /// BLOCK DURING MATCH
     if (isGameRunning) {
-      // Fluttertoast.showToast(
-      //   msg: "Can't change during match",
-      //
-      //   toastLength: Toast.LENGTH_SHORT,
-      // );
-
       CustomToast.show(
         context: context,
         message: "Can't change during match.",
@@ -1149,8 +806,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
     showMenu(
       context: context,
-
-      //position: const RelativeRect.fromLTRB(0, 90, 10, 0),
       position: RelativeRect.fromLTRB(
         MediaQuery.of(context).size.width / 2 - 75,
         85,
@@ -1158,13 +813,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         0,
       ),
       color: Colors.transparent,
-
       elevation: 0,
-
       items: [
         PopupMenuItem(
           enabled: false,
-
           padding: EdgeInsets.zero,
 
           child: Material(
@@ -1179,8 +831,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 child: Container(
                   width: 150,
 
-                  //padding: const EdgeInsets.all(5),
-                  //padding: const EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
 
@@ -1191,12 +841,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       colors: isDark
                           ? [
                               Colors.white.withValues(alpha: 0.10),
-
                               Colors.white.withValues(alpha: 0.04),
                             ]
                           : [
                               Colors.white.withValues(alpha: 0.45),
-
                               Colors.white.withValues(alpha: 0.18),
                             ],
                     ),
@@ -1212,152 +860,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         color: Colors.black.withValues(
                           alpha: isDark ? 0.20 : 0.08,
                         ),
-
                         blurRadius: 24,
-
                         offset: const Offset(0, 8),
                       ),
                     ],
                   ),
-
-                  ///old
-                  // child: Column(
-                  //   mainAxisSize: MainAxisSize.min,
-                  //
-                  //   children: availableBoardSizes.map((size) {
-                  //     bool selected = boardSize == size;
-                  //
-                  //     return GestureDetector(
-                  //       onTap: () {
-                  //         playVibration(120);
-                  //
-                  //         setState(() {
-                  //           boardSize = size;
-                  //           board = List.filled(size * size, "");
-                  //           player1Turn = true;
-                  //           gameOver = false;
-                  //           winningLine = null;
-                  //           gameMessage = "";
-                  //           lastMove = -1;
-                  //           pressedIndex = -1;
-                  //           isTimeUp = false;
-                  //         });
-                  //
-                  //         Navigator.pop(context);
-                  //       },
-                  //
-                  //       child: AnimatedContainer(
-                  //         duration: const Duration(milliseconds: 180),
-                  //
-                  //         margin: const EdgeInsets.only(bottom: 10),
-                  //
-                  //         padding: const EdgeInsets.symmetric(
-                  //           horizontal: 14,
-                  //           vertical: 14,
-                  //         ),
-                  //
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(18),
-                  //
-                  //           gradient: selected
-                  //               ? const LinearGradient(
-                  //                   colors: [
-                  //                     Colors.blueAccent,
-                  //
-                  //                     Colors.cyanAccent,
-                  //                   ],
-                  //                 )
-                  //               : null,
-                  //
-                  //           color: selected
-                  //               ? null
-                  //               : isDark
-                  //               ? Colors.white.withValues(alpha: 0.05)
-                  //               : Colors.white.withValues(alpha: 0.55),
-                  //
-                  //           border: Border.all(
-                  //             color: selected
-                  //                 ? Colors.transparent
-                  //                 : isDark
-                  //                 ? Colors.white.withValues(alpha: 0.08)
-                  //                 : Colors.black.withValues(alpha: 0.06),
-                  //           ),
-                  //
-                  //           boxShadow: selected
-                  //               ? [
-                  //                   BoxShadow(
-                  //                     color: Colors.blueAccent.withValues(
-                  //                       alpha: 0.45,
-                  //                     ),
-                  //
-                  //                     blurRadius: 18,
-                  //
-                  //                     spreadRadius: 1,
-                  //                   ),
-                  //                 ]
-                  //               : [],
-                  //         ),
-                  //
-                  //         child: Row(
-                  //           children: [
-                  //             Expanded(
-                  //               child: Text(
-                  //                 "${size}x$size",
-                  //
-                  //                 style: TextStyle(
-                  //                   fontSize: 15,
-                  //
-                  //                   fontWeight: FontWeight.bold,
-                  //
-                  //                   color: selected
-                  //                       ? Colors.white
-                  //                       : isDark
-                  //                       ? Colors.white
-                  //                       : Colors.black87,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //
-                  //             AnimatedContainer(
-                  //               duration: const Duration(milliseconds: 180),
-                  //
-                  //               width: 26,
-                  //               height: 26,
-                  //
-                  //               decoration: BoxDecoration(
-                  //                 shape: BoxShape.circle,
-                  //
-                  //                 color: selected
-                  //                     ? Colors.white
-                  //                     : Colors.transparent,
-                  //
-                  //                 border: Border.all(
-                  //                   color: selected
-                  //                       ? Colors.white
-                  //                       : isDark
-                  //                       ? Colors.white54
-                  //                       : Colors.black45,
-                  //
-                  //                   width: 2,
-                  //                 ),
-                  //               ),
-                  //
-                  //               child: selected
-                  //                   ? const Icon(
-                  //                       Icons.check,
-                  //
-                  //                       size: 16,
-                  //
-                  //                       color: Colors.blue,
-                  //                     )
-                  //                   : null,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  // ),
 
                   ///new
                   child: SizedBox(
@@ -1369,59 +876,42 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         vertical: 6,
                       ),
                       controller: ScrollController(
-                        /// 🔥 SELECTED ITEM CENTER
-                        //initialScrollOffset: ((boardSize - 3) * 72).toDouble(),
+                        /// SELECTED ITEM CENTER
                         initialScrollOffset: (((boardSize - 3) * 58) - 58)
                             .clamp(0, double.infinity)
                             .toDouble(),
                       ),
 
                       physics: const BouncingScrollPhysics(),
-
                       itemCount: availableBoardSizes.length,
-
                       itemBuilder: (context, index) {
                         int size = availableBoardSizes[index];
-
                         bool selected = boardSize == size;
 
                         return GestureDetector(
                           onTap: () {
-                            //playVibration(120);
                             if (vibrationOn) {
                               HapticFeedback.lightImpact();
                             }
 
-                            /// 🔥 TIMER RESET
+                            /// TIMER RESET
                             hasGameStarted = false;
-
                             turnTimer?.cancel();
-
                             timerController.reset();
-
                             stopTickingSound();
-
                             SharedPreferences.getInstance().then((prefs) {
                               prefs.setInt("board_size", size);
                             });
 
                             setState(() {
                               boardSize = size;
-
                               board = List.filled(size * size, "");
-
                               player1Turn = true;
-
                               gameOver = false;
-
                               winningLine = null;
-
                               gameMessage = "";
-
                               lastMove = -1;
-
                               pressedIndex = -1;
-
                               isTimeUp = false;
                             });
 
@@ -1430,9 +920,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 180),
-
                             margin: const EdgeInsets.only(bottom: 5),
-
                             padding: const EdgeInsets.only(
                               left: 10,
                               right: 5,
@@ -1442,12 +930,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-
                               gradient: selected
                                   ? const LinearGradient(
                                       colors: [
                                         Colors.blueAccent,
-
                                         Colors.cyanAccent,
                                       ],
                                     )
@@ -1473,9 +959,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                         color: Colors.blueAccent.withValues(
                                           alpha: 0.45,
                                         ),
-
                                         blurRadius: 18,
-
                                         spreadRadius: 1,
                                       ),
                                     ]
@@ -1487,12 +971,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 Expanded(
                                   child: Text(
                                     "${size}x$size",
-
                                     style: TextStyle(
                                       fontSize: 15,
-
                                       fontWeight: FontWeight.bold,
-
                                       color: selected
                                           ? Colors.white
                                           : isDark
@@ -1504,10 +985,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                                 AnimatedContainer(
                                   duration: const Duration(milliseconds: 180),
-
                                   width: 26,
                                   height: 26,
-
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
 
@@ -1529,9 +1008,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   child: selected
                                       ? const Icon(
                                           Icons.check,
-
                                           size: 16,
-
                                           color: Colors.blue,
                                         )
                                       : null,
@@ -1554,39 +1031,38 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   @override
   Widget build(BuildContext context) {
-    //Color bgColor = isDark ? const Color(0xFF1F2A44) : const Color(0xFFF5F5F5);
     Color boardColor = isDark ? const Color(0xFF2B3A5A) : Colors.white;
     Color cellColor = isDark
         ? const Color(0xFF1F2A44)
         : const Color(0xFFF0F0F0);
     Color textColor = isDark ? Colors.white : Colors.black87;
-    double boardPixelSize = boardSize <= 3
-        ? 280
-        : boardSize == 4
-        ? 320
-        : boardSize == 5
-        ? 340
-        : boardSize == 6
-        ? 360
-        : boardSize == 7
-        ? 380
-        : boardSize == 8
-        ? 400
-        : 420;
+    // double boardPixelSize = boardSize <= 3
+    //     ? 280
+    //     : boardSize == 4
+    //     ? 320
+    //     : boardSize == 5
+    //     ? 340
+    //     : boardSize == 6
+    //     ? 360
+    //     : boardSize == 7
+    //     ? 380
+    //     : boardSize == 8
+    //     ? 400
+    //     : 420;
     return PopScope(
       canPop: (gameOver || !board.any((e) => e != "")),
 
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        /// 🔥 MATCH RUNNING
+        /// MATCH RUNNING
         if (!gameOver && board.any((e) => e != "")) {
           if (vibrationOn) {
             HapticFeedback.lightImpact();
           }
           await showExitDialog();
         } else {
-          /// 🔥 DIRECT BACK
+          /// DIRECT BACK
           //playVibration(120);
           if (vibrationOn) {
             HapticFeedback.lightImpact();
@@ -1601,10 +1077,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         backgroundColor: Colors.transparent,
 
         appBar: AppBar(
-          //leadingWidth: 120,
-          // 🔥 ADD HERE
           backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
-          //backgroundColor: Colors.transparent,
           elevation: 0,
 
           flexibleSpace: Container(
@@ -1619,36 +1092,23 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             ),
           ),
 
-          // leading: IconButton(
-          //   icon: Icon(Icons.arrow_back, color: textColor),
-          //   onPressed: () {
-          //     playVibration(120);
-          //     Navigator.pop(context);
-          //   },
-          // ),
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Tooltip(
               message: "Back",
               child: GestureDetector(
-                // onTap: () async {
-                //   await showExitDialog();
-                //   // playVibration(120);
-                //   // Navigator.pop(context);
-                // },
                 onTap: () async {
-                  /// 🔥 MATCH RUNNING
+                  /// MATCH RUNNING
                   if (!gameOver && board.any((e) => e != "")) {
                     if (vibrationOn) {
                       HapticFeedback.lightImpact();
                     }
                     await showExitDialog();
                   } else {
-                    /// 🔥 DIRECT BACK
+                    /// DIRECT BACK
                     if (vibrationOn) {
                       HapticFeedback.lightImpact();
                     }
-                    //playVibration(120);
 
                     Navigator.pop(context);
                   }
@@ -1661,132 +1121,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
             ),
           ),
 
-          // leading: Row(
-          //   children: [
-          //     const SizedBox(width: 10),
-          //
-          //     /// 🔙 BACK
-          //     Tooltip(
-          //       message: "Back",
-          //
-          //       child: GestureDetector(
-          //         onTap: () async {
-          //           if (!gameOver && board.any((e) => e != "")) {
-          //             await showExitDialog();
-          //           } else {
-          //             playVibration(120);
-          //
-          //             Navigator.pop(context);
-          //           }
-          //         },
-          //
-          //         child: build3DIconButton(
-          //           icon: Icons.arrow_back,
-          //
-          //           isDark: isDark,
-          //         ),
-          //       ),
-          //     ),
-          //
-          //     const SizedBox(width: 10),
-          //
-          //     /// 🎮 BOARD SIZE
-          //     Tooltip(
-          //       message: "Board Size",
-          //
-          //       child: GestureDetector(
-          //         onTap: showBoardSizeMenu,
-          //
-          //         child: build3DIconButton(
-          //           icon: Icons.grid_view_rounded,
-          //
-          //           isDark: isDark,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          //
-          //
-          // title: Transform.translate(
-          //   offset: const Offset(0, 0),
-          //
-          //   child: Text(
-          //     "Play With \n Friends",
-          //
-          //     textAlign: TextAlign.center,
-          //
-          //     style: TextStyle(
-          //       color: isDark ? Colors.cyanAccent : Colors.blue,
-          //
-          //       fontSize: 15,
-          //
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-          //
-          // centerTitle: true,
-
-          // /// 🔙 BACK BUTTON
-          // leading: Padding(
-          //
-          //   padding: const EdgeInsets.only(
-          //     left: 10,
-          //   ),
-          //
-          //   child: Tooltip(
-          //
-          //     message: "Back",
-          //
-          //     child: GestureDetector(
-          //
-          //       onTap: () async {
-          //
-          //         /// 🔥 MATCH RUNNING
-          //         if (!gameOver &&
-          //             board.any((e) => e != "")) {
-          //
-          //           await showExitDialog();
-          //
-          //         } else {
-          //
-          //           playVibration(120);
-          //
-          //           Navigator.pop(context);
-          //         }
-          //       },
-          //
-          //       child: build3DIconButton(
-          //
-          //         icon: Icons.arrow_back,
-          //
-          //         isDark: isDark,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
-          /// 🎮 BOARD SIZE SELECT
+          /// BOARD SIZE SELECT
           title: GestureDetector(
             onTap: () {
-              // if (!gameOver &&
-              //     board.any((e) => e != "")) {
-              //
-              //   showToast(
-              //     "Finish the match before changing board size.",
-              //   );
-              //
-              //   playVibration(150);
-              //
-              //   return;
-              // }
-
               showBoardSizeMenu();
               if (vibrationOn) {
                 HapticFeedback.mediumImpact();
               }
-              //playVibration(130);
             },
 
             child: Container(
@@ -1807,7 +1148,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
-
                   vertical: 6,
                 ),
 
@@ -1823,9 +1163,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   boxShadow: [
                     BoxShadow(
                       color: Colors.blueAccent.withValues(alpha: 0.4),
-
                       blurRadius: 8,
-
                       spreadRadius: 1,
                     ),
                   ],
@@ -1836,13 +1174,10 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                   children: [
                     Text(
-                      "${boardSize} x ${boardSize}",
-
+                      "$boardSize x $boardSize",
                       style: TextStyle(
                         color: isDark ? Colors.white : Colors.black,
-
                         fontSize: 15,
-
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1851,9 +1186,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                     Icon(
                       Icons.expand_more,
-
                       color: isDark ? Colors.white : Colors.black,
-
                       size: 18,
                     ),
                   ],
@@ -1865,11 +1198,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           centerTitle: true,
 
           actions: [
-            /// 🔹 DRAW BUTTON
+            /// DRAW BUTTON
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Tooltip(
-                message: "Draw Board", // 🔥 long press tooltip
+                message: "Draw Board",
+
+                /// long press tooltip
                 child: GestureDetector(
                   onTap: () {
                     if (vibrationOn) {
@@ -1885,11 +1220,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
 
-            /// 🔹 SETTINGS BUTTON
+            /// SETTINGS BUTTON
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: Tooltip(
-                message: "Settings", // 🔥 tooltip
+                message: "Settings",
+
+                ///tooltip
                 child: GestureDetector(
                   onTap: () {
                     if (vibrationOn) {
@@ -1910,7 +1247,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
-            // BACKGROUND GRADIENT
+            /// BACKGROUND GRADIENT
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -1931,7 +1268,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
 
-            // CONFETTI
+            /// CONFETTI
             ConfettiWidget(
               confettiController: confettiController,
               blastDirectionality: BlastDirectionality.explosive,
@@ -1954,7 +1291,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                     children: [
                       const SizedBox(height: 20),
 
-                      // SCORE SECTION
+                      /// SCORE SECTION
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -2014,7 +1351,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            "Time's Up ⚠️",
+                            "Time's Up!",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -2061,11 +1398,11 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   child: Transform.translate(
                                     offset: Offset(0, -40 * (1 - value)),
 
-                                    // slide from top
+                                    /// slide from top
                                     child: Transform.scale(
                                       scale: 0.95 + (0.05 * value),
 
-                                      // slight pop
+                                      /// slight pop
                                       child: Container(
                                         margin: const EdgeInsets.only(
                                           bottom: 8,
@@ -2108,7 +1445,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                           child: Stack(
                                             alignment: Alignment.center,
                                             children: [
-                                              // OUTLINE TEXT
+                                              /// OUTLINE TEXT
                                               ShaderMask(
                                                 shaderCallback: (rect) {
                                                   return LinearGradient(
@@ -2130,7 +1467,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                                 ),
                                               ),
 
-                                              // MAIN TEXT
+                                              /// MAIN TEXT
                                               Text(
                                                 gameMessage,
                                                 style: TextStyle(
@@ -2168,7 +1505,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       const SizedBox(height: 020),
 
                       /// GAME BOARD (CENTERED)
-                      // Expanded(
                       SizedBox(
                         height: 320,
                         //height: boardPixelSize + 40,
@@ -2177,8 +1513,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           child: Container(
                             width: 320,
                             height: 320,
-                            // width: boardPixelSize,
-                            // height: boardPixelSize,
+
                             padding: const EdgeInsets.all(1.5),
 
                             decoration: BoxDecoration(
@@ -2199,7 +1534,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                               ),
 
                               boxShadow: [
-                                // outer glow
+                                /// outer glow
                                 BoxShadow(
                                   color:
                                       (isDark
@@ -2210,7 +1545,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   spreadRadius: 1,
                                 ),
 
-                                // 3D depth
+                                /// 3D depth
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.25),
                                   offset: const Offset(4, 4),
@@ -2220,7 +1555,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                             ),
 
                             child: Container(
-                              //padding: const EdgeInsets.all(8),
                               padding: EdgeInsets.all(boardSize <= 5 ? 8 : 5),
                               decoration: BoxDecoration(
                                 color: boardColor,
@@ -2232,12 +1566,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   GridView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
-                                    //itemCount: 9,
                                     itemCount: board.length,
                                     gridDelegate:
-                                        // const SliverGridDelegateWithFixedCrossAxisCount(
-                                        //   crossAxisCount: 3,
-                                        // ),
                                         SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: boardSize,
 
@@ -2262,7 +1592,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                           ),
 
                                           child: Container(
-                                            //margin: const EdgeInsets.all(6),
                                             margin: EdgeInsets.all(
                                               boardSize <= 4
                                                   ? 6
@@ -2272,7 +1601,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                             ),
                                             decoration: BoxDecoration(
                                               color: cellColor,
-                                              //borderRadius: BorderRadius.circular(12),
+
                                               borderRadius:
                                                   BorderRadius.circular(
                                                     boardSize <= 5 ? 12 : 8,
@@ -2305,16 +1634,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                                             child: Center(
                                               child: board[index] == "X"
-                                                  //? const GameX()
-                                                  // ? GameX(
-                                                  //     size: boardSize <= 3
-                                                  //         ? 40
-                                                  //         : boardSize <= 5
-                                                  //         ? 32
-                                                  //         : boardSize <= 7
-                                                  //         ? 24
-                                                  //         : 18,
-                                                  //   )
                                                   ? GameX(
                                                       size: boardSize <= 3
                                                           ? 40
@@ -2325,16 +1644,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                                           : 12,
                                                     )
                                                   : board[index] == "O"
-                                                  //? const GameO()
-                                                  // ? GameO(
-                                                  //     size: boardSize <= 3
-                                                  //         ? 40
-                                                  //         : boardSize <= 5
-                                                  //         ? 32
-                                                  //         : boardSize <= 7
-                                                  //         ? 24
-                                                  //         : 18,
-                                                  //   )
                                                   ? GameO(
                                                       size: boardSize <= 3
                                                           ? 40
@@ -2352,7 +1661,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                     },
                                   ),
 
-                                  // WINNING LINE DRAW
+                                  /// WINNING LINE DRAW
                                   if (winningLine != null)
                                     AnimatedBuilder(
                                       animation: lineAnimation,
@@ -2363,11 +1672,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                                             320 - (boardSize <= 5 ? 16 : 10),
                                           ),
-                                          //size: const Size(260, 260),
+
                                           painter: WinLinePainter(
-                                            // winningLine!,
-                                            // lineAnimation.value,
-                                            // 3,
                                             winningLine!,
                                             lineAnimation.value,
                                             boardSize,
@@ -2396,7 +1702,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 text: "Home",
                                 icon: Icons.home,
                                 onTap: () {
-                                  //playVibration(120);
                                   if (vibrationOn) {
                                     HapticFeedback.mediumImpact();
                                   }
@@ -2413,17 +1718,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 text: "Replay",
                                 icon: Icons.refresh,
                                 onTap: () {
-                                  //playXSound();   // replay sound
-                                  //playVibration(120);
                                   if (vibrationOn) {
                                     HapticFeedback.mediumImpact();
                                   }
                                   resetGame();
                                 },
                                 isDark: isDark,
-
                                 glowController: glowController,
-
                                 glowAnimation: glowAnimation,
                               ),
                             ],
@@ -2432,75 +1733,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                       const SizedBox(height: 80),
 
-                      // if (!gameOver)
-                      //   GestureDetector(
-                      //     onTapDown: (_) {
-                      //       setState(() {
-                      //         resetPressed = true;
-                      //       });
-                      //     },
-                      //
-                      //     onTapUp: (_) {
-                      //       setState(() {
-                      //         resetPressed = false;
-                      //       });
-                      //       resetGame();
-                      //     },
-                      //
-                      //     onTapCancel: () {
-                      //       setState(() {
-                      //         resetPressed = false;
-                      //       });
-                      //     },
-                      //
-                      //     child: AnimatedScale(
-                      //       scale: resetPressed ? 0.92 : 1,
-                      //       duration: const Duration(milliseconds: 120),
-                      //
-                      //       child: Container(
-                      //         width: double.infinity,
-                      //         height: 50,
-                      //         padding: const EdgeInsets.all(1),
-                      //
-                      //         decoration: BoxDecoration(
-                      //           borderRadius: BorderRadius.circular(14),
-                      //
-                      //           gradient: LinearGradient(
-                      //             colors: isDark
-                      //                 ? [
-                      //               Colors.pinkAccent,
-                      //               Colors.orangeAccent,
-                      //               Colors.pinkAccent,
-                      //
-                      //                   ]
-                      //                 : [
-                      //               Colors.blueAccent,
-                      //               Colors.cyanAccent,
-                      //               Colors.blueAccent,
-                      //                   ],
-                      //           ),
-                      //         ),
-                      //
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: boardColor,
-                      //             borderRadius: BorderRadius.circular(12),
-                      //           ),
-                      //
-                      //           child: Center(
-                      //             child: Text(
-                      //               "Reset Game",
-                      //               style: TextStyle(
-                      //                 color: textColor,
-                      //                 fontSize: 16,
-                      //                 fontWeight: FontWeight.bold,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
                       if (!gameOver && board.any((e) => e != ""))
                         GestureDetector(
                           onTapDown: (_) {
@@ -2514,7 +1746,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                               resetPressed = false;
                             });
 
-                            //resetGame();
                             showResetGameDialog();
                             if (vibrationOn) {
                               HapticFeedback.lightImpact();
@@ -2529,19 +1760,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                           child: AnimatedScale(
                             scale: resetPressed ? 0.92 : 1,
-
                             duration: const Duration(milliseconds: 120),
-
                             child: SizedBox(
                               width: double.infinity,
 
                               child: BuildIconTextButton(
                                 icon: Icons.refresh,
-
                                 text: "Reset Game",
-
                                 isDark: isDark,
-
                                 borderRadius: BorderRadius.circular(14),
 
                                 boxShadow: [
@@ -2549,9 +1775,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                     color: Colors.black.withValues(
                                       alpha: isDark ? 0.4 : 0.15,
                                     ),
-
                                     offset: const Offset(2, 2),
-
                                     blurRadius: 6,
                                   ),
                                 ],
@@ -2567,7 +1791,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
 
-            // CONFETTI (FRONT LAYER)
+            /// CONFETTI (FRONT LAYER)
             IgnorePointer(
               child: ConfettiWidget(
                 confettiController: confettiController,
@@ -2591,26 +1815,20 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   Future<void> showExitDialog() async {
     await showAppDialog(
       context: context,
-
       title: "EXIT MATCH",
-
       message: "Exit and end the match?",
-
       positiveText: "EXIT",
       negativeText: "CANCEL",
-
       barrierDismissible: true,
       canPop: true,
-
       onNegative: () {
         if (vibrationOn) {
           HapticFeedback.lightImpact();
         }
-        // 🔥 nothing needed
+        // nothing needed
       },
 
       onPositive: () async {
-        //playVibration(120);
         if (vibrationOn) {
           HapticFeedback.mediumImpact();
         }
@@ -2619,78 +1837,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
       },
     );
   }
-
-  // Widget neonButton({
-  //   required String text,
-  //   required IconData icon,
-  //   required VoidCallback onTap,
-  // }) {
-  //   List<Color> colors = isDark
-  //       ? [Colors.blueAccent, Colors.purpleAccent]
-  //       : [Colors.orangeAccent, Colors.pinkAccent];
-  //
-  //   return Material(
-  //     color: Colors.transparent,
-  //
-  //     child: InkWell(
-  //       onTap: onTap,
-  //       borderRadius: BorderRadius.circular(16),
-  //
-  //       child: AnimatedBuilder(
-  //         animation: glowController,
-  //
-  //         builder: (context, child) {
-  //           return Container(
-  //             padding: const EdgeInsets.all(1),
-  //
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(16),
-  //               gradient: LinearGradient(colors: colors),
-  //
-  //               boxShadow: [
-  //                 BoxShadow(
-  //                   color: colors.first.withValues(alpha: glowAnimation.value),
-  //                   blurRadius: 20 * glowAnimation.value,
-  //                 ),
-  //               ],
-  //             ),
-  //
-  //             child: Container(
-  //               padding: const EdgeInsets.symmetric(
-  //                 horizontal: 20,
-  //                 vertical: 10,
-  //               ),
-  //
-  //               decoration: BoxDecoration(
-  //                 color: isDark ? const Color(0xFF2B3A5A) : Colors.white,
-  //
-  //                 borderRadius: BorderRadius.circular(14),
-  //               ),
-  //
-  //               child: Row(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   Icon(icon, color: colors.first),
-  //
-  //                   const SizedBox(width: 6),
-  //
-  //                   Text(
-  //                     text,
-  //                     style: TextStyle(
-  //                       fontSize: 16,
-  //                       fontWeight: FontWeight.bold,
-  //                       color: isDark ? Colors.white : Colors.black87,
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget scoreBox(String player, String symbol, Color bg, Color textColor) {
     Color borderColor = symbol == "X" ? Colors.blueAccent : Colors.orangeAccent;
@@ -2712,7 +1858,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
         return Stack(
           children: [
-            /// 🔥 MAIN BOX
+            /// MAIN BOX
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
               decoration: BoxDecoration(
@@ -2762,7 +1908,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
 
-            /// 🔥 TIMER BORDER (ONLY ACTIVE PLAYER)
+            /// TIMER BORDER (ONLY ACTIVE PLAYER)
             if (isActive && timerEnabled)
               Positioned.fill(
                 child: AnimatedBuilder(
@@ -2774,15 +1920,14 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                       if (timeLeft != lastAlertSecond) {
                         lastAlertSecond = timeLeft;
 
-                        /// 🔊 SOUND
+                        ///  SOUND
                         if (soundOn) {
-                          clockSoundPlayer.stop(); // 🔥 avoid overlap
+                          clockSoundPlayer.stop(); // avoid overlap
                           clockSoundPlayer.play(AssetSource("audio/tick.mp3"));
                         }
 
-                        /// 📳 VIBRATION
+                        /// VIBRATION
                         if (vibrationOn) {
-                          // playVibration(120);
                           HapticFeedback.mediumImpact();
                         }
                       }
@@ -2790,7 +1935,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
                     return CustomPaint(
                       painter: TimerBorderPainter(
-                        1 - timerController.value, // 🔥 smooth reverse
+                        1 - timerController.value, // smooth reverse
                         borderColor,
                       ),
                     );
@@ -2821,11 +1966,8 @@ class TimerBorderPainter extends CustomPainter {
 
     final path = Path();
     path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(12)));
-
     final metric = path.computeMetrics().first;
-
     final extractPath = metric.extractPath(0, metric.length * progress);
-
     canvas.drawPath(extractPath, paint);
   }
 
@@ -2844,202 +1986,8 @@ class GameX extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: size,
-
       height: size,
-
       child: CustomPaint(painter: XPainter()),
     );
   }
 }
-
-///old icon button
-// Widget build3DIconButton(IconData icon, bool isDark) {
-//   return Container(
-//     width: 44,
-//     height: 44,
-//     alignment: Alignment.center,
-//
-//     // 🔥 FIX
-//     padding: const EdgeInsets.all(1.5),
-//
-//     // 🔥 border thickness
-//     decoration: BoxDecoration(
-//       shape: BoxShape.circle,
-//
-//       /// 🔥 Gradient Border
-//       gradient: isDark
-//           ? const LinearGradient(colors: [Colors.blueAccent, Colors.cyanAccent])
-//           : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-//
-//       /// 🔥 Glow
-//       boxShadow: [
-//         BoxShadow(
-//           color: Colors.blueAccent.withValues(alpha:0.4),
-//           blurRadius: 10,
-//           spreadRadius: 1,
-//         ),
-//       ],
-//     ),
-//
-//     child: Container(
-//       alignment: Alignment.center,
-//       decoration: BoxDecoration(
-//         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-//         shape: BoxShape.circle,
-//
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
-//             offset: const Offset(-3, -3),
-//             blurRadius: 6,
-//           ),
-//           BoxShadow(
-//             color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
-//             offset: const Offset(3, 3),
-//             blurRadius: 6,
-//           ),
-//         ],
-//       ),
-//
-//       child: Icon(
-//         icon,
-//         color: isDark ? Colors.cyanAccent : Colors.blue,
-//         size: 20,
-//       ),
-//     ),
-//   );
-// }
-
-///new icon button
-// Widget build3DIconButton({
-//   IconData? icon,
-//   String? text,
-//   required bool isDark,
-// }) {
-//   return SizedBox(
-//     width: 44,
-//     height: 44,
-//
-//     child: Container(
-//       padding: const EdgeInsets.all(1.5),
-//
-//       decoration: BoxDecoration(
-//         shape: BoxShape.circle,
-//         gradient: isDark
-//             ? const LinearGradient(
-//           colors: [Colors.blueAccent, Colors.cyanAccent],
-//         )
-//             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.blueAccent.withValues(alpha:0.4),
-//             blurRadius: 10,
-//             spreadRadius: 1,
-//           ),
-//         ],
-//       ),
-//
-//       child: Container(
-//         alignment: Alignment.center,
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF3F8),
-//         ),
-//
-//         child: icon != null
-//             ? Icon(
-//           icon,
-//           size: 20, // 🔥 fixed icon size
-//           color: isDark ? Colors.cyanAccent : Colors.blue,
-//         )
-//             : Text(
-//           text ?? "",
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//             fontSize: 20, // 🔥 CONTROL TEXT SIZE
-//             color: isDark ? Colors.cyanAccent : Colors.blue,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
-
-// class WinLinePainter extends CustomPainter {
-//
-//   final List<int> winningLine;
-//
-//   final double animationValue;
-//
-//   final int boardSize;
-//
-//   WinLinePainter(
-//       this.winningLine,
-//       this.animationValue,
-//       this.boardSize,
-//       );
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//
-//     if (winningLine.length < 2) return;
-//
-//     final paint = Paint()
-//
-//       ..color = Colors.greenAccent
-//
-//       ..strokeWidth = boardSize <= 5 ? 8 : 5
-//
-//       ..strokeCap = StrokeCap.round
-//
-//       ..style = PaintingStyle.stroke;
-//
-//     double cellSize = size.width / boardSize;
-//
-//     /// 🔥 FIRST CELL
-//     int first = winningLine.first;
-//
-//     int firstRow = first ~/ boardSize;
-//
-//     int firstCol = first % boardSize;
-//
-//     /// 🔥 LAST CELL
-//     int last = winningLine.last;
-//
-//     int lastRow = last ~/ boardSize;
-//
-//     int lastCol = last % boardSize;
-//
-//     /// 🔥 CENTER POSITION
-//     Offset start = Offset(
-//       firstCol * cellSize + cellSize / 2,
-//       firstRow * cellSize + cellSize / 2,
-//     );
-//
-//     Offset end = Offset(
-//       lastCol * cellSize + cellSize / 2,
-//       lastRow * cellSize + cellSize / 2,
-//     );
-//
-//     /// 🔥 ANIMATION
-//     Offset animatedEnd = Offset.lerp(
-//       start,
-//       end,
-//       animationValue,
-//     )!;
-//
-//     /// 🔥 DRAW
-//     canvas.drawLine(
-//       start,
-//       animatedEnd,
-//       paint,
-//     );
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant WinLinePainter oldDelegate) {
-//
-//     return oldDelegate.animationValue != animationValue ||
-//         oldDelegate.winningLine != winningLine;
-//   }
-// }
