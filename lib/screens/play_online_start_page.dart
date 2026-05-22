@@ -225,6 +225,16 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                 : Brightness.light, // iOS
           ),
 
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(
+              height: 1,
+              color: isDark
+                  ? Colors.white24
+                  : Colors.black12,
+            ),
+          ),
+
           /// 🔥 BLUR + GLASS EFFECT
           flexibleSpace: ClipRect(
             child: BackdropFilter(
@@ -466,8 +476,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     borderRadius: BorderRadius.circular(18),
 
                     /// 🔥 Gradient Neon Border
-                    gradient: const LinearGradient(
-                      colors: [Colors.cyanAccent, Colors.purpleAccent],
+                    gradient: LinearGradient(
+                      colors: isDark? const [Colors.cyanAccent, Colors.cyanAccent]
+                          :const [Colors.blueAccent, Colors.blueAccent],
                     ),
 
                     /// 🔥 Outer Glow
@@ -1076,19 +1087,19 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                     icon: Icons.public,
                     text: "QUICK MATCH",
                     isDark: isDark,
-                    borderRadius: const BorderRadius.all(Radius.circular(19.5)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
-                        offset: const Offset(-4, 0),
-                        blurRadius: 8,
-                      ),
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
-                        offset: const Offset(4, 4),
-                        blurRadius: 10,
-                      ),
-                    ],
+                    borderRadius: const BorderRadius.all(Radius.circular(19)),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.white.withValues(alpha:isDark ? 0.05 : 0.9),
+                    //     offset: const Offset(-4, 0),
+                    //     blurRadius: 8,
+                    //   ),
+                    //   BoxShadow(
+                    //     color: Colors.black.withValues(alpha:isDark ? 0.6 : 0.2),
+                    //     offset: const Offset(4, 4),
+                    //     blurRadius: 10,
+                    //   ),
+                    // ],
                   ),
                 ),
               ],
