@@ -10,6 +10,7 @@ bool isDark = true;
 
 class HowToPlayPage extends StatefulWidget {
   const HowToPlayPage({super.key});
+
   @override
   State<HowToPlayPage> createState() => _HowToPlayPageState();
 }
@@ -57,18 +58,13 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           preferredSize: const Size.fromHeight(1),
           child: Container(
             height: 1,
-            color: isDark
-                ? Colors.white24
-                : Colors.black12,
+            color: isDark ? Colors.white24 : Colors.black12,
           ),
         ),
 
         flexibleSpace: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
-            ),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
 
             child: Container(
               decoration: BoxDecoration(
@@ -85,9 +81,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
           style: TextStyle(
             fontSize: 20,
-            color: isDark
-                ? Colors.cyanAccent
-                : Colors.blue,
+            color: isDark ? Colors.cyanAccent : Colors.blue,
 
             fontWeight: FontWeight.bold,
           ),
@@ -101,219 +95,218 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
               onTap: () async {
                 Navigator.pop(context);
               },
-              child: build3DIconButton(icon:Icons.arrow_back,isDark: isDark),
+              child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
             ),
           ),
         ),
       ),
 
       /// SCROLLABLE BODY
-
-        body: SafeArea(
+      body: SafeArea(
         top: false,
-    child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          //padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
-            bottom: 00,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            //padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: MediaQuery.of(context).padding.top + kToolbarHeight + 10,
+              bottom: 00,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
 
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 0),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 0),
 
-                    Text(
-                      "Game Rules",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.blue,
-                      ),
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    Container(
-                      width: 110,
-                      height: 2,
-                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    ruleItem(
-                      icon: Icons.emoji_events,
-                      title: "WIN",
-                      description:
-                      "Match 3 symbols.\nPlayer wins the game.",
-                      graphic: buildWinGraphic(),
-                    ),
-
-                    Divider(
-                      color: isDark ? Colors.white24 : Colors.blue,
-                      height: 40,
-                    ),
-
-                    ruleItem(
-                      icon: Icons.sentiment_dissatisfied,
-                      title: "DEFEAT",
-                      description:
-                      "Opponent matches 3 symbols.\nPlayer loses the game.",
-                      graphic: buildDefeatGraphic(),
-                    ),
-
-                    Divider(
-                      color: isDark ? Colors.white24 : Colors.blue,
-                      height: 40,
-                    ),
-
-                    ruleItem(
-                      icon: Icons.handshake,
-                      title: "DRAW",
-                      description:
-                      "Board fills with no match.\nGame ends in a draw.",
-                      graphic: buildDrawGraphic(),
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    Text(
-                      "Win Conditions",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.blue,
-                      ),
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    Container(
-                      width: 140,
-                      height: 2,
-                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    /// TABLE
-                    Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-
-                        borderRadius: BorderRadius.circular(6),
-
-                        border: Border.all(
-                          color: isDark ? Colors.white24 : Colors.black12,
+                      Text(
+                        "Game Rules",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
                         ),
-
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha:0.12),
-                            blurRadius: 8,
-                            offset: const Offset(2, 4),
-                          ),
-                        ],
                       ),
 
-                      child: Table(
-                        border: TableBorder.symmetric(
-                          inside: BorderSide(
+                      const SizedBox(height: 5),
+
+                      Container(
+                        width: 110,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      ruleItem(
+                        icon: Icons.emoji_events,
+                        title: "WIN",
+                        description: "Match 3 symbols.\nPlayer wins the game.",
+                        graphic: buildWinGraphic(),
+                      ),
+
+                      Divider(
+                        color: isDark ? Colors.white24 : Colors.blue,
+                        height: 40,
+                      ),
+
+                      ruleItem(
+                        icon: Icons.sentiment_dissatisfied,
+                        title: "DEFEAT",
+                        description:
+                            "Opponent matches 3 symbols.\nPlayer loses the game.",
+                        graphic: buildDefeatGraphic(),
+                      ),
+
+                      Divider(
+                        color: isDark ? Colors.white24 : Colors.blue,
+                        height: 40,
+                      ),
+
+                      ruleItem(
+                        icon: Icons.handshake,
+                        title: "DRAW",
+                        description:
+                            "Board fills with no match.\nGame ends in a draw.",
+                        graphic: buildDrawGraphic(),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      Text(
+                        "Win Conditions",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
+                        ),
+                      ),
+
+                      const SizedBox(height: 5),
+
+                      Container(
+                        width: 140,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// TABLE
+                      Container(
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : Colors.white,
+
+                          borderRadius: BorderRadius.circular(6),
+
+                          border: Border.all(
                             color: isDark ? Colors.white24 : Colors.black12,
                           ),
+
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.12),
+                              blurRadius: 8,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
                         ),
 
-                        columnWidths: const {
-                          0: FlexColumnWidth(1.2),
-                          1: FlexColumnWidth(1.8),
-                        },
-
-                        children: [
-                          /// HEADER
-                          TableRow(
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.blue.withValues(alpha:0.2)
-                                  : Colors.blue.withValues(alpha:0.1),
+                        child: Table(
+                          border: TableBorder.symmetric(
+                            inside: BorderSide(
+                              color: isDark ? Colors.white24 : Colors.black12,
                             ),
-
-                            children: [
-                              tableCell("Board Size", isHeader: true),
-
-                              tableCell("Win Condition", isHeader: true),
-                            ],
                           ),
 
-                          /// ROWS
-                          buildTableRow("3x3", "Connect 3 symbols"),
-                          buildTableRow("4x4", "Connect 4 symbols"),
-                          buildTableRow("5x5", "Connect 4 symbols"),
-                          buildTableRow("6x6", "Connect 4 symbols"),
-                          buildTableRow("7x7", "Connect 5 symbols"),
-                          buildTableRow("8x8", "Connect 5 symbols"),
-                          buildTableRow("9x9", "Connect 5 symbols"),
-                        ],
+                          columnWidths: const {
+                            0: FlexColumnWidth(1.2),
+                            1: FlexColumnWidth(1.8),
+                          },
+
+                          children: [
+                            /// HEADER
+                            TableRow(
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.blue.withValues(alpha: 0.2)
+                                    : Colors.blue.withValues(alpha: 0.1),
+                              ),
+
+                              children: [
+                                tableCell("Board Size", isHeader: true),
+
+                                tableCell("Win Condition", isHeader: true),
+                              ],
+                            ),
+
+                            /// ROWS
+                            buildTableRow("3x3", "Connect 3 symbols"),
+                            buildTableRow("4x4", "Connect 4 symbols"),
+                            buildTableRow("5x5", "Connect 4 symbols"),
+                            buildTableRow("6x6", "Connect 4 symbols"),
+                            buildTableRow("7x7", "Connect 5 symbols"),
+                            buildTableRow("8x8", "Connect 5 symbols"),
+                            buildTableRow("9x9", "Connect 5 symbols"),
+                          ],
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: 40),
+                      const SizedBox(height: 40),
 
-                    Text(
-                      "Others Conditions",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.blue,
+                      Text(
+                        "Others Conditions",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.blue,
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: 5),
+                      const SizedBox(height: 5),
 
-                    Container(
-                      width: 165,
-                      height: 2,
-                      color: isDark ? Colors.cyanAccent : Colors.blueAccent,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Text(
-                      "• A created room remains available for up to 5 minutes if no opponent joins.\n\n"
-                          "• If the opponent exits or disconnects, you should also exit and create or join a new room.\n\n"
-                          "• Players can continue playing in the same room for up to 1 hour.\n\n"
-                          "• Inactive or empty rooms may be removed automatically for better multiplayer performance.\n\n"
-                          "• Slow internet connections may cause delays, sync issues, or temporary gameplay interruption.\n\n"
-                          "• Do not spam room creation or intentionally disturb online gameplay.\n\n"
-                          "• Closing the app during an online match may end the current game session.\n\n"
-                          "• Match progress depends on real-time synchronization between both players.",
-
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: isDark ? Colors.white70 : Colors.black87,
+                      Container(
+                        width: 165,
+                        height: 2,
+                        color: isDark ? Colors.cyanAccent : Colors.blueAccent,
                       ),
-                    ),
 
+                      const SizedBox(height: 20),
 
-                    const SizedBox(height: 40),
-                  ],
+                      Text(
+                        "• A created room remains available for up to 5 minutes if no opponent joins.\n\n"
+                        "• If the opponent exits or disconnects, you should also exit and create or join a new room.\n\n"
+                        "• Players can continue playing in the same room for up to 1 hour.\n\n"
+                        "• Inactive or empty rooms may be removed automatically for better multiplayer performance.\n\n"
+                        "• Slow internet connections may cause delays, sync issues, or temporary gameplay interruption.\n\n"
+                        "• Do not spam room creation or intentionally disturb online gameplay.\n\n"
+                        "• Closing the app during an online match may end the current game session.\n\n"
+                        "• Match progress depends on real-time synchronization between both players.",
+
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: isDark ? Colors.white70 : Colors.black87,
+                        ),
+                      ),
+
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-        ),
     );
   }
 
