@@ -237,7 +237,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   Future<void> playVibration(int duration) async {
     if (!vibrationOn) return;
 
-    if (await Vibration.hasVibrator()  == true) {
+    if (await Vibration.hasVibrator() == true) {
       Vibration.vibrate(duration: duration);
     }
   }
