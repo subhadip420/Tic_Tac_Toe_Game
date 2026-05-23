@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart'; // 🔥 for kIsWeb
 import 'package:http/http.dart' as http;
 import 'web_listener_stub.dart' if (dart.library.html) 'web_listener.dart';
 
-
 class PlayOnlineBoardPage extends StatefulWidget {
   final String roomCode;
 
@@ -123,11 +122,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   bool isExitDialogOpen = false;
   String lastRematchAction = "";
 
-
-
   @override
   void initState() {
-
     super.initState();
     initializeFirebase();
     initializeGame();
@@ -140,20 +136,15 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void initializeFirebase() {
-
     dbRef = FirebaseDatabase.instanceFor(
       app: FirebaseDatabase.instance.app,
 
       databaseURL:
-      "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+          "https://tic-tac-toe-9c3bf-default-rtdb.asia-southeast1.firebasedatabase.app/",
     ).ref();
 
-    roomRef =
-        dbRef.child(
-          "rooms/${widget.roomCode}",
-        );
+    roomRef = dbRef.child("rooms/${widget.roomCode}");
   }
-
 
   void initializeGame() {
     listenToGame();
@@ -161,80 +152,48 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void initializeAnimations() {
-
-    timerController =
-        AnimationController(
-          vsync: this,
-          duration:
-          const Duration(
-            seconds: 30,
-          ),
-        );
-
-    lineController =
-        AnimationController(
-          vsync: this,
-          duration:
-          const Duration(
-            milliseconds: 600,
-          ),
-        );
-
-    lineAnimation =
-        CurvedAnimation(
-          parent: lineController,
-          curve: Curves.easeInOut,
-        );
-
-    confettiController =
-        ConfettiController(
-          duration:
-          const Duration(
-            seconds: 3,
-          ),
-        );
-
-    glowController =
-    AnimationController(
+    timerController = AnimationController(
       vsync: this,
-      duration:
-      const Duration(
-        seconds: 2,
-      ),
-    )
+      duration: const Duration(seconds: 30),
+    );
 
-      ..repeat(
-        reverse: true,
-      );
+    lineController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
 
-    glowAnimation =
-        Tween<double>(
-          begin: 0.4,
-          end: 1,
-        ).animate(
-          CurvedAnimation(
-            parent: glowController,
-            curve: Curves.easeInOut,
-          ),
-        );
+    lineAnimation = CurvedAnimation(
+      parent: lineController,
+      curve: Curves.easeInOut,
+    );
+
+    confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
+
+    glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    glowAnimation = Tween<double>(
+      begin: 0.4,
+      end: 1,
+    ).animate(CurvedAnimation(parent: glowController, curve: Curves.easeInOut));
   }
 
-
   void initializeConnectivity() {
-    connectivitySubscription =
-        Connectivity()
-            .onConnectivityChanged
-            .listen((_) async {
-
-          if (kIsWeb) return;
-          bool hasInternet =
-          await checkInternet();
-          if (!hasInternet) {
-            handleOffline();
-          } else {
-            await handleOnline();
-          }
-        });
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+      _,
+    ) async {
+      if (kIsWeb) return;
+      bool hasInternet = await checkInternet();
+      if (!hasInternet) {
+        handleOffline();
+      } else {
+        await handleOnline();
+      }
+    });
   }
 
   void initializeWebListeners() {
@@ -243,7 +202,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       onOffline: () {
         if (!isOfflineDialogShown) {
           isOfflineDialogShown = true;
-          if (vibrationOn) {HapticFeedback.mediumImpact();}
+          if (vibrationOn) {
+            HapticFeedback.mediumImpact();
+          }
           noInternetDialog();
         }
       },
@@ -254,47 +215,26 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     );
   }
 
-
   void initializeNameScroll() {
-
-    nameScrollAnim =
-        AnimationController(
-          vsync: this,
-          duration:
-          const Duration(
-            seconds: 6,
-          ),
-        );
+    nameScrollAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    );
 
     nameScrollAnim.addListener(() {
+      if (nameScrollController.hasClients) {
+        double maxScroll = nameScrollController.position.maxScrollExtent;
 
-      if (nameScrollController
-          .hasClients) {
-
-        double maxScroll =
-            nameScrollController
-                .position
-                .maxScrollExtent;
-
-        nameScrollController.jumpTo(
-          maxScroll *
-              nameScrollAnim.value,
-        );
+        nameScrollController.jumpTo(maxScroll * nameScrollAnim.value);
       }
     });
 
-    nameScrollAnim.repeat(
-      reverse: true,
-    );
+    nameScrollAnim.repeat(reverse: true);
   }
 
-
   void initializeTimerListener() {
-
     timerController.addListener(() {
-      if (timerController.value >= 1.0 &&
-          !gameOver) {
-
+      if (timerController.value >= 1.0 && !gameOver) {
         print(" TIME UP TRIGGERED");
         setState(() {
           isTimeUp = true;
@@ -310,14 +250,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   void handleOffline() {
     if (isOfflineDialogShown) return;
     isOfflineDialogShown = true;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) {
-
-      if (vibrationOn) {HapticFeedback.mediumImpact();}
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (vibrationOn) {
+        HapticFeedback.mediumImpact();
+      }
       noInternetDialog();
     });
   }
-
 
   Future<void> handleOnline() async {
     if (!isOfflineDialogShown) return;
@@ -332,16 +271,12 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       color: Colors.green,
     );
 
-    final snapshot =
-    await roomRef.get();
+    final snapshot = await roomRef.get();
     if (!snapshot.exists) {
       heartbeatTimer?.cancel();
-      if (mounted &&
-          !isGamePageClosed &&
-          !opponentExitDialogShown) {
+      if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
         opponentExitDialogShown = true;
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             showOpponentExitDialog();
           }
@@ -351,15 +286,11 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       return;
     }
 
-    lastPingReceivedLocalTime =
-        DateTime.now()
-            .millisecondsSinceEpoch;
+    lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
     await restorePresence();
   }
 
-
   Future<void> handleWebReconnect() async {
-
     if (isOfflineDialogShown) {
       isOfflineDialogShown = false;
       closeInternetDialog();
@@ -373,16 +304,12 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       );
     }
 
-    final snapshot =
-    await roomRef.get();
+    final snapshot = await roomRef.get();
     if (!snapshot.exists) {
       heartbeatTimer?.cancel();
-      if (mounted &&
-          !isGamePageClosed &&
-          !opponentExitDialogShown) {
+      if (mounted && !isGamePageClosed && !opponentExitDialogShown) {
         opponentExitDialogShown = true;
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             showOpponentExitDialog();
           }
@@ -391,27 +318,16 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       return;
     }
 
-    lastPingReceivedLocalTime =
-        DateTime.now()
-            .millisecondsSinceEpoch;
+    lastPingReceivedLocalTime = DateTime.now().millisecondsSinceEpoch;
     await restorePresence();
   }
 
-
   Future<void> restorePresence() async {
     if (mySymbol.isEmpty) return;
-    String playerKey =
-    mySymbol == player1Symbol
-        ? "player1"
-        : "player2";
-    await roomRef
-        .child("exitStatus/$playerKey")
-        .set("online");
+    String playerKey = mySymbol == player1Symbol ? "player1" : "player2";
+    await roomRef.child("exitStatus/$playerKey").set("online");
 
-    await roomRef
-        .child("players/$playerKey")
-        .update({
-
+    await roomRef.child("players/$playerKey").update({
       "uid": myId,
       "symbol": mySymbol,
     });
@@ -420,20 +336,13 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void closeInternetDialog() {
-
-    if (!mounted ||
-        internetDialogCtx == null) {
+    if (!mounted || internetDialogCtx == null) {
       return;
     }
 
-    final navigator =
-    Navigator.of(
-      context,
-      rootNavigator: true,
-    );
+    final navigator = Navigator.of(context, rootNavigator: true);
 
-    if (isDialogOpen &&
-        navigator.canPop()) {
+    if (isDialogOpen && navigator.canPop()) {
       navigator.pop();
       isDialogOpen = false;
       internetDialogCtx = null;
@@ -482,7 +391,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   Future<bool> checkInternet() async {
-
     if (kIsWeb) {
       return true;
     }
@@ -535,7 +443,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   void startHeartbeat() {
     heartbeatTimer?.cancel();
     heartbeatTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-
       if (isOfflineDialogShown || !isRoomActive) return;
 
       if (mySymbol.isNotEmpty) {
@@ -552,14 +459,15 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         }
 
         if (now - lastPingReceivedLocalTime > 12000) {
-
           if (!isDisconnectDialogOpen &&
               !opponentExitDialogShown &&
               !isOfflineDialogShown) {
             isDisconnectDialogOpen = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
-                if (vibrationOn) {HapticFeedback.mediumImpact();}
+                if (vibrationOn) {
+                  HapticFeedback.mediumImpact();
+                }
                 showOpponentDisconnectDialog();
               }
             });
@@ -589,7 +497,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         pressedIndex = -1;
       });
     });
-
 
     List<String> newBoard = List.from(board);
     newBoard[index] = mySymbol;
@@ -686,13 +593,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   Future<void> playVibration(int duration) async {
     if (!vibrationOn) return;
 
-    if (await Vibration.hasVibrator()  == true) {
+    if (await Vibration.hasVibrator() == true) {
       Vibration.vibrate(duration: duration);
     }
   }
-
-
-
 
   Future<void> listenToGame() async {
     final prefs = await SharedPreferences.getInstance();
@@ -774,9 +678,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
   }
 
   void handleTimerSync(Map<String, dynamic> data) {
-
-    bool matchStarted =
-        data["matchStarted"] ?? false;
+    bool matchStarted = data["matchStarted"] ?? false;
 
     if (!matchStarted) {
       timerController.stop();
@@ -859,10 +761,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       if (previousBoard[i] != newBoard[i]) {
         if (newBoard[i] == "X") {
           playXSound();
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
         } else if (newBoard[i] == "O") {
           playOSound();
-          if (vibrationOn) {HapticFeedback.lightImpact();}
+          if (vibrationOn) {
+            HapticFeedback.lightImpact();
+          }
         }
 
         break;
@@ -923,18 +829,15 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         gameMessage = " DRAW ";
         playDrawSound();
         if (vibrationOn) {
-
           playVibration(120);
         }
-
       } else if (firebaseWinner == mySymbol) {
         gameMessage = " YOU WIN ";
         confettiController.play();
         playWinSound();
         if (vibrationOn) {
           playVibration(120);
-          }
-
+        }
       } else {
         gameMessage = " YOU LOSE ";
         playLoseSound();
@@ -958,6 +861,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     String requestedBy = rematch["requestedBy"] ?? "";
     String status = rematch["status"] ?? "";
     String cancelledBy = rematch["cancelledBy"] ?? "";
+
     ///  UNIQUE ACTION KEY
     String actionKey = "$status-$requestedBy-$cancelledBy";
 
@@ -988,7 +892,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         ///  SENDER SIDE
         if (cancelledBy != myId) {
-          if (vibrationOn) {HapticFeedback.mediumImpact();}
+          if (vibrationOn) {
+            HapticFeedback.mediumImpact();
+          }
 
           CustomToast.show(
             context: context,
@@ -997,7 +903,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             icon: Icons.cancel_outlined,
             color: Colors.redAccent,
           );
-
         }
       }
     }
@@ -1013,7 +918,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
         ///  OPPONENT SIDE
         if (cancelledBy != myId) {
-          if (vibrationOn) {HapticFeedback.mediumImpact();}
+          if (vibrationOn) {
+            HapticFeedback.mediumImpact();
+          }
 
           CustomToast.show(
             context: context,
@@ -1050,7 +957,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showRematchDialog();
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
       });
     }
 
@@ -1149,13 +1058,14 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             isExitDialogOpen = false;
           }
           stopTickingSound();
-          if (vibrationOn) {HapticFeedback.mediumImpact();}
+          if (vibrationOn) {
+            HapticFeedback.mediumImpact();
+          }
           showOpponentExitDialog();
         }
       });
     }
   }
-
 
   ///new syncTimer
   void syncTimer() {
@@ -1171,43 +1081,28 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       return;
     }
 
-    int now =
-        DateTime.now()
-            .millisecondsSinceEpoch;
+    int now = DateTime.now().millisecondsSinceEpoch;
 
-    double elapsedMs =
-    (now - serverStartTime)
-        .toDouble();
+    double elapsedMs = (now - serverStartTime).toDouble();
 
-    double durationMs =
-        turnDuration * 1000;
+    double durationMs = turnDuration * 1000;
 
-    double progress =
-    (elapsedMs / durationMs)
-        .clamp(0.0, 1.0);
+    double progress = (elapsedMs / durationMs).clamp(0.0, 1.0);
 
     timerController.value = progress;
 
-    if (!timerController.isAnimating &&
-        progress < 1.0) {
-
+    if (!timerController.isAnimating && progress < 1.0) {
       timerController.animateTo(
         1.0,
 
-        duration: Duration(
-          milliseconds:
-          ((1 - progress) * durationMs)
-              .toInt(),
-        ),
+        duration: Duration(milliseconds: ((1 - progress) * durationMs).toInt()),
 
         curve: Curves.linear,
       );
     }
 
     /// TIME UP
-    if (progress >= 1.0 &&
-        !gameOver &&
-        !isTimeUp) {
+    if (progress >= 1.0 && !gameOver && !isTimeUp) {
       isTimeUp = true;
       gameOver = true;
       stopTickingSound();
@@ -1289,7 +1184,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 onTap: () async {
                   //await handleBackPress();
                   //playVibration(120);
-                  if (vibrationOn) {HapticFeedback.lightImpact();}
+                  if (vibrationOn) {
+                    HapticFeedback.lightImpact();
+                  }
                   showExitDialog();
                 },
                 child: build3DIconButton(
@@ -1341,7 +1238,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 message: "Settings",
                 child: GestureDetector(
                   onTap: () {
-                    if (vibrationOn) {HapticFeedback.lightImpact();}
+                    if (vibrationOn) {
+                      HapticFeedback.lightImpact();
+                    }
                     showSettingsMenu();
                   },
                   child: build3DIconButton(
@@ -1665,7 +1564,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                                     ),
 
                                 itemBuilder: (context, index) {
-
                                   double symbolSize = boardSize <= 3
                                       ? 40
                                       : boardSize <= 5
@@ -1691,7 +1589,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                                       ),
 
                                       child: Container(
-
                                         margin: EdgeInsets.all(
                                           boardSize <= 3
                                               ? 6
@@ -1712,6 +1609,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                                                 ? 8
                                                 : 5,
                                           ),
+
                                           /// border if filled
                                           border:
                                               (board.length > index &&
@@ -1794,7 +1692,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                               icon: Icons.exit_to_app,
                               onTap: () {
                                 //playVibration(120);
-                                if (vibrationOn) {HapticFeedback.mediumImpact();}
+                                if (vibrationOn) {
+                                  HapticFeedback.mediumImpact();
+                                }
                                 showExitDialog();
                               },
 
@@ -1831,8 +1731,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
     isSendingReplay = true;
 
-
-    if (vibrationOn) {HapticFeedback.mediumImpact();}
+    if (vibrationOn) {
+      HapticFeedback.mediumImpact();
+    }
 
     try {
       /// send request
@@ -1849,7 +1750,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     } catch (e) {
       print("Replay Error: $e");
 
-      if (vibrationOn) {HapticFeedback.mediumImpact();}
+      if (vibrationOn) {
+        HapticFeedback.mediumImpact();
+      }
       CustomToast.show(
         context: context,
         message: "Something went wrong!",
@@ -1876,7 +1779,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       showContentLoading: true,
       onNegative: () async {
         dialogOpen = false;
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
 
         LoadingDialog.show(context, message: "Cancelling Request...");
 
@@ -1913,7 +1818,8 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
     await showAppDialog(
       context: context,
       title: "REMATCH REQUEST",
-      message: "Your opponent wants another battle.\nDo you want to play again?",
+      message:
+          "Your opponent wants another battle.\nDo you want to play again?",
 
       positiveText: "PLAY",
       negativeText: "DECLINE",
@@ -1922,7 +1828,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       /// DECLINE
       onNegative: () async {
         dialogOpen = false;
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
 
         LoadingDialog.show(context, message: "Declining Request...");
 
@@ -1951,7 +1859,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       /// PLAY AGAIN
       onPositive: () async {
         dialogOpen = false;
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
 
         LoadingDialog.show(context, message: "Starting Rematch...");
 
@@ -1965,7 +1875,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       },
     );
   }
-
 
   ///new
   Future<void> showOpponentDisconnectDialog() async {
@@ -1988,7 +1897,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         isDisconnectDialogOpen = false;
 
         disconnectDialogCtx = null;
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
+
         /// CLOSE DIALOG FIRST
         final navigator = Navigator.of(context, rootNavigator: true);
 
@@ -2020,15 +1932,20 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       barrierDismissible: false,
 
       onNegative: () {
-        if (vibrationOn) {HapticFeedback.lightImpact();}
+        if (vibrationOn) {
+          HapticFeedback.lightImpact();
+        }
         isExitDialogOpen = false;
+
         /// nothing needed
       },
 
       onPositive: () async {
         isExitDialogOpen = false;
         await exitFromGame();
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
       },
     );
 
@@ -2091,7 +2008,10 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
       onPositive: () async {
         heartbeatTimer?.cancel();
-        if (vibrationOn) {HapticFeedback.mediumImpact();}
+        if (vibrationOn) {
+          HapticFeedback.mediumImpact();
+        }
+
         ///  REMOVE ROOM
         await roomRef.remove();
 
@@ -2100,7 +2020,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       },
     );
   }
-
 
   void closeDialogSafe() {
     if (!mounted) return;
@@ -2113,7 +2032,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
       dialogOpen = false;
     }
   }
-
 
   ///new restart game 2
   Future<void> restartGame() async {
@@ -2199,6 +2117,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         isDialogOpen = false;
         internetDialogCtx = null;
         stopTickingSound();
+
         ///  DIRECT EXIT
         closeGamePage();
       },
@@ -2228,7 +2147,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            if (vibrationOn) {HapticFeedback.selectionClick();}
+            if (vibrationOn) {
+              HapticFeedback.selectionClick();
+            }
 
             setState(() {
               isDark = value;
@@ -2248,7 +2169,9 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
 
-            if (vibrationOn) {HapticFeedback.mediumImpact();}
+            if (vibrationOn) {
+              HapticFeedback.mediumImpact();
+            }
 
             setState(() {
               soundOn = value;
@@ -2534,7 +2457,6 @@ Map<String, dynamic> checkWinnerDynamic(List<String> b, int size) {
 
   return {"winner": "", "line": []};
 }
-
 
 class TimerBorderPainter extends CustomPainter {
   final double progress;
