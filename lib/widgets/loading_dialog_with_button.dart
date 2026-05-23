@@ -19,7 +19,6 @@ Future<void> showAppDialog({
   bool showContentLoading = false, //in dialog loading circle
   bool showLoadingOnPositive = false, // 🔥 ADD
   bool canPop = false,
-
 }) async {
   bool isLoading = false;
   final prefs = await SharedPreferences.getInstance();
@@ -243,7 +242,6 @@ Future<void> showAppDialog({
                                         if (positiveText.isNotEmpty)
                                           Expanded(
                                             child: GestureDetector(
-
                                               onTap: isLoading
                                                   ? null
                                                   : () async {
@@ -359,8 +357,6 @@ Future<void> showAppDialog({
                             ),
                           ),
                         ),
-
-
                       ],
                     ),
                   ),
