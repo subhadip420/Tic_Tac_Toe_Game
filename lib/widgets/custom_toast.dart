@@ -66,11 +66,7 @@ class CustomToast {
                         ),
                       ),
 
-                      child: Icon(
-                        icon,
-                        color: Colors.white,
-                        size: 15,
-                      ),
+                      child: Icon(icon, color: Colors.white, size: 15),
                     ),
 
                     const SizedBox(width: 12),
