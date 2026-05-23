@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/screens/info_page.dart';
 import 'screens/how_to_play_page.dart';
 import 'screens/play_solo_board_page.dart';
-import 'package:vibration/vibration.dart';
+
 import 'screens/two_player_board_page.dart';
 import 'screens/play_online_start_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'firebase_options.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:app_links/app_links.dart';
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(const TicTacToeApp());
-// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,13 +44,13 @@ class TicTacToeApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
-      // LIGHT THEME
+      /// LIGHT THEME
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFF5F7FB),
       ),
 
-      // DARK THEME
+      /// DARK THEME
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0F172A),
@@ -101,10 +91,6 @@ class _HomePageState extends State<HomePage>
 
     controller.repeat(reverse: true);
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   checkUser();
-    // });
-
     _appLinks = AppLinks();
     initDeepLinks();
   }
@@ -115,20 +101,9 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  // Future<void> loadTheme() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //
-  //   if (!mounted) return;
-  //
-  //   setState(() {
-  //     isDark = prefs.getBool("theme_dark") ?? true;
-  //   });
-  // }
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark
@@ -148,82 +123,23 @@ class _HomePageState extends State<HomePage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Animated XO Logo
-                    // AnimatedBuilder(
-                    //   animation: controller,
-                    //   builder: (context, child) {
-                    //     final glow = (controller.value * 12) + 6;
-                    //
-                    //     return Container(
-                    //       height: 100,
-                    //       width: 100,
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(24),
-                    //         color: Colors.white.withValues(alpha: 0.08),
-                    //         boxShadow: [
-                    //           // BLUE GLOW
-                    //           BoxShadow(
-                    //             color: Colors.blue.withValues(alpha: 0.7),
-                    //             blurRadius: glow,
-                    //             spreadRadius: 3,
-                    //           ),
-                    //
-                    //           // PINK GLOW
-                    //           BoxShadow(
-                    //             color: Colors.pink.withValues(alpha: 0.6),
-                    //             blurRadius: glow,
-                    //             spreadRadius: 1,
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       child: const Center(
-                    //         child: Text(
-                    //           "XO",
-                    //           style: TextStyle(
-                    //             fontSize: 38,
-                    //             fontWeight: FontWeight.bold,
-                    //             letterSpacing: 2,
-                    //             color: Colors.white,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
-
-
-
                     SizedBox(
                       height: 150,
                       width: 150,
 
                       child: Lottie.asset(
-
                         isDark
                             ? "assets/lottie/tic_tac_toe_dark.json"
                             : "assets/lottie/tic_tac_toe_light.json",
 
                         height: 150,
-
                         width: 150,
-
                         fit: BoxFit.contain,
-
                         repeat: true,
                       ),
                     ),
 
                     const SizedBox(height: 20),
-
-                    // TITLE
-                    // Text(
-                    //   "Tic - Tac - Toe",
-                    //   style: TextStyle(
-                    //     fontSize: 26,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: isDark ? Colors.white : Colors.black87,
-                    //   ),
-                    // ),
 
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -235,16 +151,11 @@ class _HomePageState extends State<HomePage>
                         borderRadius: BorderRadius.circular(20),
 
                         boxShadow: [
-
-                          /// 🔥 BACK GLOW
+                          /// BACK GLOW
                           BoxShadow(
-                            color: (isDark
-                                ? Colors.blue
-                                : Colors.cyanAccent)
+                            color: (isDark ? Colors.blue : Colors.cyanAccent)
                                 .withValues(alpha: 0.15),
-
                             blurRadius: 15,
-
                             spreadRadius: 2,
                           ),
                         ],
@@ -252,38 +163,30 @@ class _HomePageState extends State<HomePage>
 
                       child: Text(
                         "Tic - Tac - Toe",
-
                         style: TextStyle(
                           fontSize: 28,
-
                           fontWeight: FontWeight.bold,
-
                           letterSpacing: 1,
-
-                          color: isDark
-                              ? Colors.white
-                              : Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                     ),
                     const SizedBox(height: 6),
 
-                    // SUBTITLE
+                    /// SUBTITLE
                     Text(
                       "Fast • Fun • Multiplayer",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1,
-                        color: isDark
-                            ? Colors.white60
-                            : Colors.black54,
+                        color: isDark ? Colors.white60 : Colors.black54,
                       ),
                     ),
 
                     const SizedBox(height: 35),
 
-                    // PLAY SOLO
+                    /// PLAY SOLO
                     buildButton(
                       context,
                       Icons.smart_toy,
@@ -293,7 +196,7 @@ class _HomePageState extends State<HomePage>
 
                     const SizedBox(height: 15),
 
-                    // PLAY WITH FRIEND
+                    /// PLAY WITH FRIEND
                     buildButton(
                       context,
                       Icons.group,
@@ -303,7 +206,7 @@ class _HomePageState extends State<HomePage>
 
                     const SizedBox(height: 15),
 
-                    // PLAY ONLINE
+                    /// PLAY ONLINE
                     buildButton(
                       context,
                       Icons.public,
@@ -311,51 +214,20 @@ class _HomePageState extends State<HomePage>
                       "Play with friends online",
                     ),
 
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     Vibration.vibrate(duration: 200);
-                    //   },
-                    //   child: const Text("Test Vibration"),
-                    // ),/// vibration test
-                    // const SizedBox(height: 30),
-                    //
-                    // // HOW TO PLAY
-                    // TextButton(
-                    //   onPressed: () {
-                    //     //Vibration.vibrate(duration: 150);
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => const HowToPlayPage(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Text(
-                    //     "How to Play ?",
-                    //     style: TextStyle(
-                    //       fontSize: 16,
-                    //       color: isDark ? Colors.white70 : Colors.blue,
-                    //     ),
-                    //   ),
-                    // ),
-
                     const SizedBox(height: 30),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
 
                       children: [
-
                         /// GUIDE
                         TextButton.icon(
                           onPressed: () {
-
                             Navigator.push(
                               context,
 
                               MaterialPageRoute(
-                                builder: (context) =>
-                                const HowToPlayPage(),
+                                builder: (context) => const HowToPlayPage(),
                               ),
                             );
                           },
@@ -363,21 +235,14 @@ class _HomePageState extends State<HomePage>
                           icon: Icon(
                             Icons.menu_book_rounded,
                             size: 18,
-
-                            color: isDark
-                                ? Colors.white70
-                                : Colors.blue,
+                            color: isDark ? Colors.white70 : Colors.blue,
                           ),
 
                           label: Text(
                             "Guide",
-
                             style: TextStyle(
                               fontSize: 16,
-
-                              color: isDark
-                                  ? Colors.white70
-                                  : Colors.blue,
+                              color: isDark ? Colors.white70 : Colors.blue,
                             ),
                           ),
                         ),
@@ -387,21 +252,17 @@ class _HomePageState extends State<HomePage>
                           width: 1,
                           height: 18,
 
-                          color: isDark
-                              ? Colors.white24
-                              : Colors.black26,
+                          color: isDark ? Colors.white24 : Colors.black26,
                         ),
 
                         /// INFO
                         TextButton.icon(
                           onPressed: () {
-
                             Navigator.push(
                               context,
 
                               MaterialPageRoute(
-                                builder: (context) =>
-                                const InfoPage(),
+                                builder: (context) => const InfoPage(),
                               ),
                             );
                           },
@@ -409,21 +270,14 @@ class _HomePageState extends State<HomePage>
                           icon: Icon(
                             Icons.info_outline_rounded,
                             size: 18,
-
-                            color: isDark
-                                ? Colors.white70
-                                : Colors.blue,
+                            color: isDark ? Colors.white70 : Colors.blue,
                           ),
 
                           label: Text(
                             "Info",
-
                             style: TextStyle(
                               fontSize: 16,
-
-                              color: isDark
-                                  ? Colors.white70
-                                  : Colors.blue,
+                              color: isDark ? Colors.white70 : Colors.blue,
                             ),
                           ),
                         ),
@@ -445,9 +299,7 @@ class _HomePageState extends State<HomePage>
     String title,
     String subtitle,
   ) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
@@ -473,20 +325,20 @@ class _HomePageState extends State<HomePage>
       },
 
       child: Container(
-        padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+        padding: const EdgeInsets.all(1.5),
 
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
 
-          /// 🔥 Gradient Border
+          ///  Gradient Border
           gradient: const LinearGradient(
             colors: [Colors.blueAccent, Colors.cyanAccent],
           ),
 
-          /// 🔥 Glow
+          ///  Glow
           boxShadow: [
             BoxShadow(
-              color: Colors.blueAccent.withValues(alpha:0.4),
+              color: Colors.blueAccent.withValues(alpha: 0.4),
               blurRadius: 10,
               spreadRadius: 1,
             ),
@@ -547,48 +399,48 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  bool _handledInitialLink = false; // 🔥 global variable
+  bool _handledInitialLink = false;
 
   void initDeepLinks() async {
-    // 🔹 COLD START (App closed)
+    ///COLD START (App closed)
     try {
       final uri = await _appLinks.getInitialLink();
 
-      print("🔥 INITIAL LINK: $uri");
+      print(" INITIAL LINK: $uri");
 
       if (!_handledInitialLink && uri != null) {
         _handledInitialLink = true;
         handleIncomingLink(uri);
       }
     } catch (e) {
-      print("🔥 INITIAL ERROR: $e");
+      print(" INITIAL ERROR: $e");
     }
 
-    // 🔹 WARM START (App running / background)
+    /// WARM START (App running / background)
     _appLinks.uriLinkStream.listen(
       (uri) {
-        print("🔥 STREAM LINK: $uri");
+        print(" STREAM LINK: $uri");
 
-        if (uri != null) {
-          handleIncomingLink(uri);
-        }
+        //if (uri != null) {
+        handleIncomingLink(uri);
+        //}
       },
       onError: (err) {
-        print("🔥 LINK ERROR: $err");
+        print(" LINK ERROR: $err");
       },
     );
   }
 
   void handleIncomingLink(Uri uri) {
-    print("🔥 FULL URI: $uri");
-    print("🔥 HOST: ${uri.host}");
-    print("🔥 PATH: ${uri.path}");
+    print(" FULL URI: $uri");
+    print(" HOST: ${uri.host}");
+    print(" PATH: ${uri.path}");
 
     if (uri.host == "join" || uri.path.contains("join")) {
       String? code = uri.queryParameters['code'];
 
       if (code != null && code.isNotEmpty) {
-        print("🔥 Deep link received: $code");
+        print(" Deep link received: $code");
 
         Future.delayed(const Duration(milliseconds: 200), () {
           navigatorKey.currentState?.pushAndRemoveUntil(
