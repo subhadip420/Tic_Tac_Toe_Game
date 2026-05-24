@@ -14,23 +14,30 @@ import 'firebase_options.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:app_links/app_links.dart';
-
+/// APP START
 void main() async {
+  /// REQUIRED FOR ASYNC BEFORE runApp()
   WidgetsFlutterBinding.ensureInitialized();
 
+  /// FIREBASE INITIALIZE
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // final prefs = await SharedPreferences.getInstance();
   //
   // isDark = prefs.getBool("theme_dark") ?? true;
 
+  /// START APP
   runApp(const TicTacToeApp());
 }
 
+/// GLOBAL NAVIGATOR KEY
+/// USED FOR NAVIGATION WITHOUT CONTEXT
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 //bool isDark = true;
 
+
+/// MAIN APP
 class TicTacToeApp extends StatelessWidget {
   const TicTacToeApp({super.key});
 
@@ -41,6 +48,7 @@ class TicTacToeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Tic Tac Toe",
 
+      /// SYSTEM THEME AUTO DETECT
       themeMode: ThemeMode.system,
       //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
@@ -56,11 +64,13 @@ class TicTacToeApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF0F172A),
       ),
 
+      /// FIRST SCREEN
       home: const HomePage(),
     );
   }
 }
 
+/// HOME PAGE
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -70,52 +80,61 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  /// LOGO ANIMATION CONTROLLER
   late AnimationController controller;
+  /// SCALE ANIMATION
   late Animation<double> animation;
-
+  /// DEEP LINK INSTANCE
   late final AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
     //loadTheme();
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
+    // controller = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(seconds: 2),
+    // );
+    //
+    // animation = Tween<double>(
+    //   begin: 0.85,
+    //   end: 1.1,
+    // ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    //
+    // controller.repeat(reverse: true);
 
-    animation = Tween<double>(
-      begin: 0.85,
-      end: 1.1,
-    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
-
-    controller.repeat(reverse: true);
-
+    /// START LISTENING LINKS
     _appLinks = AppLinks();
     initDeepLinks();
   }
 
   @override
   void dispose() {
+    /// DISPOSE ANIMATION
     controller.dispose();
     super.dispose();
   }
 
+  /// HOME PAGE UI
   @override
   Widget build(BuildContext context) {
+    /// CURRENT THEME MODE
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      /// PAGE BACKGROUND
       backgroundColor: isDark
           ? const Color(0xFF0F172A)
           : const Color(0xFFF5F7FB),
 
+      /// KEYBOARD SAFE RESIZE
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: ConstrainedBox(
+              /// FULL SCREEN HEIGHT
               constraints: BoxConstraints(
                 minHeight: MediaQuery.of(context).size.height,
               ),
@@ -123,6 +142,7 @@ class _HomePageState extends State<HomePage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    /// ANIMATION
                     SizedBox(
                       height: 150,
                       width: 150,
@@ -141,6 +161,7 @@ class _HomePageState extends State<HomePage>
 
                     const SizedBox(height: 20),
 
+                    /// APP TITLE
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -186,7 +207,7 @@ class _HomePageState extends State<HomePage>
 
                     const SizedBox(height: 35),
 
-                    /// PLAY SOLO
+                    /// PLAY SOLO BUTTON
                     buildButton(
                       context,
                       Icons.smart_toy,
@@ -216,6 +237,7 @@ class _HomePageState extends State<HomePage>
 
                     const SizedBox(height: 30),
 
+                    /// BOTTOM ACTION BUTTONS
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
 
@@ -255,7 +277,7 @@ class _HomePageState extends State<HomePage>
                           color: isDark ? Colors.white24 : Colors.black26,
                         ),
 
-                        /// INFO
+                        /// INFO BUTTON
                         TextButton.icon(
                           onPressed: () {
                             Navigator.push(
@@ -293,28 +315,35 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  /// HOME BUTTON
   Widget buildButton(
     BuildContext context,
     IconData icon,
     String title,
     String subtitle,
   ) {
+
+    /// CURRENT THEME
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
+      /// BUTTON CLICK
       onTap: () {
+        /// PLAY SOLO PAGE
         if (title == "Play Solo") {
           navigatorKey.currentState?.push(
             MaterialPageRoute(builder: (context) => const GameBoardPage()),
           );
         }
 
+        /// TWO PLAYER PAGE
         if (title == "Play with Friend") {
           navigatorKey.currentState?.push(
             MaterialPageRoute(builder: (context) => const TwoPlayerBoardPage()),
           );
         }
 
+        /// ONLINE PAGE
         if (title == "Play Online") {
           navigatorKey.currentState?.push(
             MaterialPageRoute(
@@ -325,6 +354,7 @@ class _HomePageState extends State<HomePage>
       },
 
       child: Container(
+        /// OUTER BORDER PADDING
         padding: const EdgeInsets.all(1.5),
 
         decoration: BoxDecoration(
@@ -335,7 +365,7 @@ class _HomePageState extends State<HomePage>
             colors: [Colors.blueAccent, Colors.cyanAccent],
           ),
 
-          ///  Glow
+          /// OUTER GLOW
           boxShadow: [
             BoxShadow(
               color: Colors.blueAccent.withValues(alpha: 0.4),
@@ -346,12 +376,14 @@ class _HomePageState extends State<HomePage>
         ),
 
         child: Container(
+          /// INNER PADDING
           padding: const EdgeInsets.all(18),
 
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E293B) : Colors.white,
             borderRadius: BorderRadius.circular(18),
 
+            /// CARD SHADOW
             boxShadow: [
               BoxShadow(
                 color: isDark ? Colors.black45 : Colors.black12,
@@ -362,6 +394,7 @@ class _HomePageState extends State<HomePage>
 
           child: Row(
             children: [
+              /// BUTTON ICON
               Icon(
                 icon,
                 size: 30,
@@ -370,10 +403,12 @@ class _HomePageState extends State<HomePage>
 
               const SizedBox(width: 15),
 
+              /// TITLE + SUBTITLE
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    /// BUTTON TITLE
                     title,
                     style: TextStyle(
                       fontSize: 18,
@@ -382,6 +417,7 @@ class _HomePageState extends State<HomePage>
                     ),
                   ),
 
+                  /// BUTTON SUBTITLE
                   Text(
                     subtitle,
                     style: TextStyle(
@@ -391,6 +427,7 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
 
+              /// KEYBOARD SPACE
               SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
@@ -399,10 +436,13 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  /// PREVENT MULTIPLE INITIAL LINK HANDLING
   bool _handledInitialLink = false;
 
+  /// INITIALIZE DEEP LINKS
   void initDeepLinks() async {
-    ///COLD START (App closed)
+    /// COLD START
+    /// APP CLOSED -> OPEN FROM LINK
     try {
       final uri = await _appLinks.getInitialLink();
 
@@ -416,7 +456,8 @@ class _HomePageState extends State<HomePage>
       print(" INITIAL ERROR: $e");
     }
 
-    /// WARM START (App running / background)
+    /// WARM START
+    /// APP RUNNING / BACKGROUND
     _appLinks.uriLinkStream.listen(
       (uri) {
         print(" STREAM LINK: $uri");
@@ -431,17 +472,24 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+
+  /// HANDLE RECEIVED DEEP LINK
   void handleIncomingLink(Uri uri) {
     print(" FULL URI: $uri");
     print(" HOST: ${uri.host}");
     print(" PATH: ${uri.path}");
 
+
+    /// CHECK JOIN ROOM LINK
     if (uri.host == "join" || uri.path.contains("join")) {
+      /// GET ROOM CODE
       String? code = uri.queryParameters['code'];
 
+      /// VALID ROOM CODE
       if (code != null && code.isNotEmpty) {
         print(" Deep link received: $code");
 
+        /// SMALL DELAY FOR SAFE NAVIGATION
         Future.delayed(const Duration(milliseconds: 200), () {
           navigatorKey.currentState?.pushAndRemoveUntil(
             MaterialPageRoute(
