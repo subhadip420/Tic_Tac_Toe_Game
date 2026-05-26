@@ -18,8 +18,10 @@ class DrawBoardPage extends StatefulWidget {
 class Stroke {
   /// Stroke points
   final List<Offset?> points;
+
   /// Stroke color
   final Color color;
+
   /// Stroke width
   final double width;
 
@@ -29,38 +31,50 @@ class Stroke {
 class _DrawBoardPageState extends State<DrawBoardPage> {
   /// All saved strokes
   List<Stroke> strokes = [];
+
   /// Current drawing stroke
   List<Offset?> currentStroke = [];
 
   /// Selected drawing color
   Color selectedColor = Colors.black;
+
   /// Selected stroke width
   double strokeWidth = 4;
 
   /// Current active stroke color
   Color currentStrokeColor = Colors.black;
+
   /// Current active stroke width
   double currentStrokeWidth = 4;
+
   /// Eraser mode state
   bool isEraser = false;
+
   /// Tool panel visibility
   bool showTools = false;
+
   /// Theme mode state
   bool isDark = true;
+
   /// Vibration setting
   bool vibrationOn = true;
+
   /// Auto grid drawing mode
   bool autoGrid = false;
+
   /// Snap drawing inside box
   bool snapToBox = false;
+
   /// Detect X and O symbols
   bool detectXO = false;
+
   /// Alternate turn drawing mode
   bool turnBased = false;
 
   @override
   void initState() {
     super.initState();
+
     /// Load saved theme settings
     loadTheme().then((_) {
       /// Set default drawing color
@@ -75,6 +89,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     setState(() {
       /// Load theme mode
       isDark = prefs.getBool("theme_dark") ?? true;
+
       /// Load vibration setting
       vibrationOn = prefs.getBool("vibration_on") ?? true;
     });
@@ -178,6 +193,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         }
         shouldExit = false;
       },
+
       /// Exit button action
       onPositive: () async {
         if (vibrationOn) {
@@ -193,6 +209,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
   Widget build(BuildContext context) {
     /// Background color
     Color bgColor = isDark ? Color(0xFF161C28) : Color(0xFFEBEBEC);
+
     /// Main text color
     Color textColor = isDark ? Colors.cyanAccent : Colors.blue;
 
@@ -222,6 +239,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                 if (vibrationOn) {
                   HapticFeedback.lightImpact();
                 }
+
                 /// Show exit dialog
                 bool exit = await showExitDialog();
 
@@ -238,14 +256,12 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
         ),
 
         actions: [
-
           /// Settings button
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: Tooltip(
               message: "Settings",
               child: GestureDetector(
-
                 /// Open settings menu
                 onTap: () {
                   if (vibrationOn) {
@@ -274,18 +290,19 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                 );
 
                 return GestureDetector(
-
                   /// Erase stroke on tap
                   onTapDown: (details) {
                     if (isEraser) {
                       eraseStroke(details.localPosition);
                     }
                   },
+
                   /// Start drawing stroke
                   onPanStart: (details) {
                     if (isEraser) return;
                     currentStroke = [];
                     Offset point = details.localPosition;
+
                     /// Snap point to grid
                     if (snapToBox && autoGrid) {
                       point = snapToGridPoint(point, canvasSize);
@@ -310,6 +327,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                       currentStroke.add(point);
                     });
                   },
+
                   /// Save completed stroke
                   onPanEnd: (_) {
                     if (isEraser) return;
@@ -320,12 +338,14 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
                         currentStrokeWidth,
                       ),
                     );
+
                     /// Reset current stroke
                     currentStroke = [];
                   },
 
                   child: Container(
                     color: bgColor,
+
                     /// Drawing canvas painter
                     child: CustomPaint(
                       painter: DrawPainter(
@@ -347,6 +367,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           /// Fixed bottom tool panel
           Container(
             padding: const EdgeInsets.all(10),
+
             /// Tool panel background color
             color: isDark ? const Color(0xFF2B3A5A) : Color(0xFFE5E5E3),
 
@@ -464,6 +485,7 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
           color: isSelected ? Colors.blueAccent : Colors.grey.shade300,
           shape: BoxShape.circle,
         ),
+
         /// Tool icon
         child: Icon(icon, color: isSelected ? Colors.white : Colors.black),
       ),
@@ -513,12 +535,14 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
     /// Check all strokes
     for (int i = strokes.length - 1; i >= 0; i--) {
       Stroke stroke = strokes[i];
+
       /// Check all stroke points
       for (var point in stroke.points) {
         if (point == null) continue;
         double dx = point.dx - touchPoint.dx;
         double dy = point.dy - touchPoint.dy;
         double distance = sqrt(dx * dx + dy * dy);
+
         /// Remove touched stroke
         if (distance < threshold) {
           setState(() {
@@ -534,18 +558,23 @@ class _DrawBoardPageState extends State<DrawBoardPage> {
   Offset snapToGridPoint(Offset point, Size size) {
     /// Grid cell width
     double cellW = size.width / 3;
+
     /// Grid cell height
     double cellH = size.height / 3;
+
     /// Detect grid column
     int col = (point.dx / cellW).floor();
+
     /// Detect grid row
     int row = (point.dy / cellH).floor();
 
     /// Keep inside grid boundary
     col = col.clamp(0, 2);
     row = row.clamp(0, 2);
+
     /// Cell center X
     double centerX = col * cellW + cellW / 2;
+
     /// Cell center Y
     double centerY = row * cellH + cellH / 2;
 
@@ -559,8 +588,10 @@ class DrawPainter extends CustomPainter {
   final List<Offset?> currentStroke;
   final Color currentStrokeColor;
   final double currentStrokeWidth;
+
   /// Theme mode state
   final bool isDark;
+
   /// Auto grid mode state
   final bool autoGrid;
 
@@ -578,7 +609,7 @@ class DrawPainter extends CustomPainter {
     /// Draw grid if enabled
     if (autoGrid) {
       final gridPaint = Paint()
-      /// Grid line color
+        /// Grid line color
         ..color = isDark ? Colors.white : Colors.black
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke;
