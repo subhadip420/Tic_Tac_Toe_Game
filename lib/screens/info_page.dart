@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/build_circle_icon_button.dart';
 
+/// INFO PAGE
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
 
@@ -13,15 +14,18 @@ class InfoPage extends StatefulWidget {
 }
 
 class _TermsConditionPageState extends State<InfoPage> {
+  /// THEME MODE
   bool isDark = true;
 
   @override
   void initState() {
     super.initState();
 
+    /// LOAD SAVED THEME
     loadTheme();
   }
 
+  /// LOAD THEME
   Future<void> loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -34,9 +38,6 @@ class _TermsConditionPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final bool isDark =
-    //     Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
 
@@ -45,6 +46,7 @@ class _TermsConditionPageState extends State<InfoPage> {
           : const Color(0xFFF3F7FF),
 
       appBar: AppBar(
+        /// STATUS BAR STYLE
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
           statusBarIconBrightness: isDark
@@ -55,6 +57,7 @@ class _TermsConditionPageState extends State<InfoPage> {
               : Brightness.light, // iOS
         ),
 
+        /// APPBAR BOTTOM BORDER
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
@@ -67,6 +70,7 @@ class _TermsConditionPageState extends State<InfoPage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
 
+        /// GLASS EFFECT
         flexibleSpace: ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -81,6 +85,7 @@ class _TermsConditionPageState extends State<InfoPage> {
           ),
         ),
 
+        /// PAGE TITLE
         title: Text(
           "Info Center",
 
@@ -92,12 +97,14 @@ class _TermsConditionPageState extends State<InfoPage> {
           ),
         ),
 
+        /// BACK BUTTON
         leading: Padding(
           padding: const EdgeInsets.only(left: 12),
           child: Tooltip(
             message: "Back",
             child: GestureDetector(
               onTap: () async {
+                /// CLOSE PAGE
                 Navigator.pop(context);
               },
               child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
@@ -106,7 +113,6 @@ class _TermsConditionPageState extends State<InfoPage> {
         ),
       ),
 
-      // body: SingleChildScrollView(
       body: Column(
         children: [
           Expanded(
@@ -128,7 +134,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-                      /// TERMS & CONDITIONS
+                      /// TERMS & CONDITIONS TITLE
                       Text(
                         "Terms & Conditions",
                         style: TextStyle(
@@ -140,6 +146,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 02),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 185,
                         height: 2,
@@ -148,6 +155,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 18),
 
+                      /// TERMS DESCRIPTION
                       Text(
                         "• Players must play fairly and should not use cheats, hacks, bugs, or modified versions of the game.\n\n"
                         "• A stable internet connection is required for smooth online multiplayer gameplay.\n\n"
@@ -165,7 +173,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 35),
 
-                      /// PRIVACY POLICY
+                      /// PRIVACY POLICY TITLE
                       Text(
                         "Privacy Policy",
                         style: TextStyle(
@@ -177,6 +185,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 02),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 130,
                         height: 2,
@@ -185,6 +194,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 18),
 
+                      /// PRIVACY POLICY DESCRIPTION
                       Text(
                         "• We do not collect sensitive personal information from users.\n\n"
                         "• Basic game preferences such as nickname, settings, and gameplay preferences may be stored locally on the user's device.\n\n"
@@ -200,7 +210,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 35),
 
-                      /// SUPPORT
+                      /// SUPPORT TITLE
                       Text(
                         "Support",
                         style: TextStyle(
@@ -212,6 +222,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 02),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 75,
                         height: 2,
@@ -220,6 +231,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 18),
 
+                      /// SUPPORT DESCRIPTION
                       Text(
                         "For support, bug reports, feedback, or business inquiries, contact us at:",
                         style: TextStyle(
@@ -231,6 +243,7 @@ class _TermsConditionPageState extends State<InfoPage> {
 
                       const SizedBox(height: 10),
 
+                      /// SUPPORT EMAIL
                       GestureDetector(
                         onTap: () async {
                           final Uri emailUri = Uri(
@@ -255,8 +268,6 @@ class _TermsConditionPageState extends State<InfoPage> {
                       ),
 
                       const SizedBox(height: 20),
-
-
                     ],
                   ),
                 ),
@@ -271,15 +282,11 @@ class _TermsConditionPageState extends State<InfoPage> {
             padding: const EdgeInsets.symmetric(vertical: 5),
 
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF111827)
-                  : Colors.white,
+              color: isDark ? const Color(0xFF111827) : Colors.white,
 
               border: Border(
                 top: BorderSide(
-                  color: isDark
-                      ? Colors.white24
-                      : Colors.black12,
+                  color: isDark ? Colors.white24 : Colors.black12,
                 ),
               ),
             ),
@@ -288,25 +295,23 @@ class _TermsConditionPageState extends State<InfoPage> {
               mainAxisSize: MainAxisSize.min,
 
               children: [
+                /// APP VERSION
                 Text(
                   "Version 1.0.0",
                   style: TextStyle(
                     fontSize: 12,
-                    color: isDark
-                        ? Colors.white60
-                        : Colors.black54,
+                    color: isDark ? Colors.white60 : Colors.black54,
                   ),
                 ),
 
                 SizedBox(height: 2),
 
+                /// COMPANY NAME
                 Text(
                   "Powered by SP Tech Studios",
                   style: TextStyle(
                     fontSize: 12,
-                    color: isDark
-                        ? Colors.white54
-                        : Colors.black54,
+                    color: isDark ? Colors.white54 : Colors.black54,
                   ),
                 ),
               ],
@@ -316,7 +321,6 @@ class _TermsConditionPageState extends State<InfoPage> {
       ),
     );
   }
-
 }
 
-/// end main class
+/// END MAIN CLASS
