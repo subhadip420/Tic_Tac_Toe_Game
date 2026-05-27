@@ -17,7 +17,7 @@ import '../widgets/neon_glowing_button.dart';
 import '../../widgets/loading_widget.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart'; // 🔥 for kIsWeb
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'web_listener_stub.dart' if (dart.library.html) 'web_listener.dart';
 
@@ -1380,7 +1380,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         if (didPop) return;
 
         /// Show exit dialog
-        showExitDialog(); // 🔥 dialog show
+        showExitDialog();
       },
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -1519,7 +1519,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center, // 🔥 CENTER
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
 
