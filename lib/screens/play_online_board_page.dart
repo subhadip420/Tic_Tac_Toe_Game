@@ -1523,52 +1523,106 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                   children: [
                     const SizedBox(height: 20),
 
-                    /// SCORE SECTION
+                    // /// SCORE SECTION
+                    // Row(
+                    //   children: [
+                    //     /// MY SCORE
+                    //     scoreBox("You", mySymbol, boardColor, textColor),
+                    //
+                    //     const SizedBox(width: 10),
+                    //
+                    //     /// CENTER SCORE
+                    //     Expanded(
+                    //       child: Center(
+                    //         child: Container(
+                    //           width: 80,
+                    //           alignment: Alignment.center,
+                    //           padding: const EdgeInsets.symmetric(
+                    //             horizontal: 20,
+                    //             vertical: 8,
+                    //           ),
+                    //           decoration: BoxDecoration(
+                    //             color: boardColor,
+                    //             borderRadius: BorderRadius.circular(10),
+                    //           ),
+                    //           child: Text(
+                    //             "$myScore - $opponentScore",
+                    //             style: TextStyle(
+                    //               color: textColor,
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //
+                    //     const SizedBox(width: 10),
+                    //
+                    //     /// OPPONENT SCORE
+                    //     scoreBox(
+                    //       opponentId,
+                    //       mySymbol == "X" ? "O" : "X",
+                    //       boardColor,
+                    //       textColor,
+                    //     ),
+                    //   ],
+                    // ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        /// MY SCORE
-                        scoreBox("You", mySymbol, boardColor, textColor),
+                        /// LEFT SCORE
+                        SizedBox(
+                          width: 100,
 
-                        const SizedBox(width: 10),
+                          child: scoreBox(
+                            "You",
+                            mySymbol,
+                            boardColor,
+                            textColor,
+                          ),
+                        ),
 
                         /// CENTER SCORE
-                        Expanded(
-                          child: Center(
-                            child: Container(
-                              width: 80,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: boardColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                "$myScore - $opponentScore",
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        Container(
+                          width: 90,
+
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: boardColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+
+                            child: Text(
+                              "$myScore - $opponentScore",
+
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
 
-                        const SizedBox(width: 10),
+                        /// RIGHT SCORE
+                        SizedBox(
+                          width: 100,
 
-                        /// OPPONENT SCORE
-                        scoreBox(
-                          opponentId,
-                          mySymbol == "X" ? "O" : "X",
-                          boardColor,
-                          textColor,
+                          child: scoreBox(
+                            opponentId,
+                            mySymbol == "X" ? "O" : "X",
+                            boardColor,
+                            textColor,
+                          ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 10),
 
                     /// TURN TIMER
@@ -2492,160 +2546,168 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         /// ACTIVE GLOW VALUE
         double glowValue = isActive ? glowAnimation.value : 0;
 
-        return Stack(
-          children: [
-            /// MAIN SCORE BOX
-            Container(
-              width: 100,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: isActive
-                    ? [
-                        BoxShadow(
-                          color: gradientColors.first.withValues(
-                            alpha: glowValue,
+        return SizedBox(
+          width: 100,
+          child: Stack(
+            children: [
+              /// MAIN SCORE BOX
+              Container(
+                //width: 100,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: isActive
+                      ? [
+                          BoxShadow(
+                            color: gradientColors.first.withValues(
+                              alpha: glowValue,
+                            ),
+                            blurRadius: 16 * glowValue,
+                            spreadRadius: 1,
                           ),
-                          blurRadius: 16 * glowValue,
-                          spreadRadius: 1,
-                        ),
-                      ]
-                    : [],
-              ),
+                        ]
+                      : [],
+                ),
 
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  /// PLAYER SYMBOL
-                  ShaderMask(
-                    shaderCallback: (rect) {
-                      return LinearGradient(
-                        colors: gradientColors,
-                      ).createShader(rect);
-                    },
-                    child: Text(
-                      symbol,
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /// PLAYER SYMBOL
+                    ShaderMask(
+                      shaderCallback: (rect) {
+                        return LinearGradient(
+                          colors: gradientColors,
+                        ).createShader(rect);
+                      },
+                      child: Text(
+                        symbol,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 2),
+                    const SizedBox(height: 2),
 
-                  /// PLAYER NAME
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final textSpan = TextSpan(
-                        text: player,
-                        style: TextStyle(
-                          color: textColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      );
+                    /// PLAYER NAME
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final textSpan = TextSpan(
+                          text: player,
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
 
-                      final textPainter = TextPainter(
-                        text: textSpan,
-                        maxLines: 1,
-                        textDirection: TextDirection.ltr,
-                      )..layout();
+                        final textPainter = TextPainter(
+                          text: textSpan,
+                          maxLines: 1,
+                          textDirection: TextDirection.ltr,
+                        )..layout();
 
-                      double textWidth = textPainter.width;
-                      double boxWidth = constraints.maxWidth;
+                        double textWidth = textPainter.width;
+                        double boxWidth = constraints.maxWidth;
 
-                      /// AUTO SCROLL FOR LONG NAME
-                      if (textWidth > boxWidth) {
-                        return SizedBox(
-                          height: 18,
-                          child: ClipRect(
-                            child: SingleChildScrollView(
-                              controller: nameScrollController,
-                              scrollDirection: Axis.horizontal,
-                              physics: const NeverScrollableScrollPhysics(),
-                              child: Text(
-                                player,
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontWeight: FontWeight.w600,
+                        /// AUTO SCROLL FOR LONG NAME
+                        if (textWidth > boxWidth) {
+                          return SizedBox(
+                            height: 18,
+                            child: ClipRect(
+                              child: SingleChildScrollView(
+                                controller: nameScrollController,
+                                scrollDirection: Axis.horizontal,
+                                physics: const NeverScrollableScrollPhysics(),
+                                child: Text(
+                                  player,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      } else {
-                        /// NORMAL TEXT
-                        return Center(
-                          child: Text(
-                            player,
-                            maxLines: 1,
-                            overflow: TextOverflow.clip,
-                            style: TextStyle(
-                              color: textColor,
-                              fontWeight: FontWeight.w600,
+                          );
+                        } else {
+                          /// NORMAL TEXT
+                          return Center(
+                            child: Text(
+                              player,
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(
+                                color: textColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            ///  TIMER BORDER (NEW)
-            if (isActive)
-              Positioned.fill(
-                child: AnimatedBuilder(
-                  animation: timerController,
-                  builder: (context, child) {
-                    int timeLeft = getTimeLeft();
-
-                    ///  LAST 5 SEC ALERT
-                    if (timeLeft <= 5 && timeLeft > 0) {
-                      if (timeLeft != lastAlertSecond) {
-                        lastAlertSecond = timeLeft;
-
-                        /// TICK SOUND
-                        if (soundOn) {
-                          clockSoundPlayer.stop();
-                          clockSoundPlayer.play(AssetSource("audio/tick.mp3"));
+                          );
                         }
-
-                        /// VIBRATION ALERT
-                        if (vibrationOn) {
-                          HapticFeedback.mediumImpact();
-                        }
-                      }
-                    }
-
-                    /// TIMER BORDER COLOR
-                    Color dynamicColor;
-
-                    if (timeLeft <= 5) {
-                      /// RED WARNING COLOR
-                      dynamicColor = Colors.red;
-                    } else {
-                      /// PLAYER COLOR
-                      dynamicColor = symbol == "X"
-                          ? Colors.blueAccent
-                          : Colors.orangeAccent;
-                    }
-
-                    return CustomPaint(
-                      painter: TimerBorderPainter(
-                        /// REVERSE TIMER PROGRESS
-                        1 - timerController.value,
-                        dynamicColor,
-                      ),
-                    );
-                  },
+                      },
+                    ),
+                  ],
                 ),
               ),
-          ],
+
+              ///  TIMER BORDER (NEW)
+              if (isActive)
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: timerController,
+                    builder: (context, child) {
+                      int timeLeft = getTimeLeft();
+
+                      ///  LAST 5 SEC ALERT
+                      if (timeLeft <= 5 && timeLeft > 0) {
+                        if (timeLeft != lastAlertSecond) {
+                          lastAlertSecond = timeLeft;
+
+                          /// TICK SOUND
+                          if (soundOn) {
+                            clockSoundPlayer.stop();
+                            clockSoundPlayer.play(
+                              AssetSource("audio/tick.mp3"),
+                            );
+                          }
+
+                          /// VIBRATION ALERT
+                          if (vibrationOn) {
+                            HapticFeedback.mediumImpact();
+                          }
+                        }
+                      }
+
+                      /// TIMER BORDER COLOR
+                      Color dynamicColor;
+
+                      if (timeLeft <= 5) {
+                        /// RED WARNING COLOR
+                        dynamicColor = Colors.red;
+                      } else {
+                        /// PLAYER COLOR
+                        dynamicColor = symbol == "X"
+                            ? Colors.blueAccent
+                            : Colors.orangeAccent;
+                      }
+
+                      return CustomPaint(
+                        painter: TimerBorderPainter(
+                          /// REVERSE TIMER PROGRESS
+                          1 - timerController.value,
+                          dynamicColor,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -2765,17 +2827,19 @@ class TimerBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     /// MAIN RECTANGLE AREA
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    //final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final rect = Rect.fromLTWH(1, 1, size.width - 2, size.height - 2);
 
     /// BORDER PAINT
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      //..strokeWidth = 1.5;
+      ..strokeWidth = 2;
 
     /// ROUNDED BORDER PATH
     final path = Path();
-    path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(12)));
+    path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(11)));
 
     /// GET PATH LENGTH
     final metric = path.computeMetrics().first;
