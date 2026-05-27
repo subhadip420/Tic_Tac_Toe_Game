@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 3D GLOWING ICON BUTTON
 Widget build3DIconButton({IconData? icon, String? text, required bool isDark}) {
   return SizedBox(
     width: 44,
@@ -11,12 +12,14 @@ Widget build3DIconButton({IconData? icon, String? text, required bool isDark}) {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
 
+        /// OUTER GRADIENT
         gradient: isDark
             ? const LinearGradient(
                 colors: [Colors.blueAccent, Colors.cyanAccent],
               )
             : const LinearGradient(colors: [Colors.blue, Colors.indigo]),
 
+        /// OUTER GLOW
         boxShadow: [
           BoxShadow(
             color: Colors.blueAccent.withValues(alpha: 0.4),
@@ -35,11 +38,13 @@ Widget build3DIconButton({IconData? icon, String? text, required bool isDark}) {
         ),
 
         child: icon != null
+            /// ICON MODE
             ? Icon(
                 icon,
                 size: 20,
                 color: isDark ? Colors.cyanAccent : Colors.blue,
               )
+            /// TEXT MODE
             : Text(
                 text ?? "",
                 style: TextStyle(
