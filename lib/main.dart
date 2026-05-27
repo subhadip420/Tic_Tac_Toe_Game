@@ -14,6 +14,7 @@ import 'firebase_options.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:app_links/app_links.dart';
+
 /// APP START
 void main() async {
   /// REQUIRED FOR ASYNC BEFORE runApp()
@@ -22,10 +23,6 @@ void main() async {
   /// FIREBASE INITIALIZE
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // final prefs = await SharedPreferences.getInstance();
-  //
-  // isDark = prefs.getBool("theme_dark") ?? true;
-
   /// START APP
   runApp(const TicTacToeApp());
 }
@@ -33,9 +30,6 @@ void main() async {
 /// GLOBAL NAVIGATOR KEY
 /// USED FOR NAVIGATION WITHOUT CONTEXT
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-//bool isDark = true;
-
 
 /// MAIN APP
 class TicTacToeApp extends StatelessWidget {
@@ -50,7 +44,6 @@ class TicTacToeApp extends StatelessWidget {
 
       /// SYSTEM THEME AUTO DETECT
       themeMode: ThemeMode.system,
-      //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
 
       /// LIGHT THEME
       theme: ThemeData(
@@ -82,26 +75,16 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   /// LOGO ANIMATION CONTROLLER
   late AnimationController controller;
+
   /// SCALE ANIMATION
   late Animation<double> animation;
+
   /// DEEP LINK INSTANCE
   late final AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
-    //loadTheme();
-    // controller = AnimationController(
-    //   vsync: this,
-    //   duration: const Duration(seconds: 2),
-    // );
-    //
-    // animation = Tween<double>(
-    //   begin: 0.85,
-    //   end: 1.1,
-    // ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
-    //
-    // controller.repeat(reverse: true);
 
     /// START LISTENING LINKS
     _appLinks = AppLinks();
@@ -322,7 +305,6 @@ class _HomePageState extends State<HomePage>
     String title,
     String subtitle,
   ) {
-
     /// CURRENT THEME
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -462,9 +444,7 @@ class _HomePageState extends State<HomePage>
       (uri) {
         print(" STREAM LINK: $uri");
 
-        //if (uri != null) {
         handleIncomingLink(uri);
-        //}
       },
       onError: (err) {
         print(" LINK ERROR: $err");
@@ -472,13 +452,11 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-
   /// HANDLE RECEIVED DEEP LINK
   void handleIncomingLink(Uri uri) {
     print(" FULL URI: $uri");
     print(" HOST: ${uri.host}");
     print(" PATH: ${uri.path}");
-
 
     /// CHECK JOIN ROOM LINK
     if (uri.host == "join" || uri.path.contains("join")) {
