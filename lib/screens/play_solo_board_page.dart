@@ -469,16 +469,13 @@ class _GameBoardPageState extends State<GameBoardPage>
 
   /// Trigger device vibration
   Future playVibration(int duration) async {
-
     /// Stop if vibration is disabled
     if (!vibrationOn) return;
 
     /// Check device vibration support
-    final hasVibrator =
-    await Vibration.hasVibrator();
+    final hasVibrator = await Vibration.hasVibrator();
 
     if (hasVibrator == true) {
-
       /// Trigger vibration
       Vibration.vibrate(duration: duration);
     }
@@ -915,7 +912,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
             child: Container(
               /// Outer gradient border container
-              padding: const EdgeInsets.all(1.5), // 🔥 border thickness
+              padding: const EdgeInsets.all(1.5),
 
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
