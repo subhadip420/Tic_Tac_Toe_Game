@@ -1,4 +1,4 @@
-// web_listener_stub.dart
+/// DUMMY WEB LISTENER FOR MOBILE
 void setupWebListeners({
   required Function onOffline,
   required Function onOnline,
