@@ -114,19 +114,6 @@ class WinLinePainter extends CustomPainter {
     Offset end = getOffset(line.last);
     Offset current = Offset.lerp(start, end, progress)!;
 
-    // /// DYNAMIC THICKNESS
-    // double glowStroke = boardSize <= 4
-    //     ? 16
-    //     : boardSize <= 6
-    //     ? 10
-    //     : 7;
-    //
-    // double lineStroke = boardSize <= 4
-    //     ? 8
-    //     : boardSize <= 6
-    //     ? 5
-    //     : 3.5;
-
     final glowPaint = Paint()
       ..color = Colors.greenAccent.withValues(alpha: 0.7)
       ..strokeWidth = cell * 0.3
