@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- 🔥 FIREBASE HOSTING DEEP LINK (FIXED) -->
+            <!-- FIREBASE HOSTING DEEP LINK (FIXED) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -36,7 +36,7 @@
                     android:pathPrefix="/join"/>
             </intent-filter>
 
-            <!-- 🔥 CUSTOM SCHEME (KEEP THIS) -->
+            <!-- CUSTOM SCHEME (KEEP THIS) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
