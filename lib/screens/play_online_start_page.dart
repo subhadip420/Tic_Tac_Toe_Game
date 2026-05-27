@@ -1542,9 +1542,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           textCapitalization: TextCapitalization.characters,
 
           /// Hide actual text
-          style: const TextStyle(
-            color: Colors.transparent, // 🔥 hide text
-          ),
+          style: const TextStyle(color: Colors.transparent),
 
           /// Hide cursor
           cursorColor: Colors.transparent,
@@ -2922,7 +2920,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       /// Delete room from Firebase
       await dbRef.child("rooms/$code").remove();
 
-      print("✅ Room deleted from Firebase");
+      print("Room deleted from Firebase");
 
       /// Reset room state
       if (mounted) {
@@ -3383,7 +3381,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         /// Remove reject flag
         dbRef.child("rooms/$code/rejectedBy").remove();
 
-        roomListener?.cancel(); // 🔥 stop listener
+        roomListener?.cancel();
         return;
       }
 
@@ -3486,7 +3484,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
       /// Close room & exit page
       onPositive: () async {
-        await deleteRoom(roomCode); // 🔥 full logic
+        await deleteRoom(roomCode);
 
         if (mounted) {
           if (vibrationOn) {
@@ -3494,7 +3492,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
           }
 
           /// Exit current page
-          Navigator.pop(context); // 🔥 exit page
+          Navigator.pop(context);
         }
       },
     );
