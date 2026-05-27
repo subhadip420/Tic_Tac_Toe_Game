@@ -6,8 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/build_circle_icon_button.dart';
 
+/// THEME MODE
 bool isDark = true;
 
+/// HOW TO PLAY PAGE
 class HowToPlayPage extends StatefulWidget {
   const HowToPlayPage({super.key});
 
@@ -19,9 +21,12 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   @override
   void initState() {
     super.initState();
+
+    /// LOAD SAVED THEME
     loadTheme();
   }
 
+  /// LOAD THEME FROM STORAGE
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -33,18 +38,21 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // backgroundColor: const Color(0xFF1F2A44),
       backgroundColor: isDark
           ? const Color(0xFF0F172A)
           : const Color(0xFFF5F7FB),
 
       appBar: AppBar(
         scrolledUnderElevation: 0,
+
+        /// STATUS BAR STYLE
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
+          /// ANDROID ICON COLOR
           statusBarIconBrightness: isDark
               ? Brightness.light
               : Brightness.dark, // Android
+          /// IOS ICON COLOR
           statusBarBrightness: isDark
               ? Brightness.dark
               : Brightness.light, // iOS
@@ -54,6 +62,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
 
+        /// APPBAR BOTTOM BORDER
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
@@ -62,6 +71,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           ),
         ),
 
+        /// GLASS EFFECT BACKGROUND
         flexibleSpace: ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -76,6 +86,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           ),
         ),
 
+        /// PAGE TITLE
         title: Text(
           "How To Play",
 
@@ -87,12 +98,14 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
           ),
         ),
 
+        /// BACK BUTTON
         leading: Padding(
           padding: const EdgeInsets.only(left: 12),
           child: Tooltip(
             message: "Back",
             child: GestureDetector(
               onTap: () async {
+                /// CLOSE PAGE
                 Navigator.pop(context);
               },
               child: build3DIconButton(icon: Icons.arrow_back, isDark: isDark),
@@ -107,7 +120,6 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
-            //padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
@@ -125,6 +137,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                     children: [
                       const SizedBox(height: 0),
 
+                      /// SECTION TITLE
                       Text(
                         "Game Rules",
                         style: TextStyle(
@@ -136,6 +149,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 5),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 110,
                         height: 2,
@@ -144,6 +158,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 20),
 
+                      /// WIN RULE
                       ruleItem(
                         icon: Icons.emoji_events,
                         title: "WIN",
@@ -156,6 +171,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                         height: 40,
                       ),
 
+                      /// DEFEAT RULE
                       ruleItem(
                         icon: Icons.sentiment_dissatisfied,
                         title: "DEFEAT",
@@ -169,6 +185,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                         height: 40,
                       ),
 
+                      /// DRAW RULE
                       ruleItem(
                         icon: Icons.handshake,
                         title: "DRAW",
@@ -179,6 +196,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 40),
 
+                      /// WIN CONDITION TITLE
                       Text(
                         "Win Conditions",
                         style: TextStyle(
@@ -190,6 +208,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 5),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 140,
                         height: 2,
@@ -198,7 +217,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 20),
 
-                      /// TABLE
+                      /// WIN CONDITION TABLE
                       Container(
                         decoration: BoxDecoration(
                           color: isDark
@@ -233,7 +252,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                           },
 
                           children: [
-                            /// HEADER
+                            /// TABLE HEADER
                             TableRow(
                               decoration: BoxDecoration(
                                 color: isDark
@@ -248,7 +267,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
                               ],
                             ),
 
-                            /// ROWS
+                            /// TABLE ROWS
                             buildTableRow("3x3", "Connect 3 symbols"),
                             buildTableRow("4x4", "Connect 4 symbols"),
                             buildTableRow("5x5", "Connect 4 symbols"),
@@ -262,6 +281,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 40),
 
+                      /// OTHER CONDITIONS TITLE
                       Text(
                         "Others Conditions",
                         style: TextStyle(
@@ -273,6 +293,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 5),
 
+                      /// TITLE UNDERLINE
                       Container(
                         width: 165,
                         height: 2,
@@ -281,6 +302,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
                       const SizedBox(height: 20),
 
+                      /// OTHER CONDITIONS DESCRIPTION
                       Text(
                         "• A created room remains available for up to 5 minutes if no opponent joins.\n\n"
                         "• If the opponent exits or disconnects, you should also exit and create or join a new room.\n\n"
@@ -310,6 +332,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     );
   }
 
+  /// GAME RULE ITEM
   Widget ruleItem({
     required IconData icon,
     required String title,
@@ -319,14 +342,17 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /// RULE ICON
         Icon(icon, color: isDark ? Colors.amber : Colors.blueAccent, size: 28),
 
         const SizedBox(width: 14),
 
+        /// RULE TEXT
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// RULE TITLE
               Text(
                 title,
                 style: TextStyle(
@@ -338,6 +364,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
               const SizedBox(height: 6),
 
+              /// RULE DESCRIPTION
               Text(
                 description,
                 style: TextStyle(
@@ -351,6 +378,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
 
         const SizedBox(width: 10),
 
+        /// RULE GRAPHIC
         graphic,
       ],
     );
@@ -371,6 +399,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     return miniBoard(["X", "O", "X", "O", "X", "O", "O", "X", "O"]);
   }
 
+  /// MINI TIC TAC TOE BOARD
   Widget miniBoard(List<String> values) {
     return Container(
       padding: const EdgeInsets.all(4),
@@ -407,6 +436,7 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
             String value = values[index];
             Color textColor;
 
+            /// SYMBOL COLOR
             if (value == "X") {
               textColor = Colors.blueAccent;
             } else if (value == "O") {
@@ -439,10 +469,12 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
     );
   }
 
+  /// TABLE ROW
   TableRow buildTableRow(String board, String condition) {
     return TableRow(children: [tableCell(board), tableCell(condition)]);
   }
 
+  /// TABLE CELL
   Widget tableCell(String text, {bool isHeader = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
@@ -465,4 +497,4 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   }
 }
 
-///end main class
+/// TABLE CELL
