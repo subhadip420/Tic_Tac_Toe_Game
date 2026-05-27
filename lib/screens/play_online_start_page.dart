@@ -722,13 +722,17 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                           child: Column(
                             children: [
                               /// Room expiry timer
-                              Text(
-                                "Your Room Code will expire in "
-                                "${(countdown ~/ 60).toString().padLeft(2, '0')}:"
-                                "${(countdown % 60).toString().padLeft(2, '0')} min",
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
+                              Center(
+                                child: Text(
+                                  "Your Room Code will expire in "
+                                  "${(countdown ~/ 60).toString().padLeft(2, '0')}:"
+                                  "${(countdown % 60).toString().padLeft(2, '0')} min.",
+                                  textAlign: TextAlign.center,
+
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
 
