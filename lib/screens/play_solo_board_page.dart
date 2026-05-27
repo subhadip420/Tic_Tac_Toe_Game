@@ -143,6 +143,9 @@ class _GameBoardPageState extends State<GameBoardPage>
 
       /// Load vibration setting
       vibrationOn = prefs.getBool("vibration_on") ?? true;
+
+      /// Load saved difficulty
+      difficulty = prefs.getString("difficulty") ?? "Easy";
     });
   }
 
@@ -1789,6 +1792,11 @@ class _GameBoardPageState extends State<GameBoardPage>
           difficulty = level;
         });
 
+        /// SAVE DIFFICULTY
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString("difficulty", level);
+        });
+
         /// Light vibration feedback
         if (vibrationOn) {
           HapticFeedback.lightImpact();
@@ -1925,6 +1933,11 @@ class _GameBoardPageState extends State<GameBoardPage>
         /// Update selected difficulty
         setState(() {
           difficulty = level;
+        });
+
+        /// SAVE DIFFICULTY
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString("difficulty", level);
         });
 
         /// Light vibration feedback
