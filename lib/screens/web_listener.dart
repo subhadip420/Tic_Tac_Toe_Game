@@ -1,6 +1,7 @@
 // web_listener.dart
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
+
 /// SETUP ONLINE / OFFLINE LISTENERS
 void setupWebListeners({
   required void Function() onOffline,
@@ -14,6 +15,7 @@ void setupWebListeners({
       onOffline();
     }).toJS,
   );
+
   /// ONLINE EVENT
   web.window.addEventListener(
     'online',
