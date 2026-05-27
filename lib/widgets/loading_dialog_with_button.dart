@@ -3,24 +3,37 @@ import 'dart:ui';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// CUSTOM GLASS APP DIALOG
 Future<void> showAppDialog({
   required BuildContext context,
+
+  /// DIALOG CONTEXT CALLBACK
   Function(BuildContext dialogContext)? onDialogCreated,
+
+  /// DIALOG TITLE
   required String title,
+
+  /// DIALOG MESSAGE
   required String message,
 
+  /// BUTTON TEXTS
   String positiveText = "OK",
   String negativeText = "CANCEL",
 
+  /// BUTTON CALLBACKS
   Future<void> Function()? onPositive,
   VoidCallback? onNegative,
 
+  /// DIALOG SETTINGS
   bool barrierDismissible = false,
-  bool showContentLoading = false, //in dialog loading circle
-  bool showLoadingOnPositive = false, // 🔥 ADD
+  bool showContentLoading = false,
+  bool showLoadingOnPositive = false,
   bool canPop = false,
 }) async {
+  /// BUTTON LOADING STATE
   bool isLoading = false;
+
+  /// LOAD SAVED THEME
   final prefs = await SharedPreferences.getInstance();
 
   bool isDark = prefs.getBool("theme_dark") ?? true;
@@ -29,9 +42,8 @@ Future<void> showAppDialog({
     context: context,
     barrierDismissible: barrierDismissible,
     builder: (dialogContext) {
+      /// RETURN DIALOG CONTEXT
       onDialogCreated?.call(dialogContext);
-
-      //final isDark = Theme.of(context).brightness == Brightness.dark;
 
       return PopScope(
         canPop: canPop,
@@ -59,7 +71,7 @@ Future<void> showAppDialog({
                         Container(
                           margin: const EdgeInsets.only(top: 20),
 
-                          /// 🔥 MAIN GLASS CARD
+                          /// MAIN GLASS CARD
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(28),
 
@@ -76,7 +88,7 @@ Future<void> showAppDialog({
                                 ),
 
                                 decoration: BoxDecoration(
-                                  /// 🔥 GLASS EFFECT
+                                  /// GLASS EFFECT
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
@@ -102,11 +114,7 @@ Future<void> showAppDialog({
 
                                   borderRadius: BorderRadius.circular(28),
 
-                                  /// 🔥 NEON BORDER
-                                  // border: Border.all(
-                                  //   color: Colors.white.withOpacity(0.2),
-                                  //   width: 2.5,
-                                  // ),
+                                  ///  NEON BORDER
                                   border: Border.all(
                                     color: Colors.white.withValues(
                                       alpha: isDark ? 0.18 : 0.35,
@@ -114,14 +122,7 @@ Future<void> showAppDialog({
                                     width: 1.5,
                                   ),
 
-                                  /// 🔥 GLOW
-                                  // boxShadow: [
-                                  //   BoxShadow(
-                                  //     color: Colors.white.withOpacity(0.15),
-                                  //     blurRadius: 18,
-                                  //     spreadRadius: 1,
-                                  //   ),
-                                  // ],
+                                  /// GLOW
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.cyanAccent.withValues(
@@ -144,8 +145,7 @@ Future<void> showAppDialog({
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    /// 🔥 MESSAGE
-                                    /// 🔥 LOADING + MESSAGE
+                                    /// LOADING + MESSAGE
                                     showContentLoading
                                         ? Column(
                                             mainAxisSize: MainAxisSize.min,
@@ -185,7 +185,7 @@ Future<void> showAppDialog({
 
                                     const SizedBox(height: 24),
 
-                                    /// 🔥 BUTTONS
+                                    /// BUTTONS
                                     Row(
                                       children: [
                                         /// NEGATIVE
@@ -253,7 +253,7 @@ Future<void> showAppDialog({
                                                       }
 
                                                       try {
-                                                        /// 🔥 CLOSE ONLY DIALOG
+                                                        ///  CLOSE ONLY DIALOG
                                                         if (Navigator.of(
                                                           dialogContext,
                                                           rootNavigator: true,
@@ -264,7 +264,7 @@ Future<void> showAppDialog({
                                                           ).pop();
                                                         }
 
-                                                        /// 🔥 RUN FUNCTION
+                                                        ///  RUN FUNCTION
                                                         if (onPositive !=
                                                             null) {
                                                           await onPositive();
@@ -309,7 +309,7 @@ Future<void> showAppDialog({
                           ),
                         ),
 
-                        /// 🔥 FLOATING HEADER
+                        ///  FLOATING HEADER
                         Positioned(
                           top: 0,
 
@@ -370,15 +370,17 @@ Future<void> showAppDialog({
   );
 }
 
+/// GAMING BUTTON
 Widget buildGamingButton({
   required String text,
 
-  /// 🔥 BUTTON COLORS
+  ///  BUTTON COLORS
   required Color backgroundColor,
   required Color borderColor,
   required Color textColor,
   required Color loadingColor,
 
+  /// LOADING STATE
   bool isLoading = false,
 }) {
   return Container(
@@ -387,13 +389,13 @@ Widget buildGamingButton({
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(18),
 
-      /// 🔥 BUTTON BG
+      /// BUTTON BACKGROUND
       color: backgroundColor,
 
-      /// 🔥 BORDER
+      ///  BORDER
       border: Border.all(color: borderColor, width: 1.2),
 
-      /// 🔥 SHADOW
+      /// SHADOW EFFECT
       boxShadow: [
         BoxShadow(
           color: backgroundColor.withValues(alpha: 0.35),
@@ -404,6 +406,7 @@ Widget buildGamingButton({
 
     alignment: Alignment.center,
 
+    /// LOADING INDICATOR
     child: isLoading
         ? SizedBox(
             width: 18,
@@ -413,6 +416,7 @@ Widget buildGamingButton({
               color: loadingColor,
             ),
           )
+        /// BUTTON TEXT
         : Text(
             text,
             style: TextStyle(
