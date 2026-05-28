@@ -829,31 +829,9 @@ class _GameBoardPageState extends State<GameBoardPage>
         }
       },
 
-      // child: Scaffold(
-      //   /// Transparent scaffold background
-      //   backgroundColor: Colors.transparent,
-      //
-      //   appBar: AppBar(
-      //     ///  AppBar background color
-      //     backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
-      //     //backgroundColor: Colors.transparent,
-      //     elevation: 0,
-      //
-      //     flexibleSpace: Container(
-      //       /// AppBar gradient background
-      //       decoration: BoxDecoration(
-      //         gradient: LinearGradient(
-      //           begin: Alignment.topCenter,
-      //           end: Alignment.bottomCenter,
-      //           colors: isDark
-      //               ? [const Color(0xFF111827), const Color(0xFF1F2A44)]
-      //               : [const Color(0xFFF5F5F0), const Color(0xFFF5F5F0)],
-      //         ),
-      //       ),
-      //     ),
-
       child: Scaffold(
         extendBodyBehindAppBar: true,
+
         /// Transparent scaffold background
         backgroundColor: Colors.transparent,
 
@@ -1220,7 +1198,6 @@ class _GameBoardPageState extends State<GameBoardPage>
               ),
             ),
 
-
             /// Confetti animation widget
             ConfettiWidget(
               confettiController: confettiController,
@@ -1235,16 +1212,6 @@ class _GameBoardPageState extends State<GameBoardPage>
               ],
             ),
 
-            // SafeArea(
-            //   child: Padding(
-            //     /// Main screen padding
-            //     padding: const EdgeInsets.symmetric(horizontal: 0),
-            //     child: SingleChildScrollView(
-            //       padding: const EdgeInsets.symmetric(horizontal: 20),
-            //       child: Column(
-            //         children: [
-            //           const SizedBox(height: 20),
-
             SafeArea(
               top: false,
               child: Padding(
@@ -1253,7 +1220,12 @@ class _GameBoardPageState extends State<GameBoardPage>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight + 20),
+                      SizedBox(
+                        height:
+                            MediaQuery.of(context).padding.top +
+                            kToolbarHeight +
+                            20,
+                      ),
 
                       /// SCORE SECTION
                       Row(
@@ -1509,7 +1481,7 @@ class _GameBoardPageState extends State<GameBoardPage>
                                   GridView.builder(
                                     padding: EdgeInsets.zero,
                                     physics:
-                                    const NeverScrollableScrollPhysics(),
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: 9,
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
