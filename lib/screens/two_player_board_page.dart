@@ -1258,27 +1258,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         }
       },
 
-      // child: Scaffold(
-      //   backgroundColor: Colors.transparent,
-      //
-      //   appBar: AppBar(
-      //     /// AppBar background color
-      //     backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
-      //     elevation: 0,
-      //
-      //     flexibleSpace: Container(
-      //       /// AppBar gradient background
-      //       decoration: BoxDecoration(
-      //         gradient: LinearGradient(
-      //           begin: Alignment.topCenter,
-      //           end: Alignment.bottomCenter,
-      //           colors: isDark
-      //               ? [const Color(0xFF111827), const Color(0xFF1F2A44)]
-      //               : [const Color(0xFFF5F5F0), const Color(0xFFF5F5F0)],
-      //         ),
-      //       ),
-      //     ),
-
       child: Scaffold(
         extendBodyBehindAppBar: true,
         /// Transparent scaffold background
@@ -1667,16 +1646,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                 Colors.purple,
               ],
             ),
-
-            // SafeArea(
-            //   child: Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 0),
-            //     child: SingleChildScrollView(
-            //       /// Main screen padding
-            //       padding: const EdgeInsets.symmetric(horizontal: 20),
-            //       child: Column(
-            //         children: [
-            //           const SizedBox(height: 20),
 
             SafeArea(
               top: false,
