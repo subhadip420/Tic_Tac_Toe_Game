@@ -1473,11 +1473,6 @@ class _GameBoardPageState extends State<GameBoardPage>
                               child: Stack(
                                 children: [
                                   /// Tic Tac Toe grid
-                                  // GridView.builder(
-                                  //   physics:
-                                  //       const NeverScrollableScrollPhysics(),
-                                  //   itemCount: 9,
-                                  /// Tic Tac Toe grid
                                   GridView.builder(
                                     padding: EdgeInsets.zero,
                                     physics:

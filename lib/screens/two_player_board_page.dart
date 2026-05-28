@@ -1260,6 +1260,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
       child: Scaffold(
         extendBodyBehindAppBar: true,
+
         /// Transparent scaffold background
         backgroundColor: Colors.transparent,
 
@@ -1300,7 +1301,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
           ),
-
 
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
@@ -1632,7 +1632,6 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ),
             ),
 
-
             /// Confetti animation
             ConfettiWidget(
               confettiController: confettiController,
@@ -1655,8 +1654,12 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight + 20),
-
+                      SizedBox(
+                        height:
+                            MediaQuery.of(context).padding.top +
+                            kToolbarHeight +
+                            20,
+                      ),
 
                       /// Score section
                       Row(
