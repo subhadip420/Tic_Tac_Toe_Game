@@ -1258,26 +1258,70 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         }
       },
 
+      // child: Scaffold(
+      //   backgroundColor: Colors.transparent,
+      //
+      //   appBar: AppBar(
+      //     /// AppBar background color
+      //     backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
+      //     elevation: 0,
+      //
+      //     flexibleSpace: Container(
+      //       /// AppBar gradient background
+      //       decoration: BoxDecoration(
+      //         gradient: LinearGradient(
+      //           begin: Alignment.topCenter,
+      //           end: Alignment.bottomCenter,
+      //           colors: isDark
+      //               ? [const Color(0xFF111827), const Color(0xFF1F2A44)]
+      //               : [const Color(0xFFF5F5F0), const Color(0xFFF5F5F0)],
+      //         ),
+      //       ),
+      //     ),
+
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        /// Transparent scaffold background
         backgroundColor: Colors.transparent,
 
         appBar: AppBar(
-          /// AppBar background color
-          backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
+          backgroundColor: Colors.transparent,
           elevation: 0,
 
-          flexibleSpace: Container(
-            /// AppBar gradient background
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF111827), const Color(0xFF1F2A44)]
-                    : [const Color(0xFFF5F5F0), const Color(0xFFF5F5F0)],
+          /// STATUS BAR STYLE
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // transparent status bar
+            /// ANDROID ICON COLOR
+            statusBarIconBrightness: isDark
+                ? Brightness.light
+                : Brightness.dark, // Android
+            /// IOS ICON COLOR
+            statusBarBrightness: isDark
+                ? Brightness.dark
+                : Brightness.light, // iOS
+          ),
+
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.white.withValues(alpha: 0.25),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.05),
+                      width: 1.0,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
+
 
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
@@ -1481,15 +1525,26 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
               ],
             ),
 
+            // SafeArea(
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 0),
+            //     child: SingleChildScrollView(
+            //       /// Main screen padding
+            //       padding: const EdgeInsets.symmetric(horizontal: 20),
+            //       child: Column(
+            //         children: [
+            //           const SizedBox(height: 20),
+
             SafeArea(
+              top: false,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: SingleChildScrollView(
-                  /// Main screen padding
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const SizedBox(height: 20),
+                      SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight + 20),
+
 
                       /// Score section
                       Row(
@@ -1784,6 +1839,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                 children: [
                                   /// Dynamic game grid
                                   GridView.builder(
+                                    padding: EdgeInsets.zero,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     itemCount: board.length,
