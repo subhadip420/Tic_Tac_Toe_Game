@@ -1383,11 +1383,48 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
         showExitDialog();
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 
         appBar: AppBar(
-          backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
+          //backgroundColor: isDark ? Color(0xFF2B3A5A) : Color(0xFFF5F5F0),
+          backgroundColor: Colors.transparent,
           elevation: 0,
+
+          /// STATUS BAR STYLE
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // transparent status bar
+            /// ANDROID ICON COLOR
+            statusBarIconBrightness: isDark
+                ? Brightness.light
+                : Brightness.dark, // Android
+            /// IOS ICON COLOR
+            statusBarBrightness: isDark
+                ? Brightness.dark
+                : Brightness.light, // iOS
+          ),
+
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.white.withValues(alpha: 0.25),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.05),
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
 
           /// BACK BUTTON
           leading: Padding(
@@ -1439,7 +1476,6 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
 
                   style: TextStyle(
                     color: isDark ? Colors.white70 : Colors.black87,
-
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1512,17 +1548,32 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
             ),
 
             /// MAIN CONTENT
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 5),
+            //   child: SingleChildScrollView(
+            //     padding: const EdgeInsets.symmetric(horizontal: 15),
+            //     physics: const BouncingScrollPhysics(),
+            //     child: Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         const SizedBox(height: 20),
 
+
+            /// MAIN CONTENT
+            SafeArea(
+              top: false, /// CRITICAL: Scrollable content ko glass AppBar ke neeche jaane dega
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      /// Dynamic top space jo Status bar aur AppBar ki height cover karega
+                      SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight + 20),
                     // /// SCORE SECTION
                     // Row(
                     //   children: [
@@ -1844,6 +1895,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                             children: [
                               /// BOARD GRID
                               GridView.builder(
+                                padding: EdgeInsets.zero,
                                 physics: const NeverScrollableScrollPhysics(),
 
                                 itemCount: boardSize * boardSize,
@@ -2018,6 +2070,7 @@ class _PlayOnlineBoardPageState extends State<PlayOnlineBoardPage>
                   ],
                 ),
               ),
+            ),
             ),
           ],
         ),
