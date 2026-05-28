@@ -1,48 +1,96 @@
 name: tic_tac_toe
+
+# APP DESCRIPTION
 description: "A new tic_tac_toe app"
 
+# PREVENT PUBLISHING TO PUB.DEV
 publish_to: 'none'
+
+# APP VERSION (version+buildNumber)
 version: 1.0.0+1
 
 environment:
+  # REQUIRED DART SDK VERSION
   sdk: ^3.11.5
 
 dependencies:
+  # FLUTTER SDK
   flutter:
     sdk: flutter
+  # SAVE LOCAL SETTINGS / DATA
   shared_preferences: ^2.2.2
+
+  # PLAY GAME AUDIO
   audioplayers: ^6.6.0
+
+  # CONFETTI WIN EFFECT
   confetti: ^0.8.0
+
+  # VIBRATION / HAPTIC FEEDBACK
   vibration: ^3.1.8
+
+  # TOAST MESSAGES
   fluttertoast: ^9.0.0
+
+  # FIREBASE INITIALIZATION
   firebase_core: ^4.7.0
+
+  # FIREBASE REALTIME DATABASE
   firebase_database: ^12.3.0
+
+  # SHARE ROOM CODE / LINKS
   share_plus: ^13.0.0
+
+  # PICK PROFILE IMAGE
   image_picker: ^1.0.7
+
+  # INTERNET CONNECTIVITY CHECK
   connectivity_plus: ^7.1.1
+
+  # AUTO SCROLLING TEXT
   marquee: ^2.2.3
+
+  # DEEP LINK HANDLING
   app_links: ^6.0.0
+
+  # LOTTIE ANIMATIONS
   lottie: ^3.1.0
 
+  # IOS STYLE ICONS
   cupertino_icons: ^1.0.8
+
+  # OPEN URL / EMAIL / LINKS
   url_launcher: ^6.3.0
 
 dev_dependencies:
+  # FLUTTER TESTING
   flutter_test:
     sdk: flutter
+
+  # APP ICON GENERATOR
   flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
+  # GENERATE ANDROID ICON
   android: true
+
+  # GENERATE IOS ICON
   ios: true
+
+  # MAIN APP LOGO
   image_path: "assets/images/app_logo.png"
+
+  # MINIMUM ANDROID VERSION
   min_sdk_android: 21
 
-
+  # ADAPTIVE ICON BACKGROUND
   adaptive_icon_background: "assets/images/app_logo_bg.png"
+
+  # ADAPTIVE ICON FOREGROUND
   adaptive_icon_foreground: "assets/images/app_logo.png"
 
 flutter:
+  # ENABLE MATERIAL DESIGN
   uses-material-design: true
   assets:
     - assets/audio/tap.mp3
