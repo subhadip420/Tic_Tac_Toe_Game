@@ -23,6 +23,12 @@ void main() async {
   /// FIREBASE INITIALIZE
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  /// No screen rotation allow
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   /// START APP
   runApp(const TicTacToeApp());
 }
