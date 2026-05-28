@@ -1078,6 +1078,149 @@ class _GameBoardPageState extends State<GameBoardPage>
               ),
             ),
 
+            /// Theme-based Tic-Tac-Toe Background (Scattered X and O)
+
+            /// TOP-LEFT TILTED 'X'
+            Positioned(
+              top: -30,
+              left: -20,
+              child: Transform.rotate(
+                angle: -0.2,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.blueAccent.withValues(alpha: 0.05)
+                        : Colors.blue.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+
+            /// TOP-RIGHT 'O'
+            Positioned(
+              top: -40,
+              right: -40,
+              child: Transform.rotate(
+                angle: 0.7,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 250,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+
+            /// CENTER-RIGHT TILTED 'X'
+            Positioned(
+              top: 180,
+              right: -10,
+              child: Transform.rotate(
+                angle: -0.7,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 250,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.blueAccent.withValues(alpha: 0.05)
+                        : Colors.blue.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+
+            /// CENTER-LEFT 'O'
+            Positioned(
+              top: 230,
+              left: 0,
+              child: Transform.rotate(
+                angle: -0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+
+            /// LOWER-RIGHT SMALL 'O'
+            Positioned(
+              bottom: 170,
+              right: 70,
+              child: Transform.rotate(
+                angle: 0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 150,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+
+            /// BOTTOM-LEFT TILTED 'X'
+            Positioned(
+              bottom: 80,
+              left: -40,
+              child: Transform.rotate(
+                angle: 0.8,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.blueAccent.withValues(alpha: 0.05)
+                        : Colors.blue.withValues(alpha: 0.15),
+                  ),
+                ),
+              ),
+            ),
+
+            /// MASSIVE BOTTOM-RIGHT 'O'
+            Positioned(
+              bottom: -150,
+              right: -50,
+              child: Transform.rotate(
+                angle: 0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 370,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            ),
+
+
             /// Confetti animation widget
             ConfettiWidget(
               confettiController: confettiController,
