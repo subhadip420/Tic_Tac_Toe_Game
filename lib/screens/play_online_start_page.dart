@@ -141,7 +141,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     loadSettings();
 
     /// ROOM CLEANUP
-    //cleanUpDeadRooms();
+    cleanUpDeadRooms();
 
     /// CHECK USER AFTER BUILD
     Future.delayed(Duration.zero, () {
@@ -2407,7 +2407,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   /// CLEAN EXPIRED / DEAD ROOMS
   Future<void> cleanUpDeadRooms() async {
     /// Show loading dialog
-    LoadingDialog.show(context, message: "Removing Expired Room");
+    //LoadingDialog.show(context, message: "Removing Expired Room");
 
     try {
       /// Firebase database reference
@@ -2463,7 +2463,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     } finally {
       /// Always hide loading
       if (mounted) {
-        LoadingDialog.hide(context);
+        //LoadingDialog.hide(context);
       }
     }
   }
