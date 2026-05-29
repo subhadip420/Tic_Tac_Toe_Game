@@ -450,7 +450,11 @@ class _HomePageState extends State<HomePage>
       (uri) {
         print(" STREAM LINK: $uri");
 
+        //handleIncomingLink(uri);
+        // important for play with link
+        if (uri != null) {
         handleIncomingLink(uri);
+        }
       },
       onError: (err) {
         print(" LINK ERROR: $err");

@@ -119,6 +119,19 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// INSTANCE
     instance = this;
+    print("INITIAL CODE = ${widget.initialCode}");
+    if (widget.initialCode != null &&
+        widget.initialCode!.isNotEmpty) {
+
+      Future.delayed(
+        const Duration(seconds: 2),
+            () {
+          handleDeepLinkJoin(
+            widget.initialCode!,
+          );
+        },
+      );
+    }
 
     /// LOAD SETTINGS & USER DATA
     monitorInternet();
@@ -128,7 +141,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     loadSettings();
 
     /// ROOM CLEANUP
-    cleanUpDeadRooms();
+    //cleanUpDeadRooms();
 
     /// CHECK USER AFTER BUILD
     Future.delayed(Duration.zero, () {
