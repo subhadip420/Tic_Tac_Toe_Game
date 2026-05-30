@@ -8,25 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:822658804517:android:45db3a51bd81acd5cc08cc",
-        "android_client_info": {
-          "package_name": "com.example.tic_tac_toe"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlRRgg_JXtZu5TxyAxGPDx9tgdWtFIJl8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:822658804517:android:d812b3880fcc36d0cc08cc",
         "android_client_info": {
           "package_name": "com.sptechstudios.tictactoe"
