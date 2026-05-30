@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,8 +9,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-import java.util.Properties
-        import java.io.FileInputStream
+//import java.util.Properties
+//        import java.io.FileInputStream
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
@@ -27,7 +30,8 @@ android {
         }
     }
 
-    namespace = "com.example.tic_tac_toe"
+    //namespace = "com.example.tic_tac_toe"
+    namespace = "com.sptechstudios.tictactoe"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -42,7 +46,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.tic_tac_toe"
+        //applicationId = "com.example.tic_tac_toe"
+        applicationId = "com.sptechstudios.tictactoe"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
