@@ -69,6 +69,8 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   Timer? dotTimer;
   Timer? publicRoomRefreshTimer;
 
+  DateTime? roomExpiryTime;
+
   int countdown = 300;
 
   /// Countdown progress
@@ -1993,6 +1995,11 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
       countdown = 300;
     });
 
+    /// FIXED EXPIRY TIME
+    roomExpiryTime = DateTime.now().add(
+      const Duration(minutes: 5),
+    );
+
     /// Start room timer & animation
     startTimer();
     startDotAnimation();
@@ -2310,8 +2317,14 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// Generate invite link
     //String link = generateInviteLink();
-    DateTime now = DateTime.now();
-    DateTime expiry = now.add(const Duration(minutes: 5));
+    // DateTime now = DateTime.now();
+    // DateTime expiry = now.add(const Duration(minutes: 5));
+
+    if (roomExpiryTime == null) {
+      return;
+    }
+
+    DateTime expiry = roomExpiryTime!;
 
     /// Format expiry time
     String formattedTime =
