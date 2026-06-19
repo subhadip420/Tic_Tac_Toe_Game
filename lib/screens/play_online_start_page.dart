@@ -24,9 +24,10 @@ import 'package:tic_tac_toe/widgets/loading_dialog_with_button.dart';
 
 class PlayOnlineStartPage extends StatefulWidget {
   /// Deep link room code
-  final String? initialCode;
+  //final String? initialCode;
 
-  const PlayOnlineStartPage({Key? key, this.initialCode}) : super(key: key);
+  //const PlayOnlineStartPage({Key? key, this.initialCode}) : super(key: key);
+  const PlayOnlineStartPage({Key? key}) : super(key: key);
 
   @override
   State<PlayOnlineStartPage> createState() => PlayOnlineStartPageState();
@@ -119,19 +120,20 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     /// INSTANCE
     instance = this;
-    print("INITIAL CODE = ${widget.initialCode}");
-    if (widget.initialCode != null &&
-        widget.initialCode!.isNotEmpty) {
 
-      Future.delayed(
-        const Duration(seconds: 2),
-            () {
-          handleDeepLinkJoin(
-            widget.initialCode!,
-          );
-        },
-      );
-    }
+    // print("INITIAL CODE = ${widget.initialCode}");
+    // if (widget.initialCode != null &&
+    //     widget.initialCode!.isNotEmpty) {
+    //
+    //   Future.delayed(
+    //     const Duration(seconds: 2),
+    //         () {
+    //       handleDeepLinkJoin(
+    //         widget.initialCode!,
+    //       );
+    //     },
+    //   );
+    // }
 
     /// LOAD SETTINGS & USER DATA
     monitorInternet();
@@ -2307,7 +2309,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
     }
 
     /// Generate invite link
-    String link = generateInviteLink();
+    //String link = generateInviteLink();
     DateTime now = DateTime.now();
     DateTime expiry = now.add(const Duration(minutes: 5));
 
@@ -2322,68 +2324,69 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
         text:
             "🎮 Join my TicTacToe match!\n"
             "Room Code: $roomCode\n"
-            "Click here to join instantly:\n$link \n"
+            //"Click here to join instantly:\n$link \n"
+            "Open Play Online → Enter Code → Click Join\n"
             "Expires at: $formattedTime",
       ),
     );
   }
 
   /// GENERATE INVITE LINK
-  String generateInviteLink() {
-    return "https://tic-tac-toe-9c3bf.web.app/join?code=$roomCode";
-  }
+  // String generateInviteLink() {
+  //   return "https://tic-tac-toe-9c3bf.web.app/join?code=$roomCode";
+  // }
 
   /// HANDLE DEEP LINK JOIN
-  Future<void> handleDeepLinkJoin(String code) async {
-    print(" AUTO JOIN: $code");
-
-    /// Delete current room if active
-    if (isCodeGenerated && roomCode.isNotEmpty) {
-      await deleteRoom(roomCode);
-    }
-
-    /// Fill room code
-    enteredCode = code;
-    hiddenController.text = code;
-    setState(() {});
-
-    /// Small delay before join
-    await Future.delayed(const Duration(milliseconds: 200));
-
-    /// Join room automatically
-    await smartJoinRoom(code);
-
-    /// MAIN JOIN
-  }
+  // Future<void> handleDeepLinkJoin(String code) async {
+  //   print(" AUTO JOIN: $code");
+  //
+  //   /// Delete current room if active
+  //   if (isCodeGenerated && roomCode.isNotEmpty) {
+  //     await deleteRoom(roomCode);
+  //   }
+  //
+  //   /// Fill room code
+  //   enteredCode = code;
+  //   hiddenController.text = code;
+  //   setState(() {});
+  //
+  //   /// Small delay before join
+  //   await Future.delayed(const Duration(milliseconds: 200));
+  //
+  //   /// Join room automatically
+  //   await smartJoinRoom(code);
+  //
+  //   /// MAIN JOIN
+  // }
 
   /// HANDLE INCOMING DEEP LINK
-  void handleIncomingLink(Uri uri) {
-    /// Check join route
-    if (uri.path.contains("join")) {
-      String? code = uri.queryParameters['code'];
-
-      /// Valid room code check
-      if (code != null && code.isNotEmpty) {
-        print(" Deep link received: $code");
-
-        Future.delayed(const Duration(milliseconds: 100), () {
-          /// Already on online page
-          if (PlayOnlineStartPageState.instance != null) {
-            PlayOnlineStartPageState.instance!.handleDeepLinkJoin(code);
-          } else {
-            /// Open online start page
-            navigatorKey.currentState?.pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (_) => PlayOnlineStartPage(initialCode: code),
-                settings: const RouteSettings(name: "/playOnline"),
-              ),
-              (route) => false,
-            );
-          }
-        });
-      }
-    }
-  }
+  // void handleIncomingLink(Uri uri) {
+  //   /// Check join route
+  //   if (uri.path.contains("join")) {
+  //     String? code = uri.queryParameters['code'];
+  //
+  //     /// Valid room code check
+  //     if (code != null && code.isNotEmpty) {
+  //       print(" Deep link received: $code");
+  //
+  //       Future.delayed(const Duration(milliseconds: 100), () {
+  //         /// Already on online page
+  //         if (PlayOnlineStartPageState.instance != null) {
+  //           PlayOnlineStartPageState.instance!.handleDeepLinkJoin(code);
+  //         } else {
+  //           /// Open online start page
+  //           navigatorKey.currentState?.pushAndRemoveUntil(
+  //             MaterialPageRoute(
+  //               builder: (_) => PlayOnlineStartPage(initialCode: code),
+  //               settings: const RouteSettings(name: "/playOnline"),
+  //             ),
+  //             (route) => false,
+  //           );
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 
   /// CHECK & LOAD USER
   Future<void> checkUser() async {
