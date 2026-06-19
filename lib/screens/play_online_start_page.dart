@@ -11,7 +11,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/screens/play_online_board_page.dart';
-import '../main.dart';
+//import '../main.dart';
 import '../widgets/build_circle_icon_button.dart';
 import '../widgets/build_icon_text_button.dart';
 import '../widgets/custom_toast.dart';
