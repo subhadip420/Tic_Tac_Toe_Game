@@ -13,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:app_links/app_links.dart';
+//import 'package:app_links/app_links.dart';
 
 /// APP START
 void main() async {
@@ -86,15 +86,15 @@ class _HomePageState extends State<HomePage>
   late Animation<double> animation;
 
   /// DEEP LINK INSTANCE
-  late final AppLinks _appLinks;
+  //late final AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
 
     /// START LISTENING LINKS
-    _appLinks = AppLinks();
-    initDeepLinks();
+    // _appLinks = AppLinks();
+    // initDeepLinks();
   }
 
   @override
@@ -425,69 +425,70 @@ class _HomePageState extends State<HomePage>
   }
 
   /// PREVENT MULTIPLE INITIAL LINK HANDLING
-  bool _handledInitialLink = false;
+  //bool _handledInitialLink = false;
 
   /// INITIALIZE DEEP LINKS
-  void initDeepLinks() async {
-    /// COLD START
-    /// APP CLOSED -> OPEN FROM LINK
-    try {
-      final uri = await _appLinks.getInitialLink();
-
-      print(" INITIAL LINK: $uri");
-
-      if (!_handledInitialLink && uri != null) {
-        _handledInitialLink = true;
-        handleIncomingLink(uri);
-      }
-    } catch (e) {
-      print(" INITIAL ERROR: $e");
-    }
-
-    /// WARM START
-    /// APP RUNNING / BACKGROUND
-    _appLinks.uriLinkStream.listen(
-      (uri) {
-        print(" STREAM LINK: $uri");
-
-        //handleIncomingLink(uri);
-        // important for play with link
-        if (uri != null) {
-        handleIncomingLink(uri);
-        }
-      },
-      onError: (err) {
-        print(" LINK ERROR: $err");
-      },
-    );
-  }
+  // void initDeepLinks() async {
+  //   /// COLD START
+  //   /// APP CLOSED -> OPEN FROM LINK
+  //   try {
+  //     final uri = await _appLinks.getInitialLink();
+  //
+  //     print(" INITIAL LINK: $uri");
+  //
+  //     if (!_handledInitialLink && uri != null) {
+  //       _handledInitialLink = true;
+  //       handleIncomingLink(uri);
+  //     }
+  //   } catch (e) {
+  //     print(" INITIAL ERROR: $e");
+  //   }
+  //
+  //   /// WARM START
+  //   /// APP RUNNING / BACKGROUND
+  //   _appLinks.uriLinkStream.listen(
+  //     (uri) {
+  //       print(" STREAM LINK: $uri");
+  //
+  //       //handleIncomingLink(uri);
+  //       // important for play with link
+  //       if (uri != null) {
+  //       handleIncomingLink(uri);
+  //       }
+  //     },
+  //     onError: (err) {
+  //       print(" LINK ERROR: $err");
+  //     },
+  //   );
+  // }
 
   /// HANDLE RECEIVED DEEP LINK
-  void handleIncomingLink(Uri uri) {
-    print(" FULL URI: $uri");
-    print(" HOST: ${uri.host}");
-    print(" PATH: ${uri.path}");
+  // void handleIncomingLink(Uri uri) {
+  //   print(" FULL URI: $uri");
+  //   print(" HOST: ${uri.host}");
+  //   print(" PATH: ${uri.path}");
+  //
+  //   /// CHECK JOIN ROOM LINK
+  //   if (uri.host == "join" || uri.path.contains("join")) {
+  //     /// GET ROOM CODE
+  //     String? code = uri.queryParameters['code'];
+  //
+  //     /// VALID ROOM CODE
+  //     if (code != null && code.isNotEmpty) {
+  //       print(" Deep link received: $code");
+  //
+  //       /// SMALL DELAY FOR SAFE NAVIGATION
+  //       Future.delayed(const Duration(milliseconds: 200), () {
+  //         navigatorKey.currentState?.pushAndRemoveUntil(
+  //           MaterialPageRoute(
+  //             builder: (_) => PlayOnlineStartPage(initialCode: code),
+  //             settings: const RouteSettings(name: "/playOnline"),
+  //           ),
+  //           (route) => false,
+  //         );
+  //       });
+  //     }
+  //   }
+  // }
 
-    /// CHECK JOIN ROOM LINK
-    if (uri.host == "join" || uri.path.contains("join")) {
-      /// GET ROOM CODE
-      String? code = uri.queryParameters['code'];
-
-      /// VALID ROOM CODE
-      if (code != null && code.isNotEmpty) {
-        print(" Deep link received: $code");
-
-        /// SMALL DELAY FOR SAFE NAVIGATION
-        Future.delayed(const Duration(milliseconds: 200), () {
-          navigatorKey.currentState?.pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => PlayOnlineStartPage(initialCode: code),
-              settings: const RouteSettings(name: "/playOnline"),
-            ),
-            (route) => false,
-          );
-        });
-      }
-    }
-  }
-}
+}//end HomePageState classs
