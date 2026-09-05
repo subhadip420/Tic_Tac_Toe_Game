@@ -22,8 +22,7 @@ class InfinityModePage extends StatefulWidget {
   State<InfinityModePage> createState() => _InfinityModePageState();
 }
 
-class _InfinityModePageState extends State<InfinityModePage>
-    with TickerProviderStateMixin {
+class _InfinityModePageState extends State<InfinityModePage> with TickerProviderStateMixin {
   /// Confetti animation controller
   late ConfettiController confettiController;
 
@@ -103,27 +102,16 @@ class _InfinityModePageState extends State<InfinityModePage>
     );
     progress = 1 - timerController.value;
 
-    lineController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-    lineAnimation = CurvedAnimation(
-      parent: lineController,
-      curve: Curves.easeInOut,
-    );
+    lineController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    lineAnimation = CurvedAnimation(parent: lineController, curve: Curves.easeInOut);
 
     Future.delayed(Duration.zero, () {
       choosePlayerDialog();
     });
 
-    confettiController = ConfettiController(
-      duration: const Duration(seconds: 2),
-    );
+    confettiController = ConfettiController(duration: const Duration(seconds: 2));
 
-    glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+    glowController = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);
 
     glowAnimation = Tween<double>(
       begin: 0.4,
@@ -244,7 +232,6 @@ class _InfinityModePageState extends State<InfinityModePage>
 
       _placePiece(index, currentPlayerSymbol, currentPlayerMoves);
     }
-
     /// Phase 2: Player ke paas 3 piece hain, ab replace (move) karna hoga
     else {
       // 1. Agar player apne hi kisi piece par click karta hai (Select karne ke liye)
@@ -371,20 +358,11 @@ class _InfinityModePageState extends State<InfinityModePage>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: isDark
-                          ? [
-                        Colors.white.withValues(alpha: 0.14),
-                        Colors.white.withValues(alpha: 0.05),
-                      ]
-                          : [
-                        Colors.white.withValues(alpha: 0.35),
-                        Colors.white.withValues(alpha: 0.12),
-                      ],
+                          ? [Colors.white.withValues(alpha: 0.14), Colors.white.withValues(alpha: 0.05)]
+                          : [Colors.white.withValues(alpha: 0.35), Colors.white.withValues(alpha: 0.12)],
                     ),
                     borderRadius: BorderRadius.circular(28),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: isDark ? 0.18 : 0.35),
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: Colors.white.withValues(alpha: isDark ? 0.18 : 0.35), width: 1.5),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.transparent.withValues(alpha: isDark ? 0.10 : 0.06),
@@ -403,7 +381,11 @@ class _InfinityModePageState extends State<InfinityModePage>
                     children: [
                       Text(
                         "Choose Player 1 Symbol",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                       ),
                       const SizedBox(height: 30),
                       Row(
@@ -426,7 +408,11 @@ class _InfinityModePageState extends State<InfinityModePage>
                                 borderRadius: BorderRadius.circular(18),
                                 border: Border.all(color: Colors.blueAccent, width: 1.5),
                                 boxShadow: [
-                                  BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(2, 4)),
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(2, 4),
+                                  ),
                                 ],
                               ),
                               child: const Center(child: GameX()),
@@ -449,7 +435,11 @@ class _InfinityModePageState extends State<InfinityModePage>
                                 borderRadius: BorderRadius.circular(18),
                                 border: Border.all(color: Colors.orangeAccent, width: 1.5),
                                 boxShadow: [
-                                  BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(2, 4)),
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(2, 4),
+                                  ),
                                 ],
                               ),
                               child: const Center(child: GameO()),
@@ -609,7 +599,9 @@ class _InfinityModePageState extends State<InfinityModePage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (vibrationOn) HapticFeedback.lightImpact();
-            setState(() { isDark = value; });
+            setState(() {
+              isDark = value;
+            });
             await prefs.setBool("theme_dark", isDark);
           },
         ),
@@ -620,7 +612,9 @@ class _InfinityModePageState extends State<InfinityModePage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (vibrationOn) HapticFeedback.lightImpact();
-            setState(() { soundOn = value; });
+            setState(() {
+              soundOn = value;
+            });
             await prefs.setBool("sound_on", soundOn);
           },
         ),
@@ -631,7 +625,9 @@ class _InfinityModePageState extends State<InfinityModePage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (!vibrationOn) HapticFeedback.lightImpact();
-            setState(() { vibrationOn = value; });
+            setState(() {
+              vibrationOn = value;
+            });
             await prefs.setBool("vibration_on", vibrationOn);
           },
         ),
@@ -641,7 +637,13 @@ class _InfinityModePageState extends State<InfinityModePage>
           value: timerEnabled,
           canChange: (value) {
             if (isGameRunning) {
-              CustomToast.show(context: context, message: "Can't change during game.", isDark: isDark, icon: Icons.block_rounded, color: Colors.orange);
+              CustomToast.show(
+                context: context,
+                message: "Can't change during game.",
+                isDark: isDark,
+                icon: Icons.block_rounded,
+                color: Colors.orange,
+              );
               return false;
             }
             return true;
@@ -649,7 +651,9 @@ class _InfinityModePageState extends State<InfinityModePage>
           onChanged: (value) async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (vibrationOn) HapticFeedback.lightImpact();
-            setState(() { timerEnabled = value; });
+            setState(() {
+              timerEnabled = value;
+            });
             await prefs.setBool("timer_enabled", timerEnabled);
           },
         ),
@@ -762,14 +766,128 @@ class _InfinityModePageState extends State<InfinityModePage>
                 ),
               ),
             ),
+
             /// Background Arts
-            Positioned(top: -30, left: -20, child: Transform.rotate(angle: -0.2, child: Text("X", style: TextStyle(fontSize: 200, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1))))),
-            Positioned(top: -40, right: -40, child: Transform.rotate(angle: 0.7, child: Text("O", style: TextStyle(fontSize: 250, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.orangeAccent.withValues(alpha: 0.05) : Colors.deepOrange.withValues(alpha: 0.1))))),
-            Positioned(top: 180, right: -10, child: Transform.rotate(angle: -0.7, child: Text("X", style: TextStyle(fontSize: 250, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1))))),
-            Positioned(top: 230, left: 0, child: Transform.rotate(angle: -0.9, child: Text("O", style: TextStyle(fontSize: 200, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.orangeAccent.withValues(alpha: 0.05) : Colors.deepOrange.withValues(alpha: 0.1))))),
-            Positioned(bottom: 250, right: -20, child: Transform.rotate(angle: 0.9, child: Text("O", style: TextStyle(fontSize: 150, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.orangeAccent.withValues(alpha: 0.05) : Colors.deepOrange.withValues(alpha: 0.1))))),
-            Positioned(bottom: 40, left: -40, child: Transform.rotate(angle: 0.8, child: Text("X", style: TextStyle(fontSize: 200, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1))))),
-            Positioned(bottom: -150, right: -50, child: Transform.rotate(angle: 0.9, child: Text("O", style: TextStyle(fontSize: 370, fontWeight: FontWeight.w900, height: 1.0, color: isDark ? Colors.orangeAccent.withValues(alpha: 0.05) : Colors.deepOrange.withValues(alpha: 0.1))))),
+            Positioned(
+              top: -30,
+              left: -20,
+              child: Transform.rotate(
+                angle: -0.2,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: -40,
+              right: -40,
+              child: Transform.rotate(
+                angle: 0.7,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 250,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 180,
+              right: -10,
+              child: Transform.rotate(
+                angle: -0.7,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 250,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 230,
+              left: 0,
+              child: Transform.rotate(
+                angle: -0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 250,
+              right: -20,
+              child: Transform.rotate(
+                angle: 0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 150,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 40,
+              left: -40,
+              child: Transform.rotate(
+                angle: 0.8,
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 200,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark ? Colors.blueAccent.withValues(alpha: 0.05) : Colors.blue.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -150,
+              right: -50,
+              child: Transform.rotate(
+                angle: 0.9,
+                child: Text(
+                  "O",
+                  style: TextStyle(
+                    fontSize: 370,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                    color: isDark
+                        ? Colors.orangeAccent.withValues(alpha: 0.05)
+                        : Colors.deepOrange.withValues(alpha: 0.1),
+                  ),
+                ),
+              ),
+            ),
 
             ConfettiWidget(
               confettiController: confettiController,
@@ -794,10 +912,7 @@ class _InfinityModePageState extends State<InfinityModePage>
                           scoreBox("Player 1", player1Symbol, boardColor, textColor),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: boardColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                            decoration: BoxDecoration(color: boardColor, borderRadius: BorderRadius.circular(10)),
                             child: Text(
                               "$player1Score - $player2Score",
                               style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
@@ -866,30 +981,54 @@ class _InfinityModePageState extends State<InfinityModePage>
                                           gradient: LinearGradient(colors: gradientColors),
                                           borderRadius: BorderRadius.circular(16),
                                           boxShadow: [
-                                            BoxShadow(color: gradientColors.first.withValues(alpha: glowAnimation.value), blurRadius: 12 * glowAnimation.value, spreadRadius: 1),
+                                            BoxShadow(
+                                              color: gradientColors.first.withValues(alpha: glowAnimation.value),
+                                              blurRadius: 12 * glowAnimation.value,
+                                              spreadRadius: 1,
+                                            ),
                                           ],
                                         ),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                                          decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(14)),
+                                          decoration: BoxDecoration(
+                                            color: cardColor,
+                                            borderRadius: BorderRadius.circular(14),
+                                          ),
                                           child: Stack(
                                             alignment: Alignment.center,
                                             children: [
                                               ShaderMask(
-                                                shaderCallback: (rect) { return LinearGradient(colors: gradientColors).createShader(rect); },
+                                                shaderCallback: (rect) {
+                                                  return LinearGradient(colors: gradientColors).createShader(rect);
+                                                },
                                                 child: Text(
                                                   gameMessage,
                                                   style: TextStyle(
-                                                    fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 1.5,
-                                                    foreground: Paint()..style = PaintingStyle.stroke..strokeWidth = 2.2..color = Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 1.5,
+                                                    foreground: Paint()
+                                                      ..style = PaintingStyle.stroke
+                                                      ..strokeWidth = 2.2
+                                                      ..color = Colors.white,
                                                   ),
                                                 ),
                                               ),
                                               Text(
                                                 gameMessage,
                                                 style: TextStyle(
-                                                  fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 1.5, color: Colors.white,
-                                                  shadows: [Shadow(color: gradientColors.first.withValues(alpha: glowAnimation.value), blurRadius: 10 * glowAnimation.value)],
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1.5,
+                                                  color: Colors.white,
+                                                  shadows: [
+                                                    Shadow(
+                                                      color: gradientColors.first.withValues(
+                                                        alpha: glowAnimation.value,
+                                                      ),
+                                                      blurRadius: 10 * glowAnimation.value,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
@@ -922,8 +1061,16 @@ class _InfinityModePageState extends State<InfinityModePage>
                                     : [Colors.blueAccent, Colors.deepOrangeAccent, Colors.blueAccent],
                               ),
                               boxShadow: [
-                                BoxShadow(color: Colors.blueAccent.withValues(alpha: 0.5), blurRadius: 20, spreadRadius: 1),
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.25), offset: const Offset(4, 4), blurRadius: 8),
+                                BoxShadow(
+                                  color: Colors.blueAccent.withValues(alpha: 0.5),
+                                  blurRadius: 20,
+                                  spreadRadius: 1,
+                                ),
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.25),
+                                  offset: const Offset(4, 4),
+                                  blurRadius: 8,
+                                ),
                               ],
                             ),
                             child: Container(
@@ -958,18 +1105,29 @@ class _InfinityModePageState extends State<InfinityModePage>
                                               borderRadius: BorderRadius.circular(12),
                                               border: board[index] != ""
                                                   ? Border.all(
-                                                // Selected piece ka border highlight karo
-                                                color: isFading
-                                                    ? Colors.yellowAccent
-                                                    : (isDark ? Color(0xFF47798A) : Color(0xFF9ED3E8)),
-                                                width: isFading ? 2 : 1,
-                                              )
+                                                      // Selected piece ka border highlight karo
+                                                      color: isFading
+                                                          ? Colors.yellowAccent
+                                                          : (isDark ? Color(0xFF47798A) : Color(0xFF9ED3E8)),
+                                                      width: isFading ? 2 : 1,
+                                                    )
                                                   : null,
                                               boxShadow: [
-                                                if (highlight) const BoxShadow(color: Colors.blueAccent, blurRadius: 6, spreadRadius: 1),
-                                                if (win) const BoxShadow(color: Colors.green, blurRadius: 8, spreadRadius: 1),
+                                                if (highlight)
+                                                  const BoxShadow(
+                                                    color: Colors.blueAccent,
+                                                    blurRadius: 6,
+                                                    spreadRadius: 1,
+                                                  ),
+                                                if (win)
+                                                  const BoxShadow(color: Colors.green, blurRadius: 8, spreadRadius: 1),
                                                 // Selected piece ka extra glow
-                                                if (isFading) const BoxShadow(color: Colors.yellowAccent, blurRadius: 8, spreadRadius: 1),
+                                                if (isFading)
+                                                  const BoxShadow(
+                                                    color: Colors.yellowAccent,
+                                                    blurRadius: 8,
+                                                    spreadRadius: 1,
+                                                  ),
                                               ],
                                             ),
                                             child: Center(
@@ -1013,8 +1171,28 @@ class _InfinityModePageState extends State<InfinityModePage>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              NeonGlowingButton(text: "Home", icon: Icons.home, onTap: () { if (vibrationOn) HapticFeedback.mediumImpact(); Navigator.pop(context); }, isDark: isDark, glowController: glowController, glowAnimation: glowAnimation),
-                              NeonGlowingButton(text: "Replay", icon: Icons.refresh, onTap: () { if (vibrationOn) HapticFeedback.mediumImpact(); resetGame(); }, isDark: isDark, glowController: glowController, glowAnimation: glowAnimation),
+                              NeonGlowingButton(
+                                text: "Home",
+                                icon: Icons.home,
+                                onTap: () {
+                                  if (vibrationOn) HapticFeedback.mediumImpact();
+                                  Navigator.pop(context);
+                                },
+                                isDark: isDark,
+                                glowController: glowController,
+                                glowAnimation: glowAnimation,
+                              ),
+                              NeonGlowingButton(
+                                text: "Replay",
+                                icon: Icons.refresh,
+                                onTap: () {
+                                  if (vibrationOn) HapticFeedback.mediumImpact();
+                                  resetGame();
+                                },
+                                isDark: isDark,
+                                glowController: glowController,
+                                glowAnimation: glowAnimation,
+                              ),
                             ],
                           ),
                         ),
@@ -1022,17 +1200,40 @@ class _InfinityModePageState extends State<InfinityModePage>
 
                       if (!gameOver && board.any((e) => e != ""))
                         GestureDetector(
-                          onTapDown: (_) { setState(() { resetPressed = true; }); },
-                          onTapUp: (_) { setState(() { resetPressed = false; }); showResetGameDialog(); if (vibrationOn) HapticFeedback.lightImpact(); },
-                          onTapCancel: () { setState(() { resetPressed = false; }); },
+                          onTapDown: (_) {
+                            setState(() {
+                              resetPressed = true;
+                            });
+                          },
+                          onTapUp: (_) {
+                            setState(() {
+                              resetPressed = false;
+                            });
+                            showResetGameDialog();
+                            if (vibrationOn) HapticFeedback.lightImpact();
+                          },
+                          onTapCancel: () {
+                            setState(() {
+                              resetPressed = false;
+                            });
+                          },
                           child: AnimatedScale(
                             scale: resetPressed ? 0.92 : 1,
                             duration: const Duration(milliseconds: 120),
                             child: SizedBox(
                               width: double.infinity,
                               child: BuildIconTextButton(
-                                icon: Icons.refresh, text: "Reset Game", isDark: isDark, borderRadius: BorderRadius.circular(14),
-                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15), offset: const Offset(2, 2), blurRadius: 6)],
+                                icon: Icons.refresh,
+                                text: "Reset Game",
+                                isDark: isDark,
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
+                                    offset: const Offset(2, 2),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -1045,7 +1246,9 @@ class _InfinityModePageState extends State<InfinityModePage>
             ),
             IgnorePointer(
               child: ConfettiWidget(
-                confettiController: confettiController, blastDirectionality: BlastDirectionality.explosive, shouldLoop: false,
+                confettiController: confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
                 colors: const [Colors.red, Colors.blue, Colors.green, Colors.orange, Colors.purple],
               ),
             ),
@@ -1057,9 +1260,21 @@ class _InfinityModePageState extends State<InfinityModePage>
 
   Future<void> showExitDialog() async {
     await showAppDialog(
-      context: context, title: "EXIT MATCH", message: "Exit and end the match?", positiveText: "EXIT", negativeText: "CANCEL", barrierDismissible: true, canPop: true,
-      onNegative: () { if (vibrationOn) HapticFeedback.lightImpact(); },
-      onPositive: () async { if (vibrationOn) HapticFeedback.mediumImpact(); stopTickingSound(); Navigator.pop(context); },
+      context: context,
+      title: "EXIT MATCH",
+      message: "Exit and end the match?",
+      positiveText: "EXIT",
+      negativeText: "CANCEL",
+      barrierDismissible: true,
+      canPop: true,
+      onNegative: () {
+        if (vibrationOn) HapticFeedback.lightImpact();
+      },
+      onPositive: () async {
+        if (vibrationOn) HapticFeedback.mediumImpact();
+        stopTickingSound();
+        Navigator.pop(context);
+      },
     );
   }
 
@@ -1067,7 +1282,9 @@ class _InfinityModePageState extends State<InfinityModePage>
     Color borderColor = symbol == "X" ? Colors.blueAccent : Colors.orangeAccent;
     bool isPlayer1 = player == "Player 1";
     bool isActive = !gameOver && ((player1Turn && isPlayer1) || (!player1Turn && !isPlayer1));
-    List<Color> gradientColors = symbol == "X" ? [Colors.blueAccent, Colors.cyanAccent] : [Colors.orangeAccent, Colors.deepOrange];
+    List<Color> gradientColors = symbol == "X"
+        ? [Colors.blueAccent, Colors.cyanAccent]
+        : [Colors.orangeAccent, Colors.deepOrange];
 
     return AnimatedBuilder(
       animation: glowAnimation,
@@ -1078,18 +1295,35 @@ class _InfinityModePageState extends State<InfinityModePage>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
               decoration: BoxDecoration(
-                color: bg, borderRadius: BorderRadius.circular(12),
-                boxShadow: isActive ? [BoxShadow(color: gradientColors.first.withValues(alpha: glowValue), blurRadius: 16 * glowValue, spreadRadius: 1)] : [],
+                color: bg,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: isActive
+                    ? [
+                        BoxShadow(
+                          color: gradientColors.first.withValues(alpha: glowValue),
+                          blurRadius: 16 * glowValue,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                    : [],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ShaderMask(
-                    shaderCallback: (rect) { return LinearGradient(colors: gradientColors).createShader(rect); },
-                    child: Text(symbol, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+                    shaderCallback: (rect) {
+                      return LinearGradient(colors: gradientColors).createShader(rect);
+                    },
+                    child: Text(
+                      symbol,
+                      style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 0),
-                  Text(player, style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+                  Text(
+                    player,
+                    style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
             ),
@@ -1102,7 +1336,10 @@ class _InfinityModePageState extends State<InfinityModePage>
                     if (timeLeft <= 5 && timeLeft > 0) {
                       if (timeLeft != lastAlertSecond) {
                         lastAlertSecond = timeLeft;
-                        if (soundOn) { clockSoundPlayer.stop(); clockSoundPlayer.play(AssetSource("audio/tick.mp3")); }
+                        if (soundOn) {
+                          clockSoundPlayer.stop();
+                          clockSoundPlayer.play(AssetSource("audio/tick.mp3"));
+                        }
                         if (vibrationOn) HapticFeedback.mediumImpact();
                       }
                     }
@@ -1126,7 +1363,10 @@ class TimerBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 1.5;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
     final path = Path();
     path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(12)));
     final metric = path.computeMetrics().first;
@@ -1135,5 +1375,7 @@ class TimerBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant TimerBorderPainter oldDelegate) { return oldDelegate.progress != progress || oldDelegate.color != color; }
+  bool shouldRepaint(covariant TimerBorderPainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.color != color;
+  }
 }
