@@ -1107,7 +1107,7 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                                                   ? Border.all(
                                                       // Selected piece ka border highlight karo
                                                       color: isFading
-                                                          ? Colors.yellowAccent
+                                                          ? (isDark ? Colors.yellowAccent : Colors.redAccent)
                                                           : (isDark ? Color(0xFF47798A) : Color(0xFF9ED3E8)),
                                                       width: isFading ? 2 : 1,
                                                     )
@@ -1123,8 +1123,8 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                                                   const BoxShadow(color: Colors.green, blurRadius: 8, spreadRadius: 1),
                                                 // Selected piece ka extra glow
                                                 if (isFading)
-                                                  const BoxShadow(
-                                                    color: Colors.yellowAccent,
+                                                  BoxShadow(
+                                                    color: isDark ? Colors.yellowAccent : Colors.redAccent,
                                                     blurRadius: 8,
                                                     spreadRadius: 1,
                                                   ),
