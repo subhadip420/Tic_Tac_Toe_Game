@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
-import 'package:tic_tac_toe/screens/infinity_mode_page.dart';
+import 'package:tic_tac_toe/screens/pro_match_page.dart';
 import 'package:tic_tac_toe/screens/info_page.dart';
 import 'screens/how_to_play_page.dart';
 import 'screens/play_solo_board_page.dart';
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage>
 
                     /// SUBTITLE
                     Text(
-                      "Fast • Fun • Multiplayer",
+                      "Train Your Brain",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
