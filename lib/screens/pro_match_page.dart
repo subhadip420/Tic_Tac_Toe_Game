@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:tic_tac_toe/screens/pro_match_tutorial_dialog.dart';
 import 'package:vibration/vibration.dart';
 import 'dart:ui';
 
@@ -105,8 +106,13 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
     lineController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     lineAnimation = CurvedAnimation(parent: lineController, curve: Curves.easeInOut);
 
-    Future.delayed(Duration.zero, () {
-      choosePlayerDialog();
+    // Future.delayed(Duration.zero, () {
+    //   choosePlayerDialog();
+    // });
+
+    /// ✨ Check for Tutorial First, then ask for Player Symbol
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkTutorialAndStart();
     });
 
     confettiController = ConfettiController(duration: const Duration(seconds: 2));
@@ -131,6 +137,30 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
     timerController.dispose();
     stopTickingSound();
     super.dispose();
+  }
+
+  /// ✨ TUTORIAL LOGIC & START
+  Future<void> _checkTutorialAndStart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasSeenTutorial = prefs.getBool("has_seen_pro_tutorial") ?? false;
+
+    if (!hasSeenTutorial) {
+      await prefs.setBool("has_seen_pro_tutorial", true);
+
+      // Tutorial file call kar rahe hain
+      if (mounted) {
+        await showProMatchTutorialDialog(
+          context: context,
+          isDark: isDark,
+          vibrationOn: vibrationOn,
+        );
+      }
+    }
+
+    // Tutorial dekhne ke baad seedha symbol choose karne ka popup aayega
+    if (mounted) {
+      choosePlayerDialog();
+    }
   }
 
   Future loadSettings() async {
