@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:tic_tac_toe/screens/infinity_mode_page.dart';
 import 'package:tic_tac_toe/screens/info_page.dart';
 import 'screens/how_to_play_page.dart';
 import 'screens/play_solo_board_page.dart';
@@ -207,11 +208,52 @@ class _HomePageState extends State<HomePage>
                     const SizedBox(height: 15),
 
                     /// PLAY WITH FRIEND
-                    buildButton(
-                      context,
-                      Icons.group,
-                      "Play with Friend",
-                      "Two players on same device",
+                    // buildButton(
+                    //   context,
+                    //   Icons.group,
+                    //   "Play with Friend",
+                    //   "Two players on same device",
+                    // ),
+
+                    /// 2. TWO HALF-WIDTH BUTTONS (Row)
+                    Row(
+                      children: [
+                        /// LEFT CARD: PLAY WITH FRIEND
+                        Expanded(
+                          child: buildSmallButton(
+                            context,
+                            Icons.group,
+                            "Local Match", // Naam thoda chota kiya taaki fit ho
+                                () {
+                              navigatorKey.currentState?.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    const TwoPlayerBoardPage()),
+                              );
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(width: 15), // Beech ka gap
+
+                        /// RIGHT CARD: NEW OPTION
+                        Expanded(
+                          child: buildSmallButton(
+                            context,
+                            Icons.psychology_rounded, // Aap iska icon change kar sakte hain
+                            "Pro Match", // Iska naam apne hisaab se rakh lein
+                                () {
+                                  navigatorKey.currentState?.push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const InfinityModePage(),
+                                    ),
+                                  );
+                              print("New Card Clicked!");
+                            },
+                            showBadge: true,
+                          ),
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 15),
@@ -324,12 +366,12 @@ class _HomePageState extends State<HomePage>
           );
         }
 
-        /// TWO PLAYER PAGE
-        if (title == "Play with Friend") {
-          navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (context) => const TwoPlayerBoardPage()),
-          );
-        }
+        // /// TWO PLAYER PAGE
+        // if (title == "Play with Friend") {
+        //   navigatorKey.currentState?.push(
+        //     MaterialPageRoute(builder: (context) => const TwoPlayerBoardPage()),
+        //   );
+        // }
 
         /// ONLINE PAGE
         if (title == "Play Online") {
@@ -365,7 +407,7 @@ class _HomePageState extends State<HomePage>
 
         child: Container(
           /// INNER PADDING
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.fromLTRB(20,10,0,10),
 
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -385,7 +427,7 @@ class _HomePageState extends State<HomePage>
               /// BUTTON ICON
               Icon(
                 icon,
-                size: 30,
+                size: 25,
                 color: isDark ? Colors.cyanAccent : Colors.blue,
               ),
 
@@ -424,4 +466,104 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  /// NEW: HALF-WIDTH SQUARE BUTTON (Card View with Optional Badge)
+  Widget buildSmallButton(
+      BuildContext context,
+      IconData icon,
+      String title,
+      VoidCallback onTap, {
+        bool showBadge = false, /// Naya parameter badge ke liye
+      }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none, /// Badge ko border ke thoda bahar nikalne ke liye
+        children: [
+          /// MAIN BUTTON CARD
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(1.5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: const LinearGradient(
+                colors: [Colors.blueAccent, Colors.cyanAccent],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blueAccent.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: isDark ? Colors.black45 : Colors.black12,
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 25,
+                    color: isDark ? Colors.cyanAccent : Colors.blue,
+                  ),
+                  const SizedBox(height: 0),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.cyanAccent : Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          /// 'NEW' BADGE (Condition: Sirf tab dikhega jab showBadge true ho)
+          if (showBadge)
+            Positioned(
+              top: -6,
+              right: -6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.redAccent.withValues(alpha: 0.5),
+                      blurRadius: 6,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: const Text(
+                  "NEW",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }//end HomePageState classs
