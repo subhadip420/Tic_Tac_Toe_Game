@@ -103,3 +103,5 @@ flutter:
     - assets/lottie/loading_animation_blue.json
     - assets/lottie/tic_tac_toe_light.json
     - assets/lottie/tic_tac_toe_dark.json
+    - assets/images/tutorial_2.png
+    - assets/images/tutorial_3.png
