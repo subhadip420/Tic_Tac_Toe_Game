@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:tic_tac_toe/screens/pro_match_tutorial_dialog.dart';
@@ -94,6 +95,12 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
   final AudioPlayer clockSoundPlayer = AudioPlayer();
   final AudioPlayer drawPlayer = AudioPlayer();
 
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _adClickCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -126,10 +133,15 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
 
     loadSettings();
     player1Turn = true;
+
+    _loadBannerAd();
+    _loadInterstitialAd();
   }
 
   @override
   void dispose() {
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
     turnTimer?.cancel();
     confettiController.dispose();
     glowController.dispose();
@@ -137,6 +149,64 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
     timerController.dispose();
     stopTickingSound();
     super.dispose();
+  }
+
+  /// Load Banner Ad
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // TODO
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) => setState(() => _isBannerAdLoaded = true),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print('BannerAd failed to load: $error');
+        },
+      ),
+    )..load();
+  }
+
+  /// Load Interstitial Ad
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  /// Interstitial Ad Counter Logic
+  void _handleGameResetLogic() {
+    _adClickCount++;
+
+    if (_adClickCount % 3 == 0 && _interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _loadInterstitialAd();
+          resetGame();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _loadInterstitialAd();
+          resetGame();
+        },
+      );
+
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    } else {
+      resetGame();
+    }
   }
 
   /// ✨ TUTORIAL LOGIC & START
@@ -579,7 +649,8 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
       canPop: true,
       onPositive: () async {
         if (vibrationOn) HapticFeedback.heavyImpact();
-        resetGame();
+        //resetGame();
+        _handleGameResetLogic();
       },
       onNegative: () {
         if (vibrationOn) HapticFeedback.lightImpact();
@@ -782,6 +853,17 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
             ),
           ],
         ),
+
+        bottomNavigationBar: _isBannerAdLoaded && _bannerAd != null
+            ? SafeArea(
+          child: SizedBox(
+            width: _bannerAd!.size.width.toDouble(),
+            height: _bannerAd!.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
+        )
+            : const SizedBox.shrink(),
+
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -951,7 +1033,7 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                           scoreBox("Player 2", player2Symbol, boardColor, textColor),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       if (timerEnabled && !gameOver)
                         Padding(
@@ -1193,7 +1275,7 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       if (gameOver)
                         Padding(
@@ -1217,7 +1299,8 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                                 icon: Icons.refresh,
                                 onTap: () {
                                   if (vibrationOn) HapticFeedback.mediumImpact();
-                                  resetGame();
+                                  //resetGame();
+                                  _handleGameResetLogic();
                                 },
                                 isDark: isDark,
                                 glowController: glowController,
@@ -1226,7 +1309,7 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
                             ],
                           ),
                         ),
-                      const SizedBox(height: 80),
+                      const SizedBox(height: 30),
 
                       if (!gameOver && board.any((e) => e != ""))
                         GestureDetector(
