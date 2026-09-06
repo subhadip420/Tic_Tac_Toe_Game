@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/screens/pro_match_page.dart';
@@ -20,6 +21,8 @@ import 'package:flutter/foundation.dart';
 void main() async {
   /// REQUIRED FOR ASYNC BEFORE runApp()
   WidgetsFlutterBinding.ensureInitialized();
+
+  await MobileAds.instance.initialize();
 
   /// FIREBASE INITIALIZE
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
