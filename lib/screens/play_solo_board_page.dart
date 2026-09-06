@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
@@ -74,9 +75,16 @@ class _GameBoardPageState extends State<GameBoardPage>
   /// UI STATE
   bool resetPressed = false;
 
+  /// Banner Ad Variables
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
   @override
   void initState() {
     super.initState();
+
+    /// Load Banner Ad
+    _loadBannerAd();
 
     /// Winning line animation controller
     lineController = AnimationController(
@@ -118,6 +126,10 @@ class _GameBoardPageState extends State<GameBoardPage>
 
   @override
   void dispose() {
+
+    /// Ad Dispose karein memory bachane ke liye
+    _bannerAd?.dispose();
+
     /// Dispose glow animation controller
     glowController.dispose();
 
@@ -127,6 +139,25 @@ class _GameBoardPageState extends State<GameBoardPage>
     /// Dispose winning line animation controller
     lineController.dispose();
     super.dispose();
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // todo
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _isBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print('BannerAd failed to load: $error');
+        },
+      ),
+    )..load();
   }
 
   /// Load saved app settings from SharedPreferences
@@ -1031,6 +1062,18 @@ class _GameBoardPageState extends State<GameBoardPage>
             ),
           ],
         ),
+
+        /// 👇 YE NAYA CODE ADD KARNA HAI 👇
+        bottomNavigationBar: _isBannerAdLoaded && _bannerAd != null
+            ? SafeArea(
+          child: SizedBox(
+            width: _bannerAd!.size.width.toDouble(),
+            height: _bannerAd!.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
+        )
+            : const SizedBox.shrink(), // Agar ad load nahi hua toh kuch mat dikhao
+        /// 👆 NAYA CODE KHATAM 👆
 
         body: Stack(
           alignment: Alignment.topCenter,
