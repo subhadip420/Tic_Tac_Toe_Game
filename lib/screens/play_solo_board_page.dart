@@ -79,12 +79,17 @@ class _GameBoardPageState extends State<GameBoardPage>
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
 
+  /// Interstitial Ad Variables
+  InterstitialAd? _interstitialAd;
+  int _adClickCount = 0; // Dono button ka shared counter
+
   @override
   void initState() {
     super.initState();
 
     /// Load Banner Ad
     _loadBannerAd();
+    _loadInterstitialAd();
 
     /// Winning line animation controller
     lineController = AnimationController(
@@ -129,6 +134,7 @@ class _GameBoardPageState extends State<GameBoardPage>
 
     /// Ad Dispose karein memory bachane ke liye
     _bannerAd?.dispose();
+    _interstitialAd?.dispose();
 
     /// Dispose glow animation controller
     glowController.dispose();
@@ -158,6 +164,53 @@ class _GameBoardPageState extends State<GameBoardPage>
         },
       ),
     )..load();
+  }
+
+  /// Load Interstitial Ad
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  /// Counter Logic for Reset and Replay
+  void _handleGameResetLogic() {
+    _adClickCount++; // Counter badhao
+
+    // Check karo kya ye 3rd, 6th, 9th time hai aur Ad load ho chuka hai
+    if (_adClickCount % 3 == 0 && _interstitialAd != null) {
+
+      // Ad screen par show karne ke baad ke actions
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _loadInterstitialAd(); // Next time ke liye naya ad load karo
+          resetGame(); // Ad band hone ke baad game reset karo
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _loadInterstitialAd();
+          resetGame(); // Ad fail hone par direct game reset karo
+        },
+      );
+
+      _interstitialAd!.show();
+      _interstitialAd = null; // Variable clear karo taaki same ad repeat na ho
+
+    } else {
+      // Agar 3rd time nahi hai, toh direct bina Ad ke reset karo
+      resetGame();
+    }
   }
 
   /// Load saved app settings from SharedPreferences
@@ -677,7 +730,8 @@ class _GameBoardPageState extends State<GameBoardPage>
         if (vibrationOn) {
           HapticFeedback.lightImpact();
         }
-        resetGame();
+        //resetGame();
+        _handleGameResetLogic();
       },
 
       /// Cancel button callback
@@ -1660,7 +1714,8 @@ class _GameBoardPageState extends State<GameBoardPage>
                                   }
 
                                   /// Restart current match
-                                  resetGame();
+                                  //resetGame();
+                                  _handleGameResetLogic();
                                 },
                                 isDark: isDark,
                                 glowController: glowController,
