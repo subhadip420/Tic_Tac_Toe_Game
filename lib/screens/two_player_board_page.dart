@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
@@ -144,6 +145,13 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   /// Draw sound player
   final AudioPlayer drawPlayer = AudioPlayer();
 
+  /// ✨ AD VARIABLES
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _adClickCount = 0;
+
   /// Get current turn text
   String getTurnText() {
     /// Return empty if game over
@@ -156,6 +164,9 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
   @override
   void initState() {
     super.initState();
+
+    _loadBannerAd();
+    _loadInterstitialAd();
 
     /// Turn timer animation controller
     timerController = AnimationController(
@@ -206,6 +217,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
 
   @override
   void dispose() {
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
     /// Cancel turn timer
     turnTimer?.cancel();
 
@@ -224,6 +237,64 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
     /// Stop ticking sound
     stopTickingSound();
     super.dispose();
+  }
+
+  /// Load Banner Ad
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // TODO
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) => setState(() => _isBannerAdLoaded = true),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print('BannerAd failed to load: $error');
+        },
+      ),
+    )..load();
+  }
+
+  /// Load Interstitial Ad
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  /// Interstitial Ad Counter Logic
+  void _handleGameResetLogic() {
+    _adClickCount++;
+
+    if (_adClickCount % 3 == 0 && _interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _loadInterstitialAd(); // Next time ke liye naya ad load karo
+          resetGame();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _loadInterstitialAd();
+          resetGame();
+        },
+      );
+
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    } else {
+      resetGame();
+    }
   }
 
   /// Load saved game settings
@@ -811,7 +882,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
         if (vibrationOn) {
           HapticFeedback.heavyImpact();
         }
-        resetGame();
+        //resetGame();
+        _handleGameResetLogic();
       },
 
       /// Cancel button action
@@ -1466,6 +1538,16 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
           ],
         ),
 
+        bottomNavigationBar: _isBannerAdLoaded && _bannerAd != null
+            ? SafeArea(
+          child: SizedBox(
+            width: _bannerAd!.size.width.toDouble(),
+            height: _bannerAd!.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
+        )
+            : const SizedBox.shrink(),
+
         body: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -1703,7 +1785,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         ],
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       /// Timer countdown text
                       if (timerEnabled && !gameOver)
@@ -1748,7 +1830,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           ),
                         ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       /// Result message animation
                       if (gameMessage != "")
@@ -2097,7 +2179,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 5),
 
                       /// Game over action buttons
                       if (gameOver)
@@ -2139,7 +2221,8 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                                   }
 
                                   /// Restart current match
-                                  resetGame();
+                                  //resetGame();
+                                  _handleGameResetLogic();
                                 },
                                 isDark: isDark,
                                 glowController: glowController,
@@ -2149,7 +2232,7 @@ class _TwoPlayerBoardPageState extends State<TwoPlayerBoardPage>
                           ),
                         ),
 
-                      const SizedBox(height: 80),
+                      const SizedBox(height: 30),
 
                       /// Reset game button
                       if (!gameOver && board.any((e) => e != ""))
