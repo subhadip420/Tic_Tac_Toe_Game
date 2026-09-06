@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 import 'package:share_plus/share_plus.dart';
@@ -110,6 +111,9 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   StreamSubscription? internetSubscription;
   StreamSubscription? roomListener;
 
+  /// Interstitial Ad Variable
+  InterstitialAd? _interstitialAd;
+
   final DatabaseReference dbRef = FirebaseDatabase.instanceFor(
     app: FirebaseDatabase.instance.app,
     databaseURL:
@@ -119,7 +123,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
   @override
   void initState() {
     super.initState();
-
+    _loadInterstitialAd();
     /// INSTANCE
     instance = this;
 
@@ -178,6 +182,7 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
   @override
   void dispose() {
+    _interstitialAd?.dispose();
     /// CANCEL TIMERS
     timer?.cancel();
     dotTimer?.cancel();
@@ -197,6 +202,23 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
 
     hasHandledMatchAction = true;
     super.dispose();
+  }
+
+  /// Load Interstitial Ad
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // Todo
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          print('InterstitialAd failed to load: $error');
+          _interstitialAd = null;
+        },
+      ),
+    );
   }
 
   @override
@@ -798,6 +820,33 @@ class PlayOnlineStartPageState extends State<PlayOnlineStartPage>
                         color: Colors.orange,
                       );
                       return;
+                    }
+
+                    if (_interstitialAd != null) {
+                      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+                        onAdDismissedFullScreenContent: (ad) async {
+                          ad.dispose();
+                          _loadInterstitialAd(); // Next time ke liye naya ad load karo
+
+                          // Ad close hone ke baad Code Generate karo
+                          await generateCode();
+                        },
+                        onAdFailedToShowFullScreenContent: (ad, error) async {
+                          ad.dispose();
+                          _loadInterstitialAd();
+
+                          // Ad fail ho jaye tab bhi Code Generate karo
+                          await generateCode();
+                        },
+                      );
+
+                      _interstitialAd!.show();
+                      _interstitialAd = null; // Variable clear karein
+
+                    } else {
+                      // Agar internet slow hone ki wajah se Ad load nahi hua hai,
+                      // toh user ko wait mat karao, direct code generate kar do.
+                      await generateCode();
                     }
 
                     /// Generate room code
