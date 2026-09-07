@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/build_circle_icon_button.dart';
@@ -120,6 +121,85 @@ class _TermsConditionPageState extends State<InfoPage> {
                 ),
                 child: Column(
                   children: [
+
+                    /// -----------------------------------
+                    /// SHARE APP CARD
+                    /// -----------------------------------
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          if (!isDark)
+                            const BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                  Icons.share_outlined,
+                                  color: isDark ? Colors.cyanAccent : Colors.blue,
+                                  size: 28
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Share App",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            "Enjoying Tic-Tac-Toe? Share it with your friends and play together!",
+                            style: TextStyle(
+                              fontSize: 15,
+                              height: 1.5,
+                              color: isDark ? Colors.white70 : Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          GestureDetector(
+                            onTap: () {
+                              /// SHARE LOGIC FIX
+                              SharePlus.instance.share(
+                                ShareParams(
+                                  text: 'Play Tic-Tac-Toe with me! Download the app here: https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe',
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                const Icon(Icons.ios_share, color: Colors.blueAccent, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Share Now",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
 
                     /// -----------------------------------
                     /// POLICIES & TERMS CARD
