@@ -21,6 +21,7 @@ class _TermsConditionPageState extends State<InfoPage> {
   @override
   void initState() {
     super.initState();
+
     /// LOAD SAVED THEME
     loadTheme();
   }
@@ -39,29 +40,20 @@ class _TermsConditionPageState extends State<InfoPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      backgroundColor: isDark
-          ? const Color(0xFF0F172A)
-          : const Color(0xFFF3F7FF),
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF3F7FF),
 
       appBar: AppBar(
         /// STATUS BAR STYLE
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
-          statusBarIconBrightness: isDark
-              ? Brightness.light
-              : Brightness.dark, // Android
-          statusBarBrightness: isDark
-              ? Brightness.dark
-              : Brightness.light, // iOS
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark, // Android
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light, // iOS
         ),
 
         /// APPBAR BOTTOM BORDER
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: isDark ? Colors.white24 : Colors.black12,
-          ),
+          child: Container(height: 1, color: isDark ? Colors.white24 : Colors.black12),
         ),
 
         elevation: 0,
@@ -74,9 +66,7 @@ class _TermsConditionPageState extends State<InfoPage> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.2)
-                    : Colors.white.withValues(alpha: 0.2),
+                color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -85,11 +75,7 @@ class _TermsConditionPageState extends State<InfoPage> {
         /// PAGE TITLE
         title: Text(
           "Info Center",
-          style: TextStyle(
-            fontSize: 20,
-            color: isDark ? Colors.cyanAccent : Colors.blue,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, color: isDark ? Colors.cyanAccent : Colors.blue, fontWeight: FontWeight.bold),
         ),
 
         /// BACK BUTTON
@@ -121,7 +107,6 @@ class _TermsConditionPageState extends State<InfoPage> {
                 ),
                 child: Column(
                   children: [
-
                     /// -----------------------------------
                     /// SHARE APP CARD
                     /// -----------------------------------
@@ -132,12 +117,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         color: isDark ? const Color(0xFF1E293B) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
-                          if (!isDark)
-                            const BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
+                          if (!isDark) const BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
                         ],
                       ),
                       child: Column(
@@ -145,11 +125,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                  Icons.share_outlined,
-                                  color: isDark ? Colors.cyanAccent : Colors.blue,
-                                  size: 28
-                              ),
+                              Icon(Icons.share_outlined, color: isDark ? Colors.cyanAccent : Colors.blue, size: 28),
                               const SizedBox(width: 10),
                               Text(
                                 "Share App",
@@ -176,7 +152,8 @@ class _TermsConditionPageState extends State<InfoPage> {
                               /// SHARE LOGIC FIX
                               SharePlus.instance.share(
                                 ShareParams(
-                                  text: 'Play Tic-Tac-Toe with me! Download the app here: https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe',
+                                  text:
+                                      'Play Tic-Tac-Toe with me! Download the app here: https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe',
                                 ),
                               );
                             },
@@ -186,11 +163,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                                 const SizedBox(width: 8),
                                 Text(
                                   "Share Now",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),
@@ -211,12 +184,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         color: isDark ? const Color(0xFF1E293B) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
-                          if (!isDark)
-                            const BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
+                          if (!isDark) const BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
                         ],
                       ),
                       child: Column(
@@ -225,9 +193,9 @@ class _TermsConditionPageState extends State<InfoPage> {
                           Row(
                             children: [
                               Icon(
-                                  Icons.star_rate_rounded,
-                                  color: isDark ? Colors.cyanAccent : Colors.orangeAccent,
-                                  size: 28
+                                Icons.star_rate_rounded,
+                                color: isDark ? Colors.cyanAccent : Colors.orangeAccent,
+                                size: 28,
                               ),
                               const SizedBox(width: 10),
                               Text(
@@ -254,7 +222,8 @@ class _TermsConditionPageState extends State<InfoPage> {
                             onTap: () async {
                               /// PLAY STORE LINK LOGIC
                               final Uri playStoreUrl = Uri.parse(
-                                  'https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe');
+                                'https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe',
+                              );
 
                               if (await canLaunchUrl(playStoreUrl)) {
                                 await launchUrl(playStoreUrl, mode: LaunchMode.externalApplication);
@@ -266,11 +235,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                                 const SizedBox(width: 8),
                                 Text(
                                   "Rate on Play Store",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),
@@ -358,7 +323,6 @@ class _TermsConditionPageState extends State<InfoPage> {
                     //     ],
                     //   ),
                     // ),
-
                     const SizedBox(height: 10),
 
                     /// -----------------------------------
@@ -371,12 +335,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         color: isDark ? const Color(0xFF1E293B) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
-                          if (!isDark)
-                            const BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
+                          if (!isDark) const BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
                         ],
                       ),
                       child: Column(
@@ -384,11 +343,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                  Icons.policy_outlined,
-                                  color: isDark ? Colors.cyanAccent : Colors.blue,
-                                  size: 28
-                              ),
+                              Icon(Icons.policy_outlined, color: isDark ? Colors.cyanAccent : Colors.blue, size: 28),
                               const SizedBox(width: 10),
                               Text(
                                 "Policies & Terms",
@@ -403,8 +358,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                           const SizedBox(height: 15),
                           GestureDetector(
                             onTap: () async {
-                              final Uri url = Uri.parse(
-                                  'https://subhadip420.github.io/tic-tac-toe-privacy-policy/');
+                              final Uri url = Uri.parse('https://subhadip420.github.io/tic-tac-toe-privacy-policy/');
                               if (await canLaunchUrl(url)) {
                                 await launchUrl(url, mode: LaunchMode.externalApplication);
                               }
@@ -425,7 +379,8 @@ class _TermsConditionPageState extends State<InfoPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 10), // Space between cards
+                    const SizedBox(height: 10),
+                    // Space between cards
 
                     /// -----------------------------------
                     /// SUPPORT CARD
@@ -437,12 +392,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                         color: isDark ? const Color(0xFF1E293B) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
-                          if (!isDark)
-                            const BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
+                          if (!isDark) const BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
                         ],
                       ),
                       child: Column(
@@ -451,9 +401,9 @@ class _TermsConditionPageState extends State<InfoPage> {
                           Row(
                             children: [
                               Icon(
-                                  Icons.support_agent_outlined,
-                                  color: isDark ? Colors.cyanAccent : Colors.blue,
-                                  size: 28
+                                Icons.support_agent_outlined,
+                                color: isDark ? Colors.cyanAccent : Colors.blue,
+                                size: 28,
                               ),
                               const SizedBox(width: 10),
                               Text(
@@ -478,10 +428,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                           const SizedBox(height: 15),
                           GestureDetector(
                             onTap: () async {
-                              final Uri emailUri = Uri(
-                                scheme: 'mailto',
-                                path: 'support.sptechstudios@gmail.com',
-                              );
+                              final Uri emailUri = Uri(scheme: 'mailto', path: 'support.sptechstudios@gmail.com');
                               await launchUrl(emailUri);
                             },
                             child: Text(
@@ -498,7 +445,6 @@ class _TermsConditionPageState extends State<InfoPage> {
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -511,31 +457,19 @@ class _TermsConditionPageState extends State<InfoPage> {
             padding: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF111827) : Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: isDark ? Colors.white24 : Colors.black12,
-                ),
-              ),
+              border: Border(top: BorderSide(color: isDark ? Colors.white24 : Colors.black12)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 /// APP VERSION
-                Text(
-                  "Version 1.2.0",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.white60 : Colors.black54,
-                  ),
-                ),
+                Text("Version 1.2.0", style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : Colors.black54)),
                 const SizedBox(height: 2),
+
                 /// COMPANY NAME
                 Text(
                   "Powered by SP Tech Studios",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.white54 : Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54),
                 ),
               ],
             ),
