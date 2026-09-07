@@ -199,7 +199,167 @@ class _TermsConditionPageState extends State<InfoPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 10),
+
+                    /// -----------------------------------
+                    /// RATE & REVIEW CARD
+                    /// -----------------------------------
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          if (!isDark)
+                            const BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                  Icons.star_rate_rounded,
+                                  color: isDark ? Colors.cyanAccent : Colors.orangeAccent,
+                                  size: 28
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Rate & Review",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            "Love playing Tic-Tac-Toe? Please take a moment to rate us on the Play Store. Your feedback helps us grow!",
+                            style: TextStyle(
+                              fontSize: 15,
+                              height: 1.5,
+                              color: isDark ? Colors.white70 : Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          GestureDetector(
+                            onTap: () async {
+                              /// PLAY STORE LINK LOGIC
+                              final Uri playStoreUrl = Uri.parse(
+                                  'https://play.google.com/store/apps/details?id=com.sptechstudios.tictactoe');
+
+                              if (await canLaunchUrl(playStoreUrl)) {
+                                await launchUrl(playStoreUrl, mode: LaunchMode.externalApplication);
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                const Icon(Icons.thumb_up_alt_outlined, color: Colors.blueAccent, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Rate on Play Store",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Container(
+                    //   width: double.infinity,
+                    //   padding: const EdgeInsets.all(20),
+                    //   decoration: BoxDecoration(
+                    //     color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    //     borderRadius: BorderRadius.circular(16),
+                    //     boxShadow: [
+                    //       if (!isDark)
+                    //         const BoxShadow(
+                    //           color: Colors.black12,
+                    //           blurRadius: 10,
+                    //           offset: Offset(0, 4),
+                    //         ),
+                    //     ],
+                    //   ),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           Icon(
+                    //               Icons.star_rate_rounded,
+                    //               color: isDark ? Colors.cyanAccent : Colors.orangeAccent,
+                    //               size: 28
+                    //           ),
+                    //           const SizedBox(width: 10),
+                    //           Text(
+                    //             "Rate & Review",
+                    //             style: TextStyle(
+                    //               fontSize: 20,
+                    //               fontWeight: FontWeight.bold,
+                    //               color: isDark ? Colors.white : Colors.black87,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       const SizedBox(height: 15),
+                    //       Text(
+                    //         "Love playing Tic-Tac-Toe? Please take a moment to rate us on the Play Store. Your feedback helps us grow!",
+                    //         style: TextStyle(
+                    //           fontSize: 15,
+                    //           height: 1.5,
+                    //           color: isDark ? Colors.white70 : Colors.black87,
+                    //         ),
+                    //       ),
+                    //       const SizedBox(height: 15),
+                    //       GestureDetector(
+                    //         onTap: () async {
+                    //           /// IN-APP REVIEW LOGIC
+                    //           final InAppReview inAppReview = InAppReview.instance;
+                    //
+                    //           if (await inAppReview.isAvailable()) {
+                    //             /// Direct app ke andar popup layega
+                    //             await inAppReview.requestReview();
+                    //           } else {
+                    //             /// Fallback: Play Store open kar dega agar popup available na ho
+                    //             await inAppReview.openStoreListing(
+                    //               appStoreId: 'com.sptechstudios.tictactoe',
+                    //             );
+                    //           }
+                    //         },
+                    //         child: Row(
+                    //           children: [
+                    //             const Icon(Icons.thumb_up_alt_outlined, color: Colors.blueAccent, size: 20),
+                    //             const SizedBox(width: 8),
+                    //             Text(
+                    //               "Rate on Play Store",
+                    //               style: TextStyle(
+                    //                 fontSize: 16,
+                    //                 color: Colors.blueAccent,
+                    //                 fontWeight: FontWeight.w600,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+
+                    const SizedBox(height: 10),
 
                     /// -----------------------------------
                     /// POLICIES & TERMS CARD
@@ -265,7 +425,7 @@ class _TermsConditionPageState extends State<InfoPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 25), // Space between cards
+                    const SizedBox(height: 10), // Space between cards
 
                     /// -----------------------------------
                     /// SUPPORT CARD
