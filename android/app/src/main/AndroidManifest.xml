@@ -22,19 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- FIREBASE HOSTING DEEP LINK (FIXED) -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:scheme="https"
-                    android:host="tic-tac-toe-9c3bf.web.app"
-                    android:pathPrefix="/join"/>
-            </intent-filter>
-
             <!-- CUSTOM SCHEME (KEEP THIS) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
