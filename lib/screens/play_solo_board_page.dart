@@ -149,7 +149,8 @@ class _GameBoardPageState extends State<GameBoardPage>
 
   void _loadBannerAd() {
     _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // todo
+      //adUnitId: 'ca-app-pub-3940256099942544/6300978111', // todo
+      adUnitId: 'ca-app-pub-5454466291921987/8025968244', //real ad id
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -169,7 +170,8 @@ class _GameBoardPageState extends State<GameBoardPage>
   /// Load Interstitial Ad
   void _loadInterstitialAd() {
     InterstitialAd.load(
-      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      //adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      adUnitId: 'ca-app-pub-5454466291921987/2244475178', //real ad id
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
