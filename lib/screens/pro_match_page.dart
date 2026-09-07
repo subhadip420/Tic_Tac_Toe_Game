@@ -154,7 +154,8 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
   /// Load Banner Ad
   void _loadBannerAd() {
     _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // TODO
+      //adUnitId: 'ca-app-pub-3940256099942544/6300978111', // TODO
+      adUnitId: 'ca-app-pub-5454466291921987/7832572721', //real ad id
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -170,7 +171,8 @@ class _InfinityModePageState extends State<InfinityModePage> with TickerProvider
   /// Load Interstitial Ad
   void _loadInterstitialAd() {
     InterstitialAd.load(
-      adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      //adUnitId: 'ca-app-pub-3940256099942544/1033173712', // TODO
+      adUnitId: 'ca-app-pub-5454466291921987/2192504288', //real ad id
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
